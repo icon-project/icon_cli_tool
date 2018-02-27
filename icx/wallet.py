@@ -1,18 +1,40 @@
 def create_wallet(password, *args):
-    print(args)
-    print("ok")
+
+    """ Create a wallet file with given wallet name, password and file path.
+
+    :param password:
+    :param args:
+    :return:
+    """
 
 
 def show_wallet(password, *args):
-    print(args)
-    print("ok")
+
+    """ Shows the all information of wallet
+
+    :param password:
+    :param args:
+    :return:
+    """
 
 
 def show_asset_list(password, *args):
-    print(args)
-    print("ok")
+
+    """ Enumerate the list of all the assets of the wallet.
+
+    :param password:
+    :param args:
+    :return:
+    """
 
 
-def transfer(*commands, password=None, fee=None, decimal_point=None):
-    print(commands)
-    print("ok")
+def transfer_value_with_the_fee(*commands, password=None, fee=None, decimal_point=None):
+
+    """ Transfer the value to the specific address with the fee.
+
+    :param commands:
+    :param password:
+    :param fee:
+    :param decimal_point:
+    :return:
+    """
