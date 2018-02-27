@@ -2,81 +2,67 @@ import argparse
 import sys
 
 
-def main(arg_arr):
-    """main function
-    """
+def main(argv):
+    parser = argparse.ArgumentParser(description="test")
+    parser = argparse.ArgumentParser(prog='icli.py', usage='''
+    %(prog)s command options
+    Normal commands:
+      version
+      help
 
-    parser = argparse.ArgumentParser(description='Normal commands: \
-                                                 version \
-                                                 help \
-                                                 ')
-
-    parser.add_argument('command', help='wallet_create, wallet_show, asset_list, transfer')
-
-    parser.add_argument("-wallet_name",
-                        dest="wallet_name",
-                        required=False, type=str,
-                        help="input user's wallet name", metavar="WALLETNAME")
-    parser.add_argument("-file_path",
-                        dest="file_path",
-                        required=False, type=str,
-                        help="input wallet file path", metavar="FILEPATH")
-    parser.add_argument("-p",
-                        dest="password",
-                        required=False, type=str,
-                        help="input user's password", metavar="PASSWORD")
-
-    parser.add_argument("-f",
-                        dest="fee",
-                        required=False, type=int,
-                        help="input fee", metavar="FEE")
-
-    parser.add_argument("-to",
-                        dest="to",
-                        required=False, type=str,
-                        help="icx address", metavar="to address")
-
-    parser.add_argument("-amount",
-                        dest="amount",
-                        required=False, type=str,
-                        help="amount of icx", metavar="amount of ICX")
-
-    parser.add_argument("-d",
-                        dest="decimal_point",
-                        required=False, type=int,
-                        help="input decimal point", metavar="DECIMALPOINT")
-
+    Wallet Commands:
+      wallet create <file path> -p <password>
+      wallet show <file path> -p <password>
+      asset list <file path> -p <password>
+      transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>
+    ''')
+    parser.add_argument('command', nargs='*', help='wallet create, wallet show, asset list, transfer')
+    parser.add_argument('-p', dest='password'
+                        , help='password')
+    parser.add_argument('-f', dest='fee'
+                        , help='transaction fee')
+    parser.add_argument('-d', dest='decimal_point'
+                        , help='decimal point')
     args = parser.parse_args()
-    if args.command == "wallet_create":
-        create_wallet(args.wallet_name, args.file_path, args.password)
-    elif args.command == "wallet_show":
+    command = ' '.join(args.command[:2])
+
+    if command == 'wallet create':
+        create_wallet(args.password)
+    elif command == 'wallet show':
         show_wallet(args.password)
-    elif args.command == "asset_list":
-        asset_list(args.password)
-    elif args.command == "transfer":
-        transfer(args.to, args.amount, args.file_path, args.password, args.fee, args.decimal_point)
+    elif command == 'asset list':
+        show_asset_list(args.password)
+    elif command.split(' ')[0] == 'transfer':
+        transfer(*args.command, password=args.password, fee=args.fee, decimal_point=args.decimal_point)
+    elif command.split(' ')[0] == 'version':
+        print("version : 0.0.1")
     else:
-        print(f'Unsupported command {args.command}')
+        print(f"Unsupported command {args.command[0]}")
+        parser.print_help()
 
 
-def create_wallet(wallet_name, file_path, password):
-    print(wallet_name, file_path, password)
+def create_wallet(password):
+    print(password)
 
 
 def show_wallet(password):
     print(password)
 
 
-def asset_list(password):
+def show_asset_list(password):
     print(password)
 
 
-def transfer(to, amount, file_path, password, fee, decimal_point):
-    print(to, amount, file_path, password, fee, decimal_point)
+def transfer(*commands, password=None, fee=None, decimal_point=None):
+    if len(commands) < 4:
+        print("Invalid command")
+        pass
+    else:
+        print(commands[0], commands[1], commands[2], commands[3], password, fee, decimal_point)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
-        main(sys.argv[2:])
+        main(sys.argv[1:])
     except KeyboardInterrupt:
-        print('Exit')
+        print("exit")
