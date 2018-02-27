@@ -21,16 +21,17 @@ def main():
                         , help='transaction fee')
     parser.add_argument('-d', dest='decimal_point'
                         , help='decimal point')
+    parser.add_argument('-n', dest='network_id'
+                        , help='which network', default='main_net_network')
     args = parser.parse_args()
     command = ' '.join(args.command[:2])
 
     if command == 'wallet create':
-        # print("wallet name: ", args.command[2])
-        create_wallet("kim", "./keystore/", args.password)
+        create_wallet(args.password, *args.command)
     elif command == 'wallet show':
-        show_wallet(args.password)
+        show_wallet(args.password, *args.command)
     elif command == 'asset list':
-        show_asset_list(args.password)
+        show_asset_list(args.password, *args.command)
     elif command.split(' ')[0] == 'transfer':
         transfer(*args.command, password=args.password, fee=args.fee, decimal_point=args.decimal_point)
     elif command.split(' ')[0] == 'version':
@@ -42,36 +43,49 @@ def main():
         parser.print_help()
 
 
-def create_wallet(wallet_name, file_path, password):
+def create_wallet(password, *args):
     """
-    create wallet file with given wallet name, password and file path.
-    :param wallet_name: name for wallet
-    :param file_path: File path for the keystore file of the wallet
-    :param password: password including alphabet character, number, and special character.
+
+    :param password:
+    :param args:
     :return:
     """
-    print(password)
+    if check_command_format(4, *args) is True:
+        print("yes")
+    else:
+        print_wrong_command_format_message()
 
 
-def show_wallet(password):
-    print(password)
+def show_wallet(password, *args):
+    if check_command_format(3, *args) is True:
+        print("yes")
+    else:
+        print_wrong_command_format_message()
 
 
-def show_asset_list(password):
-    print(password)
+def show_asset_list(password, *args):
+    if check_command_format(3, *args) is True:
+        print("yes")
+    else:
+        print_wrong_command_format_message()
 
 
 def transfer(*commands, password=None, fee=None, decimal_point=None):
-    if len(commands) < 4:
-        print("Invalid command")
-        pass
+    if check_command_format(4, *commands) is True:
+        print("yes")
     else:
-        print(commands[0], commands[1], commands[2], commands[3], password, fee, decimal_point)
+        print_wrong_command_format_message()
 
 
-def check_command_format(*command, correct_length):
+def check_command_format(correct_length, *command):
+    if len(command) == correct_length:
+        return True
+    else:
+        return False
 
-    return True
+
+def print_wrong_command_format_message():
+    print('Invalid command format check icli.py --help')
 
 
 if __name__ == "__main__":
