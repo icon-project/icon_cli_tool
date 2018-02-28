@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import hashlib
+import json
 import os
 from secp256k1 import PrivateKey, PublicKey
 from eth_keyfile import create_keyfile_json
@@ -39,9 +40,15 @@ def create_wallet(password, wallet_name, file_path):
     if utils.validate_password(password) is False:
         return 123
 
-    # priv_key, pub_key = generate_keys()
-    # get_address(pub_key)
-    # key_store_contents = create_keyfile_json(priv_key, b'foo')
+    priv_key, pub_key = generate_keys()
+    get_address(pub_key)
+    key_store_contents = create_keyfile_json(priv_key, b'fsfsdf', iterations=262144)
+    icx_address = "hx" + key_store_contents["address"]
+    key_store_contents['address'] = icx_address
+
+    json_string = json.dumps(key_store_contents)
+
+    store_wallet(file_path, json_string)
 
     return return_code
 
@@ -105,3 +112,15 @@ def get_address(pubkey_bytes):
     # Remove the first byte(0x04) of pubkey
     print(hashlib.sha3_256(pubkey_bytes[1:]).digest()[-20:].hex())
     return hashlib.sha3_256(pubkey_bytes[1:]).digest()[-20:]
+
+
+def store_wallet(file_path, json_string):
+    """
+
+    :param file_path:
+    :param json_string:
+    :return:
+    """
+    full_path = file_path + "file.txt"
+    with open(full_path, 'wt') as fout:
+        fout.write(json_string)
