@@ -63,7 +63,7 @@ ex) hxaa688d74eb5f98b577883ca203535d2aa4f0838c
 3. Execute following scripts.
 
 ```shell
-$ python3 -m venv venv
+$ python3 -m python3 venv
 $ source venv/bin/activate
 $ pip install -r requirements
 $ icli help
@@ -85,7 +85,7 @@ Wallet Commands:
       wallet create <file path> -p <password>
       wallet show <file path> -p <password>
       asset list <file path> -p <password>
-      transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18></td>
+      transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>
 ```
 
 ## Console instructions

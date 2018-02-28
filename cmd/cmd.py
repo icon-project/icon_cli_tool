@@ -14,17 +14,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from cmd import check_required_argument, parse_args, call_wallet_method
-
-
-def main():
-    command, parser = parse_args()
-    call_wallet_method(command, parser)
-
-
-if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("exit")
