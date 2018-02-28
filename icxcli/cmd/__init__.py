@@ -16,7 +16,18 @@
 # limitations under the License.
 
 import argparse
-from icx import wallet
+from icxcli.icx import wallet
+
+
+def main():
+    """
+    Main procedure
+    :return:
+    """
+    command, parser = parse_args()
+    call_wallet_method(command, parser)
+    return 0
+
 
 
 def check_required_argument(*args):

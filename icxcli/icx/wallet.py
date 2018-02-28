@@ -46,7 +46,7 @@ def show_asset_list(password, *args):
     """
 
 
-def transfer_value_with_the_fee(*commands, password=None, fee=None, decimal_point=None):
+def transfer_value_with_the_fee(commands, password=None, fee=None, decimal_point=None):
 
     """ Transfer the value to the specific address with the fee.
 

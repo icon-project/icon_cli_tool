@@ -1,5 +1,4 @@
 import unittest
-from cmd import cmd
 
 
 class TestAPI(unittest.TestCase):

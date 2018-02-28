@@ -20,3 +20,6 @@ venv.bak/
 
 .venv
 
+build/
+icli.egg-info/
+dist/

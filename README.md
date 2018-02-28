@@ -273,3 +273,12 @@ icli will return following error code and message.
 * Return 129: Timestamp is not correct. (Reset your computer’s time and date.)
 
 * Return 130: Wallet address is wrong.
+
+
+# Development
+
+Run ```icli``` in development as following.
+
+```bash
+$ python -m icxcli $commands $args...
+``` 
