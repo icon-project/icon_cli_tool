@@ -28,7 +28,6 @@ def check_required_argument(*args):
     flag = True
     for arg in args:
         flag = flag and bool(arg)
-    print(flag)
     return flag
 
 
@@ -80,7 +79,7 @@ def call_wallet_method(command, parser):
     args = parser.parse_args()
 
     if command == 'wallet create' and len(args.command) == 4 and check_required_argument(args.password):
-        wallet.create_wallet(args.password, *args.command)
+        wallet.create_wallet(args.password, args.command[2], args.command[3])
     elif command == 'wallet show' and len(args.command) == 3 and check_required_argument(args.password):
         wallet.show_wallet(args.password, *args.command)
     elif command == 'asset list' and len(args.command) == 3 and check_required_argument(args.password):

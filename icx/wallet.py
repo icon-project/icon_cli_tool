@@ -14,16 +14,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import hashlib
+import os
+from secp256k1 import PrivateKey, PublicKey
+from eth_keyfile import create_keyfile_json
+from . import utils
 
 
-def create_wallet(password, *args):
+def create_wallet(password, wallet_name, file_path):
 
     """ Create a wallet file with given wallet name, password and file path.
 
     :param password:
-    :param args:
+    :param wallet_name:
+    :param file_path:
     :return:
     """
+    return_code = 0
+
+    if os.path.isdir(file_path) is False:
+        return 122
+    if os.access(file_path, os.W_OK) is False:
+        return 136
+    if utils.validate_password(password) is False:
+        return 123
+
+    # priv_key, pub_key = generate_keys()
+    # get_address(pub_key)
+    # key_store_contents = create_keyfile_json(priv_key, b'foo')
+
+    return return_code
 
 
 def show_wallet(password, *args):
@@ -56,3 +76,32 @@ def transfer_value_with_the_fee(*commands, password=None, fee=None, decimal_poin
     :param decimal_point:
     :return:
     """
+
+
+def generate_keys():
+    """generate privkey and pubkey pair.
+
+    Returns:
+        tuple: privkey(bytes, 32), pubkey(bytes, 65)
+    """
+    privkey = PrivateKey()
+
+    privkey_bytes = privkey.private_key
+    pubkey_bytes = privkey.pubkey.serialize(False)
+
+    return privkey_bytes, pubkey_bytes
+
+
+def get_address(pubkey_bytes):
+    """generate address from public key.
+
+    Args:
+        pubkey_bytes(bytes): public key bytes
+
+    Returns:
+        bytes: icx address (20bytes)
+    """
+
+    # Remove the first byte(0x04) of pubkey
+    print(hashlib.sha3_256(pubkey_bytes[1:]).digest()[-20:].hex())
+    return hashlib.sha3_256(pubkey_bytes[1:]).digest()[-20:]
