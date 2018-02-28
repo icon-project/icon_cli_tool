@@ -19,6 +19,9 @@
 import sys
 import icxcli.cmd
 
+from cmd import parse_args, call_wallet_method
+
+
 
 if __name__ == "__main__":
     try:

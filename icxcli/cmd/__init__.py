@@ -50,7 +50,6 @@ def parse_args():
     """
 
     parser = argparse.ArgumentParser(prog='icli.py', usage='''
-        g
         Normal commands:
           version
           help

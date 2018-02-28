@@ -277,8 +277,18 @@ icli will return following error code and message.
 
 # Development
 
-Run ```icli``` in development as following.
+## Run ```icli``` in development.
 
 ```bash
 $ python -m icxcli $commands $args...
 ``` 
+
+## Build package in egg package file. 
+```bash
+$ python setup.py bdist_egg 
+```
+
+## Test package.
+```bash
+$ python setup.py test
+```

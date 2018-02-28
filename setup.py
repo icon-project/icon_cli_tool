@@ -34,13 +34,13 @@ if sys.version_info[:2] == (2, 6):
 
 setup_options = dict(
     name='icli',
-    version=find_version("cmd", "__init__.py"),
+    version=find_version("icxcli", "__init__.py"),
     description='A Universal Command Line Environment for ICON.',
     long_description=open('README.md').read(),
     author='ICON foundation',
     author_email='foo@icon.foundation',
     url='https://github.com/icon-project/icon_sdk_for_python',
-    scripts=['icli.py'],
+    scripts=['bin/icli'],
     packages=find_packages(exclude=['tests*']),
     install_requires=requires,
     extras_require={
