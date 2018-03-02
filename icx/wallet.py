@@ -105,8 +105,7 @@ def make_key_store_content(password):
     signer = IcxSigner()
     private_key = signer.private_key
     key_store_contents = create_keyfile_json(private_key, bytes(password, 'utf-8'), iterations=262144)
-    icx_address = "hx" + key_store_contents["address"]
+    icx_address = "hx" + signer.address.hex()
     key_store_contents['address'] = icx_address
     key_store_contents['coinType'] = 'icx'
-    print(key_store_contents)
     return key_store_contents
