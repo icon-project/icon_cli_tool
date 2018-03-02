@@ -19,8 +19,8 @@ import argparse
 from icx import wallet
 
 
-def check_required_argument(*args):
-    """
+def check_required_argument_in_args(*args):
+    """Make sure user has entered all the required arguments.
 
     :return:
     True when arguments are valid.

@@ -16,7 +16,7 @@
 # limitations under the License.
 
 import hashlib
-from secp256k1 import PrivateKey, PublicKey
+from secp256k1 import PrivateKey
 
 
 class IcxSigner(object):

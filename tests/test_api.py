@@ -51,7 +51,7 @@ class TestAPI(unittest.TestCase):
 
     def test_create_wallet_case3(self):
         """Test for create_wallet function.
-        Case when user endters a directory that she does not have write permission to.
+        Case when user enters a directory that she does not have write permission to.
         """
         # Given
 
