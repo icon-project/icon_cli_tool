@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from cmd import check_required_argument, parse_args, call_wallet_method
+from cmd import parse_args, call_wallet_method
 
 
 def main():
