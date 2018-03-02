@@ -22,6 +22,6 @@ import icxcli.cmd
 
 if __name__ == "__main__":
     try:
-        sys.exit( icxcli.cmd.main())
+        sys.exit(icxcli.cmd.main())
     except KeyboardInterrupt:
         print("exit")

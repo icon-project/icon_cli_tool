@@ -23,7 +23,7 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-requires = ['requests==2.18.4']
+requires = ['requests==2.18.4', "eth-keyfile==0.5.0", "secp256k1==0.13.2"]
 
 
 if sys.version_info[:2] == (2, 6):

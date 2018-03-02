@@ -17,6 +17,7 @@
 
 import argparse
 from icxcli.icx import wallet
+from icxcli import __version__
 
 
 def main():
@@ -30,16 +31,16 @@ def main():
 
 
 
-def check_required_argument(*args):
-    """
+def check_required_argument_in_args(*args):
+    """Make sure user has entered all the required arguments.
 
-    :param args:
     :return:
+    True when arguments are valid.
+    False when arguments are invalid.
     """
     flag = True
     for arg in args:
         flag = flag and bool(arg)
-    print(flag)
     return flag
 
 
@@ -82,24 +83,23 @@ def parse_args():
 def call_wallet_method(command, parser):
     """ Call the specific wallet method when having right number of arguments.
 
-    :param command:
-    :param parser:
-    :return:
+    :param command: Command part of interface. type: str
+    :param parser: ArgumentParser
     """
 
     args = parser.parse_args()
 
-    if command == 'wallet create' and len(args.command) == 4 and check_required_argument(args.password):
-        wallet.create_wallet(args.password, *args.command)
-    elif command == 'wallet show' and len(args.command) == 3 and check_required_argument(args.password):
+    if command == 'wallet create' and len(args.command) == 4 and check_required_argument_in_args(args.password):
+        wallet.create_wallet(args.password, args.command[2], args.command[3])
+    elif command == 'wallet show' and len(args.command) == 3 and check_required_argument_in_args(args.password):
         wallet.show_wallet(args.password, *args.command)
-    elif command == 'asset list' and len(args.command) == 3 and check_required_argument(args.password):
+    elif command == 'asset list' and len(args.command) == 3 and check_required_argument_in_args(args.password):
         wallet.show_asset_list(args.password, *args.command)
     elif command.split(' ')[0] == 'transfer' and len(args.command) == 4 \
-            and check_required_argument(args.password, args.fee, args.decimal_point):
+            and check_required_argument_in_args(args.password, args.fee, args.decimal_point):
         wallet.transfer(*args.command, password=args.password, fee=args.fee, decimal_point=args.decimal_point)
     elif command.split(' ')[0] == 'version':
-        print("version : 0.0.1") # TODO: Read the value from external configure file.
+        print(f"version : {__version__}")
     else:
         parser.print_help()
 

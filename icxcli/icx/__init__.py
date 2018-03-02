@@ -15,5 +15,54 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from enum import Enum
+import hashlib
+from secp256k1 import PrivateKey
 
-#TODO: Define 'WalletInfo' class
+
+class ErrorCode(Enum):
+    """Error codes for command line interface
+    """
+    SUCCEED = 0
+    FILE_PATH_IS_WRONG = 122
+    PASSWORD_IS_WRONG = 123
+    WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE = 127
+    TRANSFER_FEE_IS_INVALID = 128
+    TIMESTAMP_IS_NOT_CORRECT = 129
+    WALLET_ADDRESS_IS_WRONG = 130
+    NO_PERMISSION_TO_WRITE_FILE = 136
+
+
+class IcxSigner(object):
+
+    def __init__(self, data=None, raw=None):
+        """
+        :param data(object): bytes or der
+        :param raw(bool): True(bytes) False(der)
+        """
+        self.__private_key = PrivateKey(data, raw)
+
+    @property
+    def private_key_bytes(self):
+        return self.__private_key.private_key
+
+    @private_key_bytes.setter
+    def private_key(self, data):
+        self.__private_key.set_raw_privkey(data)
+
+    @property
+    def public_key_bytes(self):
+        return self.__private_key.pubkey.serialize(compressed=False)
+
+    @property
+    def address(self):
+        public_key_bytes = self.public_key_bytes
+        return hashlib.sha3_256(public_key_bytes[1:]).digest()[-20:]
+
+    @staticmethod
+    def from_bytes(data):
+        return IcxSigner(data, raw=True)
+
+    @staticmethod
+    def from_der(data):
+        return IcxSigner(data, raw=False)
