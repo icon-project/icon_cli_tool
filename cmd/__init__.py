@@ -78,17 +78,17 @@ def call_wallet_method(command, parser):
 
     args = parser.parse_args()
 
-    if command == 'wallet create' and len(args.command) == 4 and check_required_argument(args.password):
+    if command == 'wallet create' and len(args.command) == 4 and check_required_argument_in_args(args.password):
         wallet.create_wallet(args.password, args.command[2], args.command[3])
-    elif command == 'wallet show' and len(args.command) == 3 and check_required_argument(args.password):
+    elif command == 'wallet show' and len(args.command) == 3 and check_required_argument_in_args(args.password):
         wallet.show_wallet(args.password, *args.command)
-    elif command == 'asset list' and len(args.command) == 3 and check_required_argument(args.password):
+    elif command == 'asset list' and len(args.command) == 3 and check_required_argument_in_args(args.password):
         wallet.show_asset_list(args.password, *args.command)
     elif command.split(' ')[0] == 'transfer' and len(args.command) == 4 \
-            and check_required_argument(args.password, args.fee, args.decimal_point):
+            and check_required_argument_in_args(args.password, args.fee, args.decimal_point):
         wallet.transfer(*args.command, password=args.password, fee=args.fee, decimal_point=args.decimal_point)
     elif command.split(' ')[0] == 'version':
-        print("version : 0.0.1") # TODO: Read the value from external configure file.
+        print("version : 0.0.1")
     else:
         parser.print_help()
 

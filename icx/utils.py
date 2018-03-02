@@ -21,7 +21,7 @@ import eth_keyfile
 def validate_password(password):
     """Verify the entered password.
 
-    :param password(string): users' password
+    :param password(str): The password the user entered.
     :return: bool
     True: When the password is valid format
     False: When the password is invalid format
@@ -37,7 +37,7 @@ def hex_to_bytes(value):
 def validate_key_store_file(key_store_file_path):
     """Check key_store file was saved in the correct format.
 
-    :param(string) key_store_file_path:
+    :param(str) Key_store_file_path.
     :return: bool
     True: When the key_store_file was saved in valid format.
     False: When the key_store_file was saved in invalid format.

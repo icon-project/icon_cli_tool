@@ -25,9 +25,10 @@ def create_wallet(password, wallet_name, file_path):
 
     """ Create a wallet file with given wallet name, password and file path.
 
-    :param password: Password for wallet. type. str
-    :param wallet_name: Name for wallet. type: str
-    :param file_path: The path where the file will be saved. type: str
+    :param password(str):  Password including alphabet character, number, and special character.
+    If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
+    :param wallet_name(str): Name for wallet.
+    :param file_path(str): File path for the keystore file of the wallet.
 
     :return:
     0: When create store_key_file completely.
@@ -56,7 +57,8 @@ def show_wallet(password, *args):
 
     """ Shows the all information of wallet
 
-    :param password: Password for wallet. type: str
+    :param password(str):  Password including alphabet character, number, and special character.
+    If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :param args:
     :return:
     """
@@ -66,7 +68,8 @@ def show_asset_list(password, *args):
 
     """ Enumerate the list of all the assets of the wallet.
 
-    :param password: Password for wallet. type: str
+    :param password(str): Password including alphabet character, number, and special character.
+    If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :param args:
     :return:
     """
@@ -77,18 +80,18 @@ def transfer_value_with_the_fee(*commands, password=None, fee=None, decimal_poin
     """ Transfer the value to the specific address with the fee.
 
     :param commands:
-    :param password: Password for wallet. type: str
-    :param fee: Transaction fee. type: int
-    :param decimal_point:
+    :param password(str): Password including alphabet character, number, and special character.
+    If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
+    :param fee: Transaction fee.
+    :param decimal_point: A user can change the decimal point to express all numbers including fee and amount.
     :return:
     """
 
 
 def store_wallet(file_path, json_string):
     """ Store wallet information file in JSON format.
-
-    :param file_path(string): The path where the file will be saved. type: str
-    :param json_string(string): Contents of key_store_file
+    :param file_path(str): The path where the file will be saved. type: str
+    :param json_string(str): Contents of key_store_file
     """
     full_path = file_path + "file.txt"
     with open(full_path, 'wt') as fout:
@@ -98,7 +101,8 @@ def store_wallet(file_path, json_string):
 def make_key_store_content(password):
     """Make a content of key_store.
 
-    :param password(string): Wallet's password
+    :param password(str): Password including alphabet character, number, and special character.
+    If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :return:
     key_store_content(dict)
     """
