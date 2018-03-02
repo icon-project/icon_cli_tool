@@ -22,8 +22,9 @@ from icx import wallet
 def check_required_argument(*args):
     """
 
-    :param args:
     :return:
+    True when arguments are valid.
+    False when arguments are invalid.
     """
     flag = True
     for arg in args:
@@ -71,9 +72,8 @@ def parse_args():
 def call_wallet_method(command, parser):
     """ Call the specific wallet method when having right number of arguments.
 
-    :param command:
-    :param parser:
-    :return:
+    :param command: Command part of interface. type: str
+    :param parser: ArgumentParser
     """
 
     args = parser.parse_args()

@@ -14,22 +14,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import hashlib
 import json
 import os
-from secp256k1 import PrivateKey, PublicKey
 from eth_keyfile import create_keyfile_json
 from . import utils
+from . import IcxSigner
 
 
 def create_wallet(password, wallet_name, file_path):
 
     """ Create a wallet file with given wallet name, password and file path.
 
-    :param password:
-    :param wallet_name:
-    :param file_path:
+    :param password: Password for wallet. type. str
+    :param wallet_name: Name for wallet. type: str
+    :param file_path: The path where the file will be saved. type: str
+
     :return:
+    0: When create store_key_file completely.
+    122: When file_path does not exists.
+    123: When password is not correct format.
     """
     return_code = 0
 
@@ -40,11 +43,7 @@ def create_wallet(password, wallet_name, file_path):
     if utils.validate_password(password) is False:
         return 123
 
-    priv_key, pub_key = generate_keys()
-    get_address(pub_key)
-    key_store_contents = create_keyfile_json(priv_key, b'fsfsdf', iterations=262144)
-    icx_address = "hx" + key_store_contents["address"]
-    key_store_contents['address'] = icx_address
+    key_store_contents = make_key_store_content(password)
 
     json_string = json.dumps(key_store_contents)
 
@@ -57,7 +56,7 @@ def show_wallet(password, *args):
 
     """ Shows the all information of wallet
 
-    :param password:
+    :param password: Password for wallet. type: str
     :param args:
     :return:
     """
@@ -67,7 +66,7 @@ def show_asset_list(password, *args):
 
     """ Enumerate the list of all the assets of the wallet.
 
-    :param password:
+    :param password: Password for wallet. type: str
     :param args:
     :return:
     """
@@ -78,49 +77,36 @@ def transfer_value_with_the_fee(*commands, password=None, fee=None, decimal_poin
     """ Transfer the value to the specific address with the fee.
 
     :param commands:
-    :param password:
-    :param fee:
+    :param password: Password for wallet. type: str
+    :param fee: Transaction fee. type: int
     :param decimal_point:
     :return:
     """
 
 
-def generate_keys():
-    """generate privkey and pubkey pair.
-
-    Returns:
-        tuple: privkey(bytes, 32), pubkey(bytes, 65)
-    """
-    privkey = PrivateKey()
-
-    privkey_bytes = privkey.private_key
-    pubkey_bytes = privkey.pubkey.serialize(False)
-
-    return privkey_bytes, pubkey_bytes
-
-
-def get_address(pubkey_bytes):
-    """generate address from public key.
-
-    Args:
-        pubkey_bytes(bytes): public key bytes
-
-    Returns:
-        bytes: icx address (20bytes)
-    """
-
-    # Remove the first byte(0x04) of pubkey
-    print(hashlib.sha3_256(pubkey_bytes[1:]).digest()[-20:].hex())
-    return hashlib.sha3_256(pubkey_bytes[1:]).digest()[-20:]
-
-
 def store_wallet(file_path, json_string):
-    """
+    """ Store wallet information file in JSON format.
 
-    :param file_path:
-    :param json_string:
-    :return:
+    :param file_path(string): The path where the file will be saved. type: str
+    :param json_string(string): Contents of key_store_file
     """
     full_path = file_path + "file.txt"
     with open(full_path, 'wt') as fout:
         fout.write(json_string)
+
+
+def make_key_store_content(password):
+    """Make a content of key_store.
+
+    :param password(string): Wallet's password
+    :return:
+    key_store_content(dict)
+    """
+    signer = IcxSigner()
+    private_key = signer.private_key
+    key_store_contents = create_keyfile_json(private_key, bytes(password, 'utf-8'), iterations=262144)
+    icx_address = "hx" + key_store_contents["address"]
+    key_store_contents['address'] = icx_address
+    key_store_contents['coinType'] = 'icx'
+    print(key_store_contents)
+    return key_store_contents

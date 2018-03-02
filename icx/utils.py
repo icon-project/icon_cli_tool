@@ -15,8 +15,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import re
+import eth_keyfile
 
 
 def validate_password(password):
+    """Verify the entered password.
+
+    :param password(string): users' password
+    :return: bool
+    True: When the password is valid format
+    False: When the password is invalid format
+    """
     password_regular_expression = re.compile(r'[a-zA-Z0-9\'";:/.,<>?!@#$%^&*()_+=-\]\\[{}]+$')
     return bool(password_regular_expression.match(password))
+
+
+def hex_to_bytes(value):
+    return bytes.fromhex(value)
+
+
+def validate_key_store_file(key_store_file_path):
+    """Check key_store file was saved in the correct format.
+
+    :param(string) key_store_file_path:
+    :return: bool
+    True: When the key_store_file was saved in valid format.
+    False: When the key_store_file was saved in invalid format.
+    """
+    is_valid = True
+
+    # The key values ​​that should be in the root location.
+    root_keys = ["version", "id", "address", "crypto"]
+    crypto_keys = ["ciphertext", "cipherparams", "cipher", "kdf", "kdfparams", "mac"]
+    crypto_cipherparams_keys = ["iv"]
+    crypto_kdfparams_keys = ["dklen", "salt", "c", "prf"]
+
+    keyfile = eth_keyfile.load_keyfile(key_store_file_path)
+    is_valid = has_keys(keyfile, root_keys) and has_keys(keyfile["crypto"], crypto_keys) and has_keys(keyfile["crypto"]["cipherparams"], crypto_cipherparams_keys) and has_keys(keyfile["crypto"]["kdfparams"], crypto_kdfparams_keys)
+    return is_valid
+
+
+def has_keys(data, key_array):
+    for key in key_array:
+        if key in data is False:
+            return False
+    return True
