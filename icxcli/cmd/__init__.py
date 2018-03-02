@@ -15,23 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 import argparse
-from icxcli.icx import wallet
+
+from icxcli.cmd import wallet
 from icxcli import __version__
-
-
-class ErrorCode(Enum):
-    """Error codes for command line interface
-    """
-    SUCCEED = 0
-    FILE_PATH_IS_WRONG = 122
-    PASSWORD_IS_WRONG = 123
-    WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE = 127
-    TRANSFER_FEE_IS_INVALID = 128
-    TIMESTAMP_IS_NOT_CORRECT = 129
-    WALLET_ADDRESS_IS_WRONG = 130
-    NO_PERMISSION_TO_WRITE_FILE = 136
-
 
 def main():
     """
@@ -39,8 +27,7 @@ def main():
     :return:
     """
     command, parser = parse_args()
-    call_wallet_method(command, parser)
-    return 0
+    sys.exit(call_wallet_method(command, parser))
 
 
 
@@ -101,18 +88,17 @@ def call_wallet_method(command, parser):
     """
 
     args = parser.parse_args()
-
     if command == 'wallet create' and len(args.command) == 4 and check_required_argument_in_args(args.password):
-        wallet.create_wallet(args.password, args.command[2], args.command[3])
+        return wallet.create_wallet(args.password, args.command[2], args.command[3])
     elif command == 'wallet show' and len(args.command) == 3 and check_required_argument_in_args(args.password):
-        wallet.show_wallet(args.password, *args.command)
+        return wallet.show_wallet(args.password, *args.command)
     elif command == 'asset list' and len(args.command) == 3 and check_required_argument_in_args(args.password):
-        wallet.show_asset_list(args.password, *args.command)
+        return wallet.show_asset_list(args.password, *args.command)
     elif command.split(' ')[0] == 'transfer' and len(args.command) == 4 \
             and check_required_argument_in_args(args.password, args.fee, args.decimal_point):
-        wallet.transfer(*args.command, password=args.password, fee=args.fee, decimal_point=args.decimal_point)
+        return wallet.transfer(*args.command, password=args.password, fee=args.fee, decimal_point=args.decimal_point)
     elif command.split(' ')[0] == 'version':
         print(f"version : {__version__}")
     else:
         parser.print_help()
-
+        return 0

@@ -15,56 +15,68 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-from icxcli.cmd import ErrorCode
+from enum import Enum
 from icxcli.icx import wallet
 
+class ExitCode(Enum):
+    """Exit codes for command line interface
+    """
+    SUCCEED = 0
+    FILE_PATH_IS_WRONG = 122
+    PASSWORD_IS_WRONG = 123
+    WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE = 127
+    TRANSFER_FEE_IS_INVALID = 128
+    TIMESTAMP_IS_NOT_CORRECT = 129
+    WALLET_ADDRESS_IS_WRONG = 130
+    NO_PERMISSION_TO_WRITE_FILE = 136
 
-def create_wallet(password, wallet_name, file_path):
+
+def create_wallet(password, wallet_name, file_path) -> int:
     """ Create a wallet file with given wallet name, password and file path.
 
-    :param password(str):  Password including alphabet character, number, and special character.
-    If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
-    :param wallet_name(str): Name for wallet.
-    :param file_path(str): File path for the keystore file of the wallet.
-
-    :return:
-    0: Succeed to create keystore file.
-    122: When file_path does not exists.
-    123: When password is not correct format.
+    :param password:  Password including alphabet character, number, and special character.
+    If the user does not give password with -p, then CLI will show the prompt and user need to type the password.
+    :param wallet_name: Name for wallet.
+    :param file_path: File path for the keystore file of the wallet.
+    :return: Predefined exit code
     """
-
-    return_code = ErrorCode.SUCCEED
-
-
     try:
-        create_wallet(password
+        wallet_info = wallet.create_wallet(password, wallet_name, file_path)
+        return ExitCode.SUCCEED.value
+    except wallet.PasswordIsNotAcceptable:
+        print("Password is not acceptable. ")
+        return ExitCode.PASSWORD_IS_WRONG.value
+    except wallet.FilePathIsWrong:
+        print(f"Fail to open {file_path}. ")
+        return ExitCode.FILE_PATH_IS_WRONG.value
+    except wallet.NoPermissionToWriteFile:
+        print(f"No permission to write {file_path}. ")
+        return ExitCode.NO_PERMISSION_TO_WRITE_FILE.value
 
 
-
-def show_wallet(password, *args):
+def show_wallet(password, *args) -> int:
     """ Shows the all information of wallet
 
     :param password(str):  Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :param args:
-    :return:
+    :return: Predefined exit code
     """
     pass
 
 
-def show_asset_list(password, *args):
+def show_asset_list(password, *args) -> int:
     """ Enumerate the list of all the assets of the wallet.
 
     :param password(str): Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :param args:
-    :return:
+    :return: Predefined exit code
     """
     pass
 
 
-def transfer_value_with_the_fee(commands, password=None, fee=None, decimal_point=None):
+def transfer_value_with_the_fee(commands, password=None, fee=None, decimal_point=None) -> int:
     """ Transfer the value to the specific address with the fee.
 
     :param commands:
@@ -72,20 +84,21 @@ def transfer_value_with_the_fee(commands, password=None, fee=None, decimal_point
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :param fee: Transaction fee.
     :param decimal_point: A user can change the decimal point to express all numbers including fee and amount.
-    :return:
+    :return: Predefined exit code
     """
     pass
 
 
-def store_wallet(file_path, json_string):
+def store_wallet(file_path, json_string) -> int:
     """ Store wallet information file in JSON format.
     :param file_path(str): The path where the file will be saved. type: str
     :param json_string(str): Contents of key_store_file
+    :return: Predefined exit code
     """
     pass
 
 
-def make_key_store_content(password):
+def make_key_store_content(password) -> int:
     """Make a content of key_store.
 
     :param password(str): Password including alphabet character, number, and special character.
