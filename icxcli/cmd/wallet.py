@@ -14,17 +14,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import json
-import os
-from eth_keyfile import create_keyfile_json
-from icxcli.icx import utils
-from icxcli.icx import IcxSigner
-from icxcli.icx import ErrorCode
 
+
+from icxcli.cmd import ErrorCode
+from icxcli.icx import wallet
 
 
 def create_wallet(password, wallet_name, file_path):
-
     """ Create a wallet file with given wallet name, password and file path.
 
     :param password(str):  Password including alphabet character, number, and special character.
@@ -33,27 +29,20 @@ def create_wallet(password, wallet_name, file_path):
     :param file_path(str): File path for the keystore file of the wallet.
 
     :return:
-    0: When create store_key_file completely.
+    0: Succeed to create keystore file.
     122: When file_path does not exists.
     123: When password is not correct format.
     """
+
     return_code = ErrorCode.SUCCEED
 
-    if os.path.isdir(file_path) is False:
-        return ErrorCode.FILE_PATH_IS_WRONG
-    if os.access(file_path, os.W_OK) is False:
-        return ErrorCode.NO_PERMISSION_TO_WRITE_FILE
-    if utils.validate_password(password) is False:
-        return ErrorCode.PASSWORD_IS_WRONG
 
-    key_store_contents = make_key_store_content(password)
-    json_string = json.dumps(key_store_contents)
-    store_wallet(file_path, json_string)
-    return return_code
+    try:
+        create_wallet(password
+
 
 
 def show_wallet(password, *args):
-
     """ Shows the all information of wallet
 
     :param password(str):  Password including alphabet character, number, and special character.
@@ -61,10 +50,10 @@ def show_wallet(password, *args):
     :param args:
     :return:
     """
+    pass
 
 
 def show_asset_list(password, *args):
-
     """ Enumerate the list of all the assets of the wallet.
 
     :param password(str): Password including alphabet character, number, and special character.
@@ -72,10 +61,10 @@ def show_asset_list(password, *args):
     :param args:
     :return:
     """
+    pass
 
 
 def transfer_value_with_the_fee(commands, password=None, fee=None, decimal_point=None):
-
     """ Transfer the value to the specific address with the fee.
 
     :param commands:
@@ -85,6 +74,7 @@ def transfer_value_with_the_fee(commands, password=None, fee=None, decimal_point
     :param decimal_point: A user can change the decimal point to express all numbers including fee and amount.
     :return:
     """
+    pass
 
 
 def store_wallet(file_path, json_string):
@@ -92,9 +82,7 @@ def store_wallet(file_path, json_string):
     :param file_path(str): The path where the file will be saved. type: str
     :param json_string(str): Contents of key_store_file
     """
-    full_path = file_path + "file.txt"
-    with open(full_path, 'wt') as fout:
-        fout.write(json_string)
+    pass
 
 
 def make_key_store_content(password):
@@ -105,10 +93,4 @@ def make_key_store_content(password):
     :return:
     key_store_content(dict)
     """
-    signer = IcxSigner()
-    private_key = signer.private_key
-    key_store_contents = create_keyfile_json(private_key, bytes(password, 'utf-8'), iterations=262144)
-    icx_address = "hx" + signer.address.hex()
-    key_store_contents['address'] = icx_address
-    key_store_contents['coinType'] = 'icx'
-    return key_store_contents
+    pass

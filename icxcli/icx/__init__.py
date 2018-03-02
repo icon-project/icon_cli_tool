@@ -15,30 +15,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from enum import Enum
+import json
 import hashlib
 from secp256k1 import PrivateKey
 
 
-class ErrorCode(Enum):
-    """Error codes for command line interface
+class WalletInfo:
+    """Class to represent wallet information.
     """
-    SUCCEED = 0
-    FILE_PATH_IS_WRONG = 122
-    PASSWORD_IS_WRONG = 123
-    WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE = 127
-    TRANSFER_FEE_IS_INVALID = 128
-    TIMESTAMP_IS_NOT_CORRECT = 129
-    WALLET_ADDRESS_IS_WRONG = 130
-    NO_PERMISSION_TO_WRITE_FILE = 136
+    def __init__(self, wallet_data:str):
+        self.__wallet_data = json.loads(wallet_data)
+        self.__address = self.__wallet_data["address"]
+
+    @property
+    def address(self):
+        return self.__address
 
 
 class IcxSigner(object):
+    """ ICX Signature utility class.
+    """
 
-    def __init__(self, data=None, raw=None):
+    def __init__(self, data: object = None, raw: object = None) -> object:
         """
-        :param data(object): bytes or der
-        :param raw(bool): True(bytes) False(der)
+        :param data bytes or der (object):
+        :param raw: (bool) True(bytes) False(der)
         """
         self.__private_key = PrivateKey(data, raw)
 
@@ -66,3 +67,26 @@ class IcxSigner(object):
     @staticmethod
     def from_der(data):
         return IcxSigner(data, raw=False)
+
+
+""" Exceptions for ICX. """
+
+
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+
+class PasswordIsNotAcceptable(Error):
+    """Exception raised for "password is wrong"."""
+    pass
+
+
+class FilePathIsWrong(Error):
+    """Exception raised for "File path is wrong". """
+    pass
+
+
+class NoPermissionToWriteFile(Error):
+    """Exception raised for "No permission to write file". """
+    pass

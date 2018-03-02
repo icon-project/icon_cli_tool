@@ -20,6 +20,19 @@ from icxcli.icx import wallet
 from icxcli import __version__
 
 
+class ErrorCode(Enum):
+    """Error codes for command line interface
+    """
+    SUCCEED = 0
+    FILE_PATH_IS_WRONG = 122
+    PASSWORD_IS_WRONG = 123
+    WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE = 127
+    TRANSFER_FEE_IS_INVALID = 128
+    TIMESTAMP_IS_NOT_CORRECT = 129
+    WALLET_ADDRESS_IS_WRONG = 130
+    NO_PERMISSION_TO_WRITE_FILE = 136
+
+
 def main():
     """
     Main procedure

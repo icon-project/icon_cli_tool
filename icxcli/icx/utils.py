@@ -18,7 +18,7 @@ import re
 import eth_keyfile
 
 
-def validate_password(password):
+def validate_password(password) -> bool:
     """Verify the entered password.
 
     :param password(str): The password the user entered.
@@ -34,7 +34,7 @@ def hex_to_bytes(value):
     return bytes.fromhex(value)
 
 
-def validate_key_store_file(key_store_file_path):
+def validate_key_store_file(key_store_file_path: object) -> bool:
     """Check key_store file was saved in the correct format.
 
     :param(str) Key_store_file_path.

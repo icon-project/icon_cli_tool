@@ -2,9 +2,9 @@ import json
 import os
 import unittest
 
-from icxcli.icx import wallet
-from icxcli.icx import utils
-from icxcli.icx import ErrorCode
+from icxcli import icx
+from icxcli.icx import wallet,utils
+
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,65 +19,91 @@ class TestAPI(unittest.TestCase):
         Case when created wallet successfully.
         """
         # Given
+        password="w3fasd"
+        wallet_name="Avmasd"
+        file_path=os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
-        ret = wallet.create_wallet(password="w3fasd", wallet_name="Avmasd", file_path=TEST_DIR + '/')
+        try:
+            wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
 
-        # Then
-        self.assertEqual(ErrorCode.SUCCEED, ret)
+            # Then
+            prefix = wallet_info.address[0:2]
+            self.assertEqual(prefix, "hx")
+
+        except icx.FilePathIsWrong:
+            self.assertFalse(True)
+        except icx.PasswordIsNotAcceptable:
+            self.assertFalse(True)
+        except icx.NoPermissionToWriteFile:
+            self.assertFalse(True)
 
     def test_create_wallet_case1(self):
         """Test for create_wallet function.
         Case when user enters a directory that does not exist.
         """
         # Given
+        password = "w3fasd"
+        wallet_name = "wname"
+        file_path=os.path.join(TEST_DIR,"unknown_folder" ,"test_keystore.txt")
 
         # When
-        ret = wallet.create_wallet(password="1234", wallet_name="wname", file_path='/non_exists_directory')
+        try:
+            wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
 
         # Then
-        self.assertEqual(ErrorCode.FILE_PATH_IS_WRONG, ret)
+        except icx.FilePathIsWrong:
+            self.assertTrue(True)
 
     def test_create_wallet_case2(self):
         """Test for create_wallet function.
         Case when user enters a invalid password.
         """
         # Given
+        password = "123 4"
+        wallet_name = "wname"
+        file_path=os.path.join(TEST_DIR,"unknown_folder" ,"test_keystore.txt")
 
         # When
-        ret = wallet.create_wallet(password="123 4", wallet_name="wname", file_path=TEST_DIR)
+        try:
+            wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
 
         # Then
-        self.assertEqual(ErrorCode.PASSWORD_IS_WRONG, ret)
+        except icx.PasswordIsNotAcceptable:
+            self.assertTrue(True)
 
     def test_create_wallet_case3(self):
         """Test for create_wallet function.
-        Case when user enters a directory that she does not have write permission to.
+        Case when user enters a directory without permission to write file.
         """
         # Given
+        password = "Adas2131231"
+        wallet_name = "wname"
+        file_path=os.path.join("/", "test_keystore.txt")
 
         # When
-        ret = wallet.create_wallet(password="1234", wallet_name="wname", file_path='/')
-
+        try:
+            wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
         # Then
-        self.assertEqual(ErrorCode.NO_PERMISSION_TO_WRITE_FILE, ret)
+        except icx.NoPermissionToWriteFile:
+            self.assertTrue(True)
 
     def test_created_store_key_file(self):
         """Check the file is saved in the correct format.
         """
         # Given
+        password = "Adas2131231"
+        wallet_name = "wname"
+        file_path=os.path.join(TEST_DIR, "test_keystore.txt")
+
         # When
+        try:
+            wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
 
-        key_store_contents = wallet.make_key_store_content("yourpassword")
-
-        json_string = json.dumps(key_store_contents)
-
-        file_path = TEST_DIR + "/"
-
-        wallet.store_wallet(file_path, json_string)
-        ret = utils.validate_key_store_file(file_path+'file.txt')
-
-        self.assertTrue(ret)
+        # Then
+            self.assertTrue(utils.validate_key_store_file(file_path))
+        except:
+            self.assertTrue(False) # Never happen this case.
 
 if __name__ == "__main__":
     unittest.main()
