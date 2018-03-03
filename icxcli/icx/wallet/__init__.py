@@ -17,10 +17,11 @@
 import json
 import os
 from eth_keyfile import create_keyfile_json
-from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToWriteFile
+from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToWriteFile, FileExists
 from icxcli.icx import WalletInfo
 from icxcli.icx import utils
 from icxcli.icx import IcxSigner
+
 
 def create_wallet(password, wallet_name, file_path):
 
@@ -37,18 +38,19 @@ def create_wallet(password, wallet_name, file_path):
     if not utils.validate_password(password):
         raise PasswordIsNotAcceptable
 
-    key_store_contents = make_key_store_content(password)
+    key_store_contents = __make_key_store_content(password)
     json_string = json.dumps(key_store_contents)
 
     try:
         __store_wallet(file_path, json_string)
         w = WalletInfo(json_string)
         return w
+    except FileExistsError:
+        raise FileExists
     except PermissionError:
         raise NoPermissionToWriteFile
     except FileNotFoundError:
         raise FilePathIsWrong
-
 
 
 def show_wallet(password, *args):
@@ -91,17 +93,14 @@ def __store_wallet(file_path, json_string):
     :param file_path: The path where the file will be saved. type: str
     :param json_string: Contents of key_store_file
     """
+    if os.path.isfile(file_path):
+        raise FileExistsError
 
-    try:
-        with open(file_path, 'wt') as f:
+    with open(file_path, 'wt') as f:
             f.write(json_string)
-    except FileExistsError:
-        print( "f{file_path} is exists.")
-    except PermissionError:
-        print("No permission to write f{file_path}.")
 
 
-def make_key_store_content(password):
+def __make_key_store_content(password):
     """Make a content of key_store.
 
     :param password: Password including alphabet character, number, and special character.

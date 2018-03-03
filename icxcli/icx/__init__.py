@@ -87,6 +87,11 @@ class FilePathIsWrong(Error):
     pass
 
 
+class FileExists(Error):
+    """Exception raised for "File path is wrong". """
+    pass
+
+
 class NoPermissionToWriteFile(Error):
     """Exception raised for "No permission to write file". """
     pass

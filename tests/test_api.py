@@ -13,6 +13,11 @@ class TestAPI(unittest.TestCase):
     """
     Test that execute the api about Wallet
     """
+    def setUp(self):
+        # Remove used file.
+        file_path = os.path.join(TEST_DIR, "test_keystore.txt")
+        if os.path.isfile(file_path):
+            os.remove(file_path)
 
     def test_create_wallet_case0(self):
         """Test for create_wallet function.
@@ -37,6 +42,9 @@ class TestAPI(unittest.TestCase):
             self.assertFalse(True)
         except icx.NoPermissionToWriteFile:
             self.assertFalse(True)
+
+        # Remove used file.
+        os.remove(file_path)
 
     def test_create_wallet_case1(self):
         """Test for create_wallet function.
@@ -87,6 +95,29 @@ class TestAPI(unittest.TestCase):
         # Then
         except icx.NoPermissionToWriteFile:
             self.assertTrue(True)
+
+    def test_create_wallet_case4(self):
+        """Test for create_wallet function.
+        Case when user tries to overwrite keystore file.
+        """
+        # Given
+        password = "Adas2][231"
+        wallet_name = "wname"
+        file_path = os.path.join(TEST_DIR, "test_keystore2.txt")
+
+        # When
+        wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
+
+        try:
+            wallet_info2 = icx.wallet.create_wallet(password, wallet_name, file_path)
+
+        # Then
+        except icx.FileExists: # Raise exception that file exists.
+            self.assertTrue(True)
+
+            # Remove used file.
+            os.remove(file_path)
+
 
     def test_created_store_key_file(self):
         """Check the file is saved in the correct format.

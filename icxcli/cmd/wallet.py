@@ -24,6 +24,7 @@ class ExitCode(Enum):
     SUCCEED = 0
     FILE_PATH_IS_WRONG = 122
     PASSWORD_IS_WRONG = 123
+    FILE_EXISTS = 124
     WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE = 127
     TRANSFER_FEE_IS_INVALID = 128
     TIMESTAMP_IS_NOT_CORRECT = 129
@@ -42,16 +43,23 @@ def create_wallet(password, wallet_name, file_path) -> int:
     """
     try:
         wallet_info = wallet.create_wallet(password, wallet_name, file_path)
+        print(f"Succeed to create wallet in {file_path}. ")
+        print(f"Wallet address : {wallet_info.address} ")
         return ExitCode.SUCCEED.value
     except wallet.PasswordIsNotAcceptable:
-        print("Password is not acceptable. ")
+        print("Fail: Password is not acceptable. ")
+        print("Password including alphabet character, number, and special character.")
         return ExitCode.PASSWORD_IS_WRONG.value
     except wallet.FilePathIsWrong:
-        print(f"Fail to open {file_path}. ")
+        print(f"Fail: Fail to open {file_path}. Change file path.")
         return ExitCode.FILE_PATH_IS_WRONG.value
     except wallet.NoPermissionToWriteFile:
-        print(f"No permission to write {file_path}. ")
+        print(f"Fail: No permission to write {file_path}. Change file path.")
         return ExitCode.NO_PERMISSION_TO_WRITE_FILE.value
+    except wallet.FileExists:
+        print(f"Fail: {file_path} exists. Change keystore file name.")
+        return ExitCode.FILE_EXISTS.value
+
 
 
 def show_wallet(password, *args) -> int:

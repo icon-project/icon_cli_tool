@@ -166,6 +166,9 @@ icli will return following error code and message.
 
 * Return 136: User does not have enough permission to write the file.
 
+* Return 124: Keystore file exists. 
+
+
 ### Show wallet information
 
 ```shell
