@@ -14,7 +14,7 @@
 	- [Run CLI](#run-cli)
 	- [Console instructions](#console-instructions)
 	- [Wallet operation](#wallet-operation)
-		- [Create wallet from file](#create-wallet-from-file)
+		- [Create wallet file](#create-wallet-file)
 		- [Show wallet information](#show-wallet-information)
 		- [List up all assets in current wallet](#list-up-all-assets-in-current-wallet)
 		- [Transfer the value to the specific address with the fee.](#transfer-the-value-to-the-specific-address-with-the-fee)
@@ -136,7 +136,7 @@ Wallet Commands:
 </table>
 
 
-### Create wallet from file
+### Create wallet file
 
 ```shell
 $ icli wallet create <wallet name> <file path> -p <password>
