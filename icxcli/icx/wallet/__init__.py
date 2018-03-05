@@ -23,13 +23,12 @@ from icxcli.icx import utils
 from icxcli.icx import IcxSigner
 
 
-def create_wallet(password, wallet_name, file_path):
+def create_wallet(password, file_path):
 
     """ Create a wallet file with given wallet name, password and file path.
 
     :param password:  Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
-    :param wallet_name: Name for wallet.
     :param file_path: File path for the keystore file of the wallet.
 
     :return: Instance of WalletInfo class.
