@@ -15,16 +15,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import hashlib
 from secp256k1 import PrivateKey
 
 
-class IcxSigner(object):
+class WalletInfo:
+    """Class to represent wallet information.
+    """
+    def __init__(self, wallet_data:str):
+        self.__wallet_data = json.loads(wallet_data)
+        self.__address = self.__wallet_data["address"]
 
-    def __init__(self, data=None, raw=None):
+    @property
+    def address(self):
+        return self.__address
+
+
+class IcxSigner(object):
+    """ ICX Signature utility class.
+    """
+
+    def __init__(self, data: object = None, raw: object = None) -> object:
         """
-        :param data(object): bytes or der
-        :param raw(bool): True(bytes) False(der)
+        :param data bytes or der (object):
+        :param raw: (bool) True(bytes) False(der)
         """
         self.__private_key = PrivateKey(data, raw)
 
@@ -52,3 +67,31 @@ class IcxSigner(object):
     @staticmethod
     def from_der(data):
         return IcxSigner(data, raw=False)
+
+
+""" Exceptions for ICX. """
+
+
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+
+class PasswordIsNotAcceptable(Error):
+    """Exception raised for "password is wrong"."""
+    pass
+
+
+class FilePathIsWrong(Error):
+    """Exception raised for "File path is wrong". """
+    pass
+
+
+class FileExists(Error):
+    """Exception raised for "File path is wrong". """
+    pass
+
+
+class NoPermissionToWriteFile(Error):
+    """Exception raised for "No permission to write file". """
+    pass

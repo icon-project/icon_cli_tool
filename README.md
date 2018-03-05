@@ -14,7 +14,7 @@
 	- [Run CLI](#run-cli)
 	- [Console instructions](#console-instructions)
 	- [Wallet operation](#wallet-operation)
-		- [Create wallet from file](#create-wallet-from-file)
+		- [Create wallet file](#create-wallet-file)
 		- [Show wallet information](#show-wallet-information)
 		- [List up all assets in current wallet](#list-up-all-assets-in-current-wallet)
 		- [Transfer the value to the specific address with the fee.](#transfer-the-value-to-the-specific-address-with-the-fee)
@@ -136,7 +136,7 @@ Wallet Commands:
 </table>
 
 
-### Create wallet from file
+### Create wallet file
 
 ```shell
 $ icli wallet create <wallet name> <file path> -p <password>
@@ -165,6 +165,9 @@ icli will return following error code and message.
 * Return 123: Password is wrong.
 
 * Return 136: User does not have enough permission to write the file.
+
+* Return 124: Keystore file exists. 
+
 
 ### Show wallet information
 
@@ -273,3 +276,22 @@ icli will return following error code and message.
 * Return 129: Timestamp is not correct. (Reset your computer’s time and date.)
 
 * Return 130: Wallet address is wrong.
+
+
+# Development
+
+## Run ```icli``` in development.
+
+```bash
+$ python -m icxcli $commands $args...
+``` 
+
+## Build package in egg package file. 
+```bash
+$ python setup.py bdist_egg 
+```
+
+## Test package.
+```bash
+$ python setup.py test
+```

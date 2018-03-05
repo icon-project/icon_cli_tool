@@ -17,40 +17,39 @@
 import json
 import os
 from eth_keyfile import create_keyfile_json
-from . import utils
-from . import IcxSigner
+from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToWriteFile, FileExists
+from icxcli.icx import WalletInfo
+from icxcli.icx import utils
+from icxcli.icx import IcxSigner
 
 
-def create_wallet(password, wallet_name, file_path):
+def create_wallet(password, file_path):
 
     """ Create a wallet file with given wallet name, password and file path.
 
-    :param password(str):  Password including alphabet character, number, and special character.
+    :param password:  Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
-    :param wallet_name(str): Name for wallet.
-    :param file_path(str): File path for the keystore file of the wallet.
+    :param file_path: File path for the keystore file of the wallet.
 
-    :return:
-    0: When create store_key_file completely.
-    122: When file_path does not exists.
-    123: When password is not correct format.
+    :return: Instance of WalletInfo class.
     """
-    return_code = 0
 
-    if os.path.isdir(file_path) is False:
-        return 122
-    if os.access(file_path, os.W_OK) is False:
-        return 136
-    if utils.validate_password(password) is False:
-        return 123
+    if not utils.validate_password(password):
+        raise PasswordIsNotAcceptable
 
-    key_store_contents = make_key_store_content(password)
-
+    key_store_contents = __make_key_store_content(password)
     json_string = json.dumps(key_store_contents)
 
-    store_wallet(file_path, json_string)
-
-    return return_code
+    try:
+        __store_wallet(file_path, json_string)
+        w = WalletInfo(json_string)
+        return w
+    except FileExistsError:
+        raise FileExists
+    except PermissionError:
+        raise NoPermissionToWriteFile
+    except FileNotFoundError:
+        raise FilePathIsWrong
 
 
 def show_wallet(password, *args):
@@ -75,12 +74,12 @@ def show_asset_list(password, *args):
     """
 
 
-def transfer_value_with_the_fee(*commands, password=None, fee=None, decimal_point=None):
+def transfer_value_with_the_fee(commands, password=None, fee=None, decimal_point=None):
 
     """ Transfer the value to the specific address with the fee.
 
     :param commands:
-    :param password(str): Password including alphabet character, number, and special character.
+    :param password: Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :param fee: Transaction fee.
     :param decimal_point: A user can change the decimal point to express all numbers including fee and amount.
@@ -88,20 +87,22 @@ def transfer_value_with_the_fee(*commands, password=None, fee=None, decimal_poin
     """
 
 
-def store_wallet(file_path, json_string):
+def __store_wallet(file_path, json_string):
     """ Store wallet information file in JSON format.
-    :param file_path(str): The path where the file will be saved. type: str
-    :param json_string(str): Contents of key_store_file
+    :param file_path: The path where the file will be saved. type: str
+    :param json_string: Contents of key_store_file
     """
-    full_path = file_path + "file.txt"
-    with open(full_path, 'wt') as fout:
-        fout.write(json_string)
+    if os.path.isfile(file_path):
+        raise FileExistsError
+
+    with open(file_path, 'wt') as f:
+            f.write(json_string)
 
 
-def make_key_store_content(password):
+def __make_key_store_content(password):
     """Make a content of key_store.
 
-    :param password(str): Password including alphabet character, number, and special character.
+    :param password: Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :return:
     key_store_content(dict)
