@@ -1,0 +1,6 @@
+{
+     "networkid":{
+           "mainnet":"https://wallet.icon.foundation/api/",
+           "testnet":"https://testwallet.icon.foundation/api/"
+      }
+}
