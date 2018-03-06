@@ -16,11 +16,15 @@
 # limitations under the License.
 import json
 import os
-from eth_keyfile import create_keyfile_json
+from eth_keyfile import create_keyfile_json, extract_key_from_keyfile
+from urllib3 import request
+
 from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToWriteFile, FileExists
 from icxcli.icx import WalletInfo
 from icxcli.icx import utils
 from icxcli.icx import IcxSigner
+from icxcli.icx.utils import get_address_by_privkey, icx_to_wei, get_timestamp_us, get_tx_hash, sign, \
+    create_jsonrpc_request_content
 
 
 def create_wallet(password, file_path):
@@ -74,17 +78,42 @@ def show_asset_list(password, *args):
     """
 
 
-def transfer_value_with_the_fee(commands, password=None, fee=None, decimal_point=None):
-
+def transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, file_path):
     """ Transfer the value to the specific address with the fee.
 
-    :param commands:
     :param password: Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :param fee: Transaction fee.
     :param decimal_point: A user can change the decimal point to express all numbers including fee and amount.
+    :param to: Address of wallet to receive the asset.
+    :param amount: Amount of money. *The decimal point number is valid up to tenth power of 18. *
+    :param file_path: File path for the keystore file of the wallet.
     :return:
     """
+    #TODO: Handle FileNotFoundError, ValueError: incorrect password
+    url = f'{url}v2'
+    private_key_bytes = key_from_key_store(file_path, bytes(password, 'utf-8'))
+    user_address = get_address_by_privkey(private_key_bytes)
+    method = 'icx_sendTransaction'
+    amount = float(amount)
+    params = {
+        'from': user_address,
+        'to': to,
+        'value': hex(icx_to_wei(amount)),
+        'fee': hex(icx_to_wei(fee)),
+        'timestamp': str(get_timestamp_us())
+    }
+    # The type of tx_hash is bytes.
+    tx_hash_bytes = get_tx_hash(method, params)
+    params['tx_hash'] = tx_hash_bytes.hex()
+
+    # make a recoverable signature of tx_hash using privkey.
+    signature_bytes = sign(private_key_bytes, tx_hash_bytes)
+    params['signature'] = signature_bytes.decode()
+    payload = create_jsonrpc_request_content(0, method, params)
+    print(payload)
+    # response = request.post(url, json=payload, verify=False)
+
 
 
 def __store_wallet(file_path, json_string):
@@ -114,3 +143,13 @@ def __make_key_store_content(password):
     key_store_contents['address'] = icx_address
     key_store_contents['coinType'] = 'icx'
     return key_store_contents
+
+
+def key_from_key_store(file_path, password):
+    """
+
+    :param file_path:
+    :return:
+    """
+    private_key = extract_key_from_keyfile(file_path, password)
+    return private_key

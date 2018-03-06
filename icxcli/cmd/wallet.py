@@ -86,7 +86,7 @@ def show_asset_list(password, file_path) -> int:
     pass
 
 
-def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path) -> int:
+def transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, file_path) -> int:
     """ Transfer the value to the specific address with the fee.
 
     :param password: Password including alphabet character, number, and special character.
@@ -99,8 +99,10 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     :param file_path: File path for the keystore file of the wallet. type(str)
     :return: Predefined exit code
     """
-    print(password, fee, decimal_point, to, amount, file_path)
-    pass
+    try:
+        transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, file_path)
+    except:
+        print("exception")
 
 
 def store_wallet(file_path, json_string) -> int:

@@ -17,7 +17,7 @@
 
 import json
 import hashlib
-from secp256k1 import PrivateKey
+from secp256k1 import PrivateKey, PublicKey, FLAG_VERIFY
 
 
 class WalletInfo:
@@ -60,6 +60,30 @@ class IcxSigner(object):
         public_key_bytes = self.public_key_bytes
         return hashlib.sha3_256(public_key_bytes[1:]).digest()[-20:]
 
+    def sign(self, msg_hash):
+        """Make a signature using the hash value of msg.
+
+        :param msg_hash: Result of sha3_256(msg) type(bytes)
+        :return:
+        Signature. type(bytes)
+        """
+        private_key_object = self.__private_key
+        signature = private_key_object.ecdsa_sign(msg_hash, raw=True)
+        return private_key_object.ecdsa_serialize(signature)
+
+    def sign_recoverable(self, msg_hash):
+        """Make a recoverable signature using message hash data.
+        We can extract public key from recoverable signature.
+
+        :param msg_hash: Hash data of message. type(bytes)
+        :return:
+        type(tuple)
+        type(bytes): 65 bytes data , type(int): recovery id
+        """
+        private_key_object = self.__private_key
+        recoverable_signature = private_key_object.ecdsa_sign_recoverable(msg_hash, raw=True)
+        return private_key_object.ecdsa_recoverable_serialize(recoverable_signature)
+
     @staticmethod
     def from_bytes(data):
         return IcxSigner(data, raw=True)
@@ -67,6 +91,45 @@ class IcxSigner(object):
     @staticmethod
     def from_der(data):
         return IcxSigner(data, raw=False)
+
+
+class SignVerifier(object):
+    """Class to verification signature.
+    """
+
+    def __init__(self, data, raw=True):
+        """Refer to https://github.com/ludbb/secp256k1-py api documents.
+
+        :param data: 65 bytes data which PublicKey.serialize() returns. type(bytes).
+        :param raw: if False, it is assumed that pubkey has gone through \
+            PublicKey.deserialize already, \
+            otherwise it must be specified as bytes.
+        """
+        self.__pubic_key = PublicKey(data, raw, FLAG_VERIFY)
+
+    @property
+    def public_key(self):
+        return self.__pubic_key
+
+    def get_address(self):
+        """
+
+        :return:
+        """
+        public_key_bytes = self.public_key.serialize(compressed=False)
+        return hashlib.sha3_256(public_key_bytes[1:]).digest()[-20:]
+
+    def verify(self, msg_hash, signature_bytes):
+        """
+
+        :param msg_hash:
+        :param signature_bytes:
+        :return:
+        """
+        public_key = self.public_key
+
+        signature = public_key.ecdsa_deserialize(signature_bytes)
+        return public_key.ecdsa_verify(msg_hash, signature, True)
 
 
 """ Exceptions for ICX. """

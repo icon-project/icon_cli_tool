@@ -14,8 +14,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import base64
+import hashlib
 import re
+
 import eth_keyfile
+import time
+
+from icxcli.icx import IcxSigner
 
 
 def validate_password(password) -> bool:
@@ -32,6 +38,28 @@ def validate_password(password) -> bool:
 
 def hex_to_bytes(value):
     return bytes.fromhex(value)
+
+
+def bytes_to_hex(value):
+    return value.hex()
+
+
+def get_timestamp_us():
+    """Get epoch time in us.
+    """
+    return int(time.time() * 10 ** 6)
+
+
+def icx_to_wei(icx):
+    """Convert amount in icx unit to wei unit.
+
+    Args:
+        icx(float): float value in icx unit
+
+    Returns:
+        int: int value in wei unit
+    """
+    return int(icx * 10 ** 18)
 
 
 def validate_key_store_file(key_store_file_path: object) -> bool:
@@ -59,3 +87,130 @@ def has_keys(data, key_array):
         if key in data is False:
             return False
     return True
+
+
+def sha3_256(data):
+    """Get hash value using sha3_256 hash function
+
+    Args:
+        data(bytes): data to hash
+
+    Returns:
+        bytes: 256bit hash value (32 bytes)
+    """
+    return hashlib.sha3_256(data).digest()
+
+
+def get_address_by_privkey(privkey_bytes):
+    """Get address by Private key.
+
+    Args:
+        privkey(str): hex string without '0x'
+    """
+    account = IcxSigner.from_bytes(privkey_bytes)
+    return f'hx{bytes_to_hex(account.address)}'
+
+
+def get_tx_hash(method, params):
+    """Create tx_hash from params object.
+
+    Args:
+        params(dict): the value of 'params' key in jsonrpc
+
+    Returns:
+        bytes: sha3_256 hash value
+    """
+    tx_phrase = get_tx_phrase(method, params)
+    return sha3_256(tx_phrase.encode())
+
+
+def get_tx_phrase(method, params):
+    """Create tx phrase from method and params.
+    tx_phrase means input text to create tx_hash.
+
+    Args:
+        params(dict): the value of 'params' key in jsonrpc
+
+    Returns:
+        str: sha3_256 hash format without '0x' prefix
+    """
+    keys = [key for key in params]
+
+    key_count = len(keys)
+    if key_count == 0:
+        return method
+
+    phrase = get_params_phrase(params)
+
+    return f'{method}.{phrase}'
+
+
+def get_params_phrase(params):
+    """Create params phrase recursively
+    """
+    keys = [key for key in params]
+    keys.sort()
+    key_count = len(keys)
+    if key_count == 0:
+        return ""
+    phrase = ""
+
+    if isinstance(params[keys[0]], dict) is not True:
+        phrase += f'{keys[0]}.{params[keys[0]]}'
+    elif bool(params[keys[0]]) is not True:
+        phrase += f'{keys[0]}'
+    else:
+        phrase += f'{keys[0]}.{get_params_phrase(params[keys[0]])}'
+
+    for i in range(1, key_count):
+        key = keys[i]
+
+        if isinstance(params[key], dict) is not True:
+            phrase += f'.{key}.{params[key]}'
+        elif bool(params[key]) is not True:
+            phrase += f'.{key}'
+        else:
+            phrase += f'.{key}.{get_params_phrase(params[key])}'
+
+    return phrase
+
+
+def sign_recoverable(private_key_bytes, tx_hash_bytes):
+    """
+    Args:
+        tx_hash(bytes): 32byte tx_hash data
+
+    Returns:
+        bytes: signature_bytes + recovery_id(1)
+    """
+    signer = IcxSigner.from_bytes(private_key_bytes)
+    signature_bytes, recovery_id = signer.sign_recoverable(tx_hash_bytes)
+
+    # append recover_id(1 byte) to signature_bytes.
+    return bytes(bytearray(signature_bytes) + recovery_id.to_bytes(1, 'big'))
+
+
+def sign(private_key_bytes, tx_hash_bytes):
+    """
+    Args:
+        private_key_bytes(bytes)
+        tx_hash_bytes(bytes)
+
+    Returns:
+        str: base64-encoded string of recoverable signature data
+    """
+    recoverable_sig_bytes = sign_recoverable(private_key_bytes, tx_hash_bytes)
+    return base64.b64encode(recoverable_sig_bytes)
+
+
+def create_jsonrpc_request_content(_id, method, params):
+    content = {
+        'jsonrpc': '2.0',
+        'method': method,
+        'id': _id
+    }
+
+    if params is not None:
+        content['params'] = params
+
+    return content
