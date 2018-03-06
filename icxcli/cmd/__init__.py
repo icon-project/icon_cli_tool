@@ -14,11 +14,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import json
 import sys
 import argparse
+import os
 
 from icxcli.cmd import wallet
+from icxcli.icx import NonExistKey
+from icxcli.cmd.wallet import ExitCode
 from icxcli import __version__
 
 
@@ -52,14 +55,16 @@ def parse_args():
 
     parser = argparse.ArgumentParser(prog='icli.py', usage='''
         Normal commands:
-          version
-          help
+            version
+            help
 
         Wallet Commands:
-          wallet create <file path> -p <password>
-          wallet show <file path> -p <password>
-          asset list <file path> -p <password>
-          transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>
+            wallet create <file path> -p <password>  | --networkid <testnet>
+            wallet show <file path> -p <password>   | --networkid <testnet>
+            asset list <file path> -p <password>        | --networkid <testnet>
+            transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>  | --n <network id>
+
+        IF YOU MISS --networkid, icli WILL USE MAINNET.
 
           ''')
 
@@ -69,9 +74,9 @@ def parse_args():
     parser.add_argument('-f', dest='fee'
                         , help='transaction fee')
     parser.add_argument('-d', dest='decimal_point'
-                        , help='decimal point')
+                        , help='decimal point', default=18)
     parser.add_argument('-n', dest='network_id'
-                        , help='which network', default='main_net_network')
+                        , help='which network', default='mainnet')
 
     args = parser.parse_args()
 
@@ -88,28 +93,22 @@ def call_wallet_method(command, parser):
     """
 
     args = parser.parse_args()
+    try:
+        url = get_selected_url(args.network_id)
+    except NonExistKey:
+        return ExitCode.DICTIONARY_HAS_NOT_KEY.value
+
+    if len(args.command) > 1 and args.password is None:
+        input_password = input("You missed your password! input your password : ")
+
     if command == 'wallet create' and len(args.command) == 3:
-        if args.password is None:
-            input_password = input("You missed your password! input your password : ")
-            return wallet.create_wallet(input_password, args.command[2])
         return wallet.create_wallet(args.password, args.command[2])
     elif command == 'wallet show' and len(args.command) == 3:
-        if args.password is None:
-            input_password = input("You missed your password! input your password : ")
-            return wallet.show_wallet(input_password, args.command[2])
         return wallet.show_wallet(args.password, args.command[2])
     elif command == 'asset list' and len(args.command) == 3:
-        if args.password is None:
-            input_password = input("You missed your password! input your password : ")
-            return wallet.show_asset_list(input_password, args.command[2])
         return wallet.show_asset_list(args.password, args.command[2])
     elif command.split(' ')[0] == 'transfer' and len(args.command) == 4 \
             and check_required_argument_in_args(fee=args.fee, decimal_point=args.decimal_point):
-        if args.password is None:
-            input_password = input("You missed your password! input your password : ")
-            return wallet.transfer_value_with_the_fee(
-                input_password, args.fee, args.decimal_point, to=args.command[1],
-                amount=args.command[2], file_path=args.command[3])
         return wallet.transfer_value_with_the_fee(
             args.password, args.fee, args.decimal_point, to=args.command[1],
             amount=args.command[2], file_path=args.command[3])
@@ -118,3 +117,16 @@ def call_wallet_method(command, parser):
     else:
         parser.print_help()
         return 0
+
+
+def get_selected_url(network_id):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    with open(f"{current_dir}/network_conf.json", 'r') as f:
+        network_config_json_str = f.read()
+    network_config_json = json.loads(network_config_json_str)
+
+    try:
+        return network_config_json["networkid"][network_id]
+    except KeyError:
+        print(f"{network_id} is not valid network id")
+        raise NonExistKey
