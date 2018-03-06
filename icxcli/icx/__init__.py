@@ -95,3 +95,8 @@ class FileExists(Error):
 class NoPermissionToWriteFile(Error):
     """Exception raised for "No permission to write file". """
     pass
+
+
+class NonExistKey(Error):
+    """Exception raised for "Dictionary has not key." """
+    pass
