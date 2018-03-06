@@ -25,12 +25,11 @@ class TestAPI(unittest.TestCase):
         """
         # Given
         password="w3fasd"
-        wallet_name="Avmasd"
         file_path=os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
         try:
-            wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
+            wallet_info = icx.wallet.create_wallet(password, file_path)
 
             # Then
             prefix = wallet_info.address[0:2]
@@ -57,7 +56,7 @@ class TestAPI(unittest.TestCase):
 
         # When
         try:
-            wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
+            wallet_info = icx.wallet.create_wallet(password, file_path)
 
         # Then
         except icx.FilePathIsWrong:
@@ -74,7 +73,7 @@ class TestAPI(unittest.TestCase):
 
         # When
         try:
-            wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
+            wallet_info = icx.wallet.create_wallet(password, file_path)
 
         # Then
         except icx.PasswordIsNotAcceptable:
@@ -91,7 +90,7 @@ class TestAPI(unittest.TestCase):
 
         # When
         try:
-            wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
+            wallet_info = icx.wallet.create_wallet(password, file_path)
         # Then
         except icx.NoPermissionToWriteFile:
             self.assertTrue(True)
@@ -106,10 +105,10 @@ class TestAPI(unittest.TestCase):
         file_path = os.path.join(TEST_DIR, "test_keystore2.txt")
 
         # When
-        wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
+        wallet_info = icx.wallet.create_wallet(password, file_path)
 
         try:
-            wallet_info2 = icx.wallet.create_wallet(password, wallet_name, file_path)
+            wallet_info2 = icx.wallet.create_wallet(password, file_path)
 
         # Then
         except icx.FileExists: # Raise exception that file exists.
@@ -129,7 +128,7 @@ class TestAPI(unittest.TestCase):
 
         # When
         try:
-            wallet_info = icx.wallet.create_wallet(password, wallet_name, file_path)
+            wallet_info = icx.wallet.create_wallet(password, file_path)
 
         # Then
             self.assertTrue(utils.validate_key_store_file(file_path))
