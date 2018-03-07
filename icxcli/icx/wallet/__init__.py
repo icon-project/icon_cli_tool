@@ -16,10 +16,12 @@
 # limitations under the License.
 import json
 import os
-from eth_keyfile import create_keyfile_json, extract_key_from_keyfile
-from urllib3 import request
 
-from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToWriteFile, FileExists
+import requests
+from eth_keyfile import create_keyfile_json, extract_key_from_keyfile
+
+from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToWriteFile, FileExists, \
+    PasswordIsIncorrect, WalletAddressIsInvalid
 from icxcli.icx import WalletInfo
 from icxcli.icx import utils
 from icxcli.icx import IcxSigner
@@ -88,14 +90,33 @@ def transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, f
     :param to: Address of wallet to receive the asset.
     :param amount: Amount of money. *The decimal point number is valid up to tenth power of 18. *
     :param file_path: File path for the keystore file of the wallet.
+    :param url:
     :return:
     """
-    #TODO: Handle FileNotFoundError, ValueError: incorrect password
-    url = f'{url}v2'
-    private_key_bytes = key_from_key_store(file_path, bytes(password, 'utf-8'))
-    user_address = get_address_by_privkey(private_key_bytes)
-    method = 'icx_sendTransaction'
-    amount = float(amount)
+    try:
+        url = f'{url}v2'
+        private_key_bytes = key_from_key_store(file_path, bytes(password, 'utf-8'))
+        user_address = get_address_by_privkey(private_key_bytes)
+        method = 'icx_sendTransaction'
+        params = make_params(user_address, to, amount, fee, method, private_key_bytes)
+
+        payload = create_jsonrpc_request_content(0, method, params)
+        response = requests.post(url, json=payload, verify=False)
+
+    except FileNotFoundError:
+        print("File does not exists.")
+        raise FilePathIsWrong
+    except IsADirectoryError:
+        print(f"{file_path} is a directory.")
+        raise FilePathIsWrong
+    except ValueError:
+        print("Incorrect password.")
+        raise PasswordIsIncorrect
+    except WalletAddressIsInvalid:
+        print("Wallet address is invalid.")
+
+
+def make_params(user_address, to, amount, fee, method, private_key_bytes):
     params = {
         'from': user_address,
         'to': to,
@@ -103,17 +124,12 @@ def transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, f
         'fee': hex(icx_to_wei(fee)),
         'timestamp': str(get_timestamp_us())
     }
-    # The type of tx_hash is bytes.
     tx_hash_bytes = get_tx_hash(method, params)
-    params['tx_hash'] = tx_hash_bytes.hex()
-
-    # make a recoverable signature of tx_hash using privkey.
     signature_bytes = sign(private_key_bytes, tx_hash_bytes)
+    params['tx_hash'] = tx_hash_bytes.hex()
     params['signature'] = signature_bytes.decode()
-    payload = create_jsonrpc_request_content(0, method, params)
-    print(payload)
-    # response = request.post(url, json=payload, verify=False)
 
+    return params
 
 
 def __store_wallet(file_path, json_string):

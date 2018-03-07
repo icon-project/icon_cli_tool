@@ -16,7 +16,7 @@
 # limitations under the License.
 
 from enum import Enum
-from icxcli.icx import wallet
+from icxcli.icx import wallet, FilePathIsWrong, PasswordIsIncorrect
 
 
 class ExitCode(Enum):
@@ -101,8 +101,10 @@ def transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, f
     """
     try:
         transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, file_path)
-    except:
-        print("exception")
+    except FilePathIsWrong:
+        return ExitCode.FILE_PATH_IS_WRONG.value
+    except PasswordIsIncorrect:
+        return ExitCode.PASSWORD_IS_WRONG.value
 
 
 def store_wallet(file_path, json_string) -> int:

@@ -21,7 +21,7 @@ import re
 import eth_keyfile
 import time
 
-from icxcli.icx import IcxSigner
+from icxcli.icx import IcxSigner, WalletAddressIsInvalid
 
 
 def validate_password(password) -> bool:
@@ -60,6 +60,16 @@ def icx_to_wei(icx):
         int: int value in wei unit
     """
     return int(icx * 10 ** 18)
+
+
+def validate_address(address) -> bool:
+    try:
+        int(address, 16)
+        if len(address) == 42:
+            return True
+        raise WalletAddressIsInvalid
+    except ValueError:
+        raise WalletAddressIsInvalid
 
 
 def validate_key_store_file(key_store_file_path: object) -> bool:
@@ -116,6 +126,7 @@ def get_tx_hash(method, params):
 
     Args:
         params(dict): the value of 'params' key in jsonrpc
+        method(str): Method name.
 
     Returns:
         bytes: sha3_256 hash value
@@ -129,8 +140,8 @@ def get_tx_phrase(method, params):
     tx_phrase means input text to create tx_hash.
 
     Args:
-        params(dict): the value of 'params' key in jsonrpc
-
+        params(dict): The value of 'params' key in jsonrpc
+        method(str): Method name.
     Returns:
         str: sha3_256 hash format without '0x' prefix
     """
@@ -178,7 +189,8 @@ def get_params_phrase(params):
 def sign_recoverable(private_key_bytes, tx_hash_bytes):
     """
     Args:
-        tx_hash(bytes): 32byte tx_hash data
+        tx_hash_bytes: 32byte tx_hash data. type(bytes)
+        private_key_bytes:
 
     Returns:
         bytes: signature_bytes + recovery_id(1)
