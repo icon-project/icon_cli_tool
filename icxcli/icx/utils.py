@@ -80,25 +80,25 @@ def post(url, payload):
 
 
 def change_hex_balance_to_decimal_balance(hex_balance, place=18):
-    """ Change hex balance to decimal result balance
+    """ Change hex balance to decimal decimal icx balance
 
     :param: hex_balance
-    :return: result: string decimal balance
+    :return: result_decimal_icx: string decimal icx
     """
 
     dec_balance = int(hex_balance, 16)
-    strValue = str(dec_balance)
+    str_dec_balance = str(dec_balance)
     if dec_balance >= 10 ** place:
-        strInt = strValue[:len(strValue) - place]
-        strDecimal = strValue[len(strValue) - place:]
-        result = f'{strInt}.{strDecimal}'
-        return result
+        str_int = str_dec_balance[:len(str_dec_balance) - place]
+        str_decimal = str_dec_balance[len(str_dec_balance) - place:]
+        result_decimal_icx = f'{str_int}.{str_decimal}'
+        return result_decimal_icx
 
     else:
         zero = "0."
-        valPoint = len(strValue)  # valPoint : 몇자릿수인지 계산
-        pointDifference = place - valPoint
-        strZero = "0" * pointDifference
-        result = f'{zero}{strZero}{dec_balance}'
-        return result
+        val_point = len(str_dec_balance)  # val_point : 몇자릿수인지 계산
+        point_difference = place - val_point
+        str_zero = "0" * point_difference
+        result_decimal_icx = f'{zero}{str_zero}{dec_balance}'
+        return result_decimal_icx
 

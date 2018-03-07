@@ -1,7 +1,8 @@
 import os
 import unittest
 from icxcli import icx
-from icxcli.icx import wallet
+from icxcli.icx import wallet, utils
+
 import requests
 requests.packages.urllib3.disable_warnings()
 
@@ -17,7 +18,7 @@ class TestAPI(unittest.TestCase):
 
     def test_show_asset_list_case0(self):
         """Test for show_asset_list function.
-         Case when show asset list successfully.
+         Case when returning the wallet address successfully.
 
         """
 
@@ -42,6 +43,7 @@ class TestAPI(unittest.TestCase):
     def test_show_asset_list_case1(self):
         """Test for show_asset_list function.
         Case when user enters a directory that does not exist.
+
         """
 
         # Given
@@ -59,6 +61,7 @@ class TestAPI(unittest.TestCase):
     def test_show_asset_list_case2(self):
         """Test for show_asset_list function.
         Case when user enters a invalid password.
+
         """
 
         # Given
@@ -72,6 +75,57 @@ class TestAPI(unittest.TestCase):
         # Then
         except icx.PasswordIsNotAcceptable:
             self.assertTrue(True)
+
+    def test_change_hex_balance_to_decimal_balance_case1(self):
+        """Test for change_hex_balance_to_decimal_balance function.
+        Case when returning the right balance.
+
+        """
+
+        # Given
+        hex_balance = '0x10e8205bae65f770000'
+        dec_balance = '4989.990000000000000000'
+
+        # When
+        try:
+            result_dec_balance = utils.change_hex_balance_to_decimal_balance(hex_balance)
+            self.assertEqual(result_dec_balance, dec_balance)
+        finally:
+            pass
+
+    def test_change_hex_balance_to_decimal_balance_case2(self):
+        """Test for change_hex_balance_to_decimal_balance function.
+        Case when returning the wrong balance.
+
+        """
+
+        # Given
+        hex_balance = '0x10e8205bae65f770000'
+        dec_balance = '4989.9900000000000001235'
+
+        # When
+        try:
+            result_dec_balance = utils.change_hex_balance_to_decimal_balance(hex_balance)
+            self.assertNotEqual(result_dec_balance, dec_balance)
+        finally:
+            pass
+
+    def test_show_asset_list_case3(self):
+        """Test for show_asset_list function.
+         Case when show asset list's balance successfully.
+
+        """
+
+        # Given
+        password = "w3fasd"
+        file_path = os.path.join(TEST_DIR, "test_keystore.txt")
+
+        # When
+        try:
+            address, balance = icx.wallet.show_asset_list(password, file_path, url)
+            self.assertTrue(type(balance) == str)
+        finally:
+            pass
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ class TestAPI(unittest.TestCase):
 
     def test_show_wallet_case0(self):
         """Test for show_wallet function.
-         Case when show wallet successfully.
+         Case when returning the wallet address successfully.
 
         """
 
@@ -70,6 +70,40 @@ class TestAPI(unittest.TestCase):
         # Then
         except icx.PasswordIsNotAcceptable:
             self.assertTrue(True)
+
+    def test_show_wallet_case3(self):
+        """Test for show_wallet function.
+         Case when returning the balance successfully.
+
+        """
+
+        # Given
+        password = "w3fasd"
+        file_path = os.path.join(TEST_DIR, "test_keystore.txt")
+
+        # When
+        try:
+            address, balance, wallet_info = icx.wallet.show_wallet(password, file_path, url)
+            self.assertTrue(type(balance) == str)
+        finally:
+            pass
+
+    def test_show_wallet_case4(self):
+        """Test for show_wallet function.
+         Case when returning the wallet info in keystore file successfully.
+
+        """
+
+        # Given
+        password = "w3fasd"
+        file_path = os.path.join(TEST_DIR, "test_keystore.txt")
+
+        # When
+        try:
+            address, balance, wallet_info = icx.wallet.show_wallet(password, file_path, url)
+            self.assertTrue(type(wallet_info) == dict)
+        finally:
+            pass
 
 
 if __name__ == "__main__":
