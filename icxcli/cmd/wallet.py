@@ -63,27 +63,56 @@ def create_wallet(password, file_path) -> int:
         return ExitCode.FILE_EXISTS.value
 
 
-def show_wallet(password, file_path) -> int:
-    """ Shows the all information of wallet
+def show_wallet(password, file_path, url) -> int:
+    """ Show the all information of wallet. Show the balance and the information in keystore file.
 
     :param password:  Password including alphabet character, number, and special character. type(str)
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :param file_path: File path for the keystore file of the wallet. type(str)
+    :param url: api url. type(str)
     :return: Predefined exit code
     """
-    pass
+
+    try:
+        wallet_address, balance, wallet_info = wallet.show_wallet(password, file_path, url)
+        print(f"Succeed to show wallet in {file_path}. ")
+        print(f"Wallet address : {wallet_address} ")
+        print(f"Wallet balance : {balance} ")
+        print(f"Wallet keystore_file_info : {wallet_info} ")
+        return ExitCode.SUCCEED.value
+    except wallet.PasswordIsNotAcceptable:
+        print("Fail: Password is not acceptable. ")
+        print("Password including alphabet character, number, and special character.")
+        return ExitCode.PASSWORD_IS_WRONG.value
+    except wallet.FilePathIsWrong:
+        print(f"Fail: Fail to open {file_path}. Change file path.")
+        return ExitCode.FILE_PATH_IS_WRONG.value
 
 
-def show_asset_list(password, file_path) -> int:
-    """ Enumerate the list of all the assets of the wallet.
+def show_asset_list(password, file_path, url) -> int:
+    """ Enumerate the list of all the assets of the wallet. Show the balance.
 
     :param password: Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     type(str)
     :param file_path: File path for the keystore file of the wallet. type(str)
+    :param url: api url. type(str)
     :return: Predefined exit code
     """
-    pass
+
+    try:
+        wallet_address, balance = wallet.show_asset_list(password, file_path, url)
+        print(f"Succeed to show asset list in {file_path}. ")
+        print(f"Wallet address : {wallet_address} ")
+        print(f"Wallet balance : {balance} ")
+        return ExitCode.SUCCEED.value
+    except wallet.PasswordIsNotAcceptable:
+        print("Fail: Password is not acceptable. ")
+        print("Password including alphabet character, number, and special character.")
+        return ExitCode.PASSWORD_IS_WRONG.value
+    except wallet.FilePathIsWrong:
+        print(f"Fail: Fail to open {file_path}. Change file path.")
+        return ExitCode.FILE_PATH_IS_WRONG.value
 
 
 def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path) -> int:

@@ -100,3 +100,13 @@ class NoPermissionToWriteFile(Error):
 class NonExistKey(Error):
     """Exception raised for "Dictionary has not key." """
     pass
+
+
+class WalletAddressIsWrong(Error):
+    """Exception raised for "Wallet address is wrong." """
+    pass
+
+
+class WalletAddressIsWrong(Error):
+    """Exception raised for "Wallet address is wrong." """
+    pass

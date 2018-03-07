@@ -197,8 +197,6 @@ Return 0 : Print out wallet information including asset list.
 
 * Return 123: Password is wrong.
 
-* Return 130: Wallet address is wrong.
-
 ### List up all assets in current wallet
 
 ```
@@ -226,8 +224,6 @@ $ icli asset list <file path> -p <password>
 * Return 122: File path is wrong.
 
 * Return 123: Password is wrong.
-
-* Return 130: Wallet address is wrong.
 
 ### Transfer the value to the specific address with the fee.
 

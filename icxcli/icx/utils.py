@@ -16,6 +16,7 @@
 # limitations under the License.
 import re
 import eth_keyfile
+import requests
 
 
 def validate_password(password) -> bool:
@@ -59,3 +60,44 @@ def has_keys(data, key_array):
         if key in data is False:
             return False
     return True
+
+
+def create_jsonrpc_request_content(_id, method, params):
+    content = {
+        'jsonrpc': '2.0',
+        'method': method,
+        'id': _id
+    }
+
+    if params is not None:
+        content['params'] = params
+
+    return content
+
+
+def post(url, payload):
+    return requests.post(url, json=payload, verify=False)
+
+
+def get_string_decimal(value, place):
+    """value를 10의 place 제곱으로 나눈 값을 string으로 변환하여 반환
+
+    Args:
+        value(int)
+        place : 10의 몇 제곱을 나눌지 입력받음
+    """
+    strValue = str(value)
+    if value >= 10 ** place:
+        strInt = strValue[:len(strValue) - place]
+        strDecimal = strValue[len(strValue) - place:]
+        result = f'{strInt}.{strDecimal}'
+        return result
+
+    else:
+        zero = "0."
+        valPoint = len(strValue)  # valPoint : 몇자릿수인지 계산
+        pointDifference = place - valPoint
+        strZero = "0" * pointDifference
+        result = f'{zero}{strZero}{value}'
+        return result
+
