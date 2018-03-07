@@ -79,15 +79,16 @@ def post(url, payload):
     return requests.post(url, json=payload, verify=False)
 
 
-def get_string_decimal(value, place):
-    """value를 10의 place 제곱으로 나눈 값을 string으로 변환하여 반환
+def change_hex_balance_to_decimal_balance(hex_balance, place=18):
+    """ Change hex balance to decimal result balance
 
-    Args:
-        value(int)
-        place : 10의 몇 제곱을 나눌지 입력받음
+    :param: hex_balance
+    :return: result: string decimal balance
     """
-    strValue = str(value)
-    if value >= 10 ** place:
+
+    dec_balance = int(hex_balance, 16)
+    strValue = str(dec_balance)
+    if dec_balance >= 10 ** place:
         strInt = strValue[:len(strValue) - place]
         strDecimal = strValue[len(strValue) - place:]
         result = f'{strInt}.{strDecimal}'
@@ -98,6 +99,6 @@ def get_string_decimal(value, place):
         valPoint = len(strValue)  # valPoint : 몇자릿수인지 계산
         pointDifference = place - valPoint
         strZero = "0" * pointDifference
-        result = f'{zero}{strZero}{value}'
+        result = f'{zero}{strZero}{dec_balance}'
         return result
 

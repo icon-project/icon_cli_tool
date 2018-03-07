@@ -24,7 +24,7 @@ from icxcli.icx import utils
 from icxcli.icx import IcxSigner
 from icxcli.icx.utils import create_jsonrpc_request_content
 from icxcli.icx.utils import post
-from icxcli.icx.utils import get_string_decimal
+from icxcli.icx.utils import change_hex_balance_to_decimal_balance
 import requests
 requests.packages.urllib3.disable_warnings()
 
@@ -162,10 +162,10 @@ def __get_balance(address, url):
     payload = create_jsonrpc_request_content(0, method, params)
     response = post(url, payload)
     content = response.json()
-    wei = int(content['result']['response'], 16)
-    icx = get_string_decimal(wei, 18)
+    hex_balance = content['result']['response']
+    dec_balance = change_hex_balance_to_decimal_balance(hex_balance)
 
-    return icx
+    return dec_balance
 
 
 def __read_wallet(file_path):

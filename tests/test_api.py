@@ -117,7 +117,6 @@ class TestAPI(unittest.TestCase):
             # Remove used file.
             os.remove(file_path)
 
-
     def test_created_store_key_file(self):
         """Check the file is saved in the correct format.
         """
