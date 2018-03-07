@@ -16,6 +16,7 @@
 # limitations under the License.
 import re
 import eth_keyfile
+import requests
 
 
 def validate_password(password) -> bool:
@@ -59,3 +60,45 @@ def has_keys(data, key_array):
         if key in data is False:
             return False
     return True
+
+
+def create_jsonrpc_request_content(_id, method, params):
+    content = {
+        'jsonrpc': '2.0',
+        'method': method,
+        'id': _id
+    }
+
+    if params is not None:
+        content['params'] = params
+
+    return content
+
+
+def post(url, payload):
+    return requests.post(url, json=payload, verify=False)
+
+
+def change_hex_balance_to_decimal_balance(hex_balance, place=18):
+    """ Change hex balance to decimal decimal icx balance
+
+    :param: hex_balance
+    :return: result_decimal_icx: string decimal icx
+    """
+
+    dec_balance = int(hex_balance, 16)
+    str_dec_balance = str(dec_balance)
+    if dec_balance >= 10 ** place:
+        str_int = str_dec_balance[:len(str_dec_balance) - place]
+        str_decimal = str_dec_balance[len(str_dec_balance) - place:]
+        result_decimal_icx = f'{str_int}.{str_decimal}'
+        return result_decimal_icx
+
+    else:
+        zero = "0."
+        val_point = len(str_dec_balance)  # val_point : 몇자릿수인지 계산
+        point_difference = place - val_point
+        str_zero = "0" * point_difference
+        result_decimal_icx = f'{zero}{str_zero}{dec_balance}'
+        return result_decimal_icx
+
