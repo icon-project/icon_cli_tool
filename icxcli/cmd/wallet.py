@@ -16,7 +16,7 @@
 # limitations under the License.
 
 from enum import Enum
-from icxcli.icx import wallet, FilePathIsWrong, PasswordIsIncorrect
+from icxcli.icx import wallet, NotEnoughBalance
 
 
 class ExitCode(Enum):
@@ -63,30 +63,59 @@ def create_wallet(password, file_path) -> int:
         return ExitCode.FILE_EXISTS.value
 
 
-def show_wallet(password, file_path) -> int:
-    """ Shows the all information of wallet
+def show_wallet(password, file_path, url) -> int:
+    """ Show the all information of wallet. Show the balance and the information in keystore file.
 
     :param password:  Password including alphabet character, number, and special character. type(str)
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :param file_path: File path for the keystore file of the wallet. type(str)
+    :param url: api url. type(str)
     :return: Predefined exit code
     """
-    pass
+
+    try:
+        wallet_address, balance, wallet_info = wallet.show_wallet(password, file_path, url)
+        print(f"Succeed to show wallet in {file_path}. ")
+        print(f"Wallet address : {wallet_address} ")
+        print(f"Wallet balance : {balance} ")
+        print(f"Wallet keystore_file_info : {wallet_info} ")
+        return ExitCode.SUCCEED.value
+    except wallet.PasswordIsNotAcceptable:
+        print("Fail: Password is not acceptable. ")
+        print("Password including alphabet character, number, and special character.")
+        return ExitCode.PASSWORD_IS_WRONG.value
+    except wallet.FilePathIsWrong:
+        print(f"Fail: Fail to open {file_path}. Change file path.")
+        return ExitCode.FILE_PATH_IS_WRONG.value
 
 
-def show_asset_list(password, file_path) -> int:
-    """ Enumerate the list of all the assets of the wallet.
+def show_asset_list(password, file_path, url) -> int:
+    """ Enumerate the list of all the assets of the wallet. Show the balance.
 
     :param password: Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     type(str)
     :param file_path: File path for the keystore file of the wallet. type(str)
+    :param url: api url. type(str)
     :return: Predefined exit code
     """
-    pass
+
+    try:
+        wallet_address, balance = wallet.show_asset_list(password, file_path, url)
+        print(f"Succeed to show asset list in {file_path}. ")
+        print(f"Wallet address : {wallet_address} ")
+        print(f"Wallet balance : {balance} ")
+        return ExitCode.SUCCEED.value
+    except wallet.PasswordIsNotAcceptable:
+        print("Fail: Password is not acceptable. ")
+        print("Password including alphabet character, number, and special character.")
+        return ExitCode.PASSWORD_IS_WRONG.value
+    except wallet.FilePathIsWrong:
+        print(f"Fail: Fail to open {file_path}. Change file path.")
+        return ExitCode.FILE_PATH_IS_WRONG.value
 
 
-def transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, file_path) -> int:
+def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url) -> int:
     """ Transfer the value to the specific address with the fee.
 
     :param password: Password including alphabet character, number, and special character.
@@ -100,11 +129,20 @@ def transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, f
     :return: Predefined exit code
     """
     try:
-        transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, file_path)
-    except FilePathIsWrong:
+        transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url)
+        print("Transfer value succeed.")
+        return ExitCode.SUCCEED.value
+    except wallet.FilePathIsWrong:
         return ExitCode.FILE_PATH_IS_WRONG.value
-    except PasswordIsIncorrect:
+    except wallet.PasswordIsIncorrect:
         return ExitCode.PASSWORD_IS_WRONG.value
+    except wallet.WalletAddressIsInvalid:
+        print("Wallet address is invalid.")
+        return ExitCode.WALLET_ADDRESS_IS_WRONG.value
+    except NotEnoughBalance:
+        print("Wallet does not have enough balance.")
+        return ExitCode.WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE
+
 
 
 def store_wallet(file_path, json_string) -> int:

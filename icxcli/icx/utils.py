@@ -17,11 +17,11 @@
 import base64
 import hashlib
 import re
-
 import eth_keyfile
 import time
 
-from icxcli.icx import IcxSigner, WalletAddressIsInvalid
+from icxcli.icx import IcxSigner, WalletAddressIsInvalid, NotEnoughBalance
+import requests
 
 
 def validate_password(password) -> bool:
@@ -67,7 +67,6 @@ def validate_address(address) -> bool:
         int(address, 16)
         if len(address) == 42:
             return True
-        raise WalletAddressIsInvalid
     except ValueError:
         raise WalletAddressIsInvalid
 
@@ -226,3 +225,53 @@ def create_jsonrpc_request_content(_id, method, params):
         content['params'] = params
 
     return content
+
+
+def post(url, payload):
+    return requests.post(url, json=payload, verify=False)
+
+
+def get_string_decimal(value, place):
+    """value를 10의 place 제곱으로 나눈 값을 string으로 변환하여 반환
+
+    Args:
+        value(int)
+        place : 10의 몇 제곱을 나눌지 입력받음
+    """
+    strValue = str(value)
+    if value >= 10 ** place:
+        strInt = strValue[:len(strValue) - place]
+        strDecimal = strValue[len(strValue) - place:]
+        result = f'{strInt}.{strDecimal}'
+        return result
+
+    else:
+        zero = "0."
+        valPoint = len(strValue)  # valPoint : 몇자릿수인지 계산
+        pointDifference = place - valPoint
+        strZero = "0" * pointDifference
+        result = f'{zero}{strZero}{value}'
+        return result
+
+
+def make_payload_for_get_balance(address, url):
+
+    url = f'{url}v2'
+
+    method = 'icx_getBalance'
+    params = {'address': address}
+    payload = create_jsonrpc_request_content(0, method, params)
+    return payload
+
+
+def check_balance_enough(balance, amount, fee):
+    if balance > amount + fee:
+        return True
+    else:
+        raise NotEnoughBalance
+    pass
+
+
+def floor_point(amount_wei, decimal_point):
+    str_amount = str(amount_wei)
+    return f'{str_amount[:decimal_point+1]}{"0"*(18-decimal_point)}'

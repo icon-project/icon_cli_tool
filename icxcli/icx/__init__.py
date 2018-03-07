@@ -93,45 +93,6 @@ class IcxSigner(object):
         return IcxSigner(data, raw=False)
 
 
-# class SignVerifier(object):
-#     """Class to verification signature.
-#     """
-#
-#     def __init__(self, data, raw=True):
-#         """Refer to https://github.com/ludbb/secp256k1-py api documents.
-#
-#         :param data: 65 bytes data which PublicKey.serialize() returns. type(bytes).
-#         :param raw: if False, it is assumed that pubkey has gone through \
-#             PublicKey.deserialize already, \
-#             otherwise it must be specified as bytes.
-#         """
-#         self.__pubic_key = PublicKey(data, raw, FLAG_VERIFY)
-#
-#     @property
-#     def public_key(self):
-#         return self.__pubic_key
-#
-#     def get_address(self):
-#         """
-#
-#         :return:
-#         """
-#         public_key_bytes = self.public_key.serialize(compressed=False)
-#         return hashlib.sha3_256(public_key_bytes[1:]).digest()[-20:]
-#
-#     def verify(self, msg_hash, signature_bytes):
-#         """
-#
-#         :param msg_hash:
-#         :param signature_bytes:
-#         :return:
-#         """
-#         public_key = self.public_key
-#
-#         signature = public_key.ecdsa_deserialize(signature_bytes)
-#         return public_key.ecdsa_verify(msg_hash, signature, True)
-
-
 """ Exceptions for ICX. """
 
 
@@ -172,4 +133,9 @@ class PasswordIsIncorrect(Error):
 
 class WalletAddressIsInvalid(Error):
     """Exception raised for "Wallet address is invalid." """
+    pass
+
+
+class NotEnoughBalance(Error):
+    """Exception raised for "Wallet does not have enough balance." """
     pass

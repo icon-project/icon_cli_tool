@@ -72,7 +72,7 @@ def parse_args():
     parser.add_argument('-p', dest='password'
                         , help='password')
     parser.add_argument('-f', dest='fee'
-                        , help='transaction fee', type=float)
+                        , help='transaction fee', type=float, default=0.01)
     parser.add_argument('-d', dest='decimal_point'
                         , help='decimal point', default=18, type=int)
     parser.add_argument('-n', dest='network_id'
@@ -88,9 +88,9 @@ def parse_args():
 def call_wallet_method(command, parser):
     """ Call the specific wallet method when having right number of arguments.
 
-    :param command: Command part of interface. type: str
-    :param parser: ArgumentParser
-    """
+   :param command: Command part of interface. type: str
+   :param parser: ArgumentParser
+   """
 
     args = parser.parse_args()
     url = None
@@ -100,7 +100,6 @@ def call_wallet_method(command, parser):
         return ExitCode.DICTIONARY_HAS_NOT_KEY.value
 
     password = args.password
-
     if command == 'wallet create' and len(args.command) == 3:
         if password is None:
             password = input("You missed your password! input your password : ")
@@ -108,18 +107,18 @@ def call_wallet_method(command, parser):
     elif command == 'wallet show' and len(args.command) == 3:
         if password is None:
             password = input("You missed your password! input your password : ")
-        return wallet.show_wallet(password, args.command[2])
+        return wallet.show_wallet(password, args.command[2], url)
     elif command == 'asset list' and len(args.command) == 3:
         if password is None:
             password = input("You missed your password! input your password : ")
-        return wallet.show_asset_list(password, args.command[2])
+        return wallet.show_asset_list(password, args.command[2], url)
     elif command.split(' ')[0] == 'transfer' and len(args.command) == 4 \
             and check_required_argument_in_args(fee=args.fee, decimal_point=args.decimal_point):
         if password is None:
             password = input("You missed your password! input your password : ")
         return wallet.transfer_value_with_the_fee(
-            password, args.fee, args.decimal_point, url, to=args.command[1],
-            amount=float(args.command[2]), file_path=args.command[3])
+            password, args.fee, args.decimal_point, to=args.command[1],
+            amount=float(args.command[2]), file_path=args.command[3], url=url)
     elif command.split(' ')[0] == 'version':
         print(f"version : {__version__}")
     else:

@@ -14,10 +14,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import json
 import os
 
-import requests
 from eth_keyfile import create_keyfile_json, extract_key_from_keyfile
 
 from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToWriteFile, FileExists, \
@@ -26,7 +26,11 @@ from icxcli.icx import WalletInfo
 from icxcli.icx import utils
 from icxcli.icx import IcxSigner
 from icxcli.icx.utils import get_address_by_privkey, icx_to_wei, get_timestamp_us, get_tx_hash, sign, \
-    create_jsonrpc_request_content
+    create_jsonrpc_request_content, validate_address, make_payload_for_get_balance, floor_point, check_balance_enough
+from icxcli.icx.utils import post
+from icxcli.icx.utils import get_string_decimal
+import requests
+requests.packages.urllib3.disable_warnings()
 
 
 def create_wallet(password, file_path):
@@ -58,29 +62,52 @@ def create_wallet(password, file_path):
         raise FilePathIsWrong
 
 
-def show_wallet(password, *args):
+def show_wallet(password, file_path, url):
 
     """ Shows the all information of wallet
 
-    :param password(str):  Password including alphabet character, number, and special character.
+    :param password:  Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
-    :param args:
+    :param file_path:
+    :param url:
     :return:
     """
 
+    if not utils.validate_password(password):
+        raise PasswordIsNotAcceptable
 
-def show_asset_list(password, *args):
+    try:
+        wallet_info = __read_wallet(file_path)
+        wallet_address = wallet_info['address']
+        balance = __get_balance(wallet_address, url)
+        return wallet_address, balance, wallet_info
+    except FileNotFoundError:
+        raise FilePathIsWrong
+
+
+def show_asset_list(password, file_path, url):
 
     """ Enumerate the list of all the assets of the wallet.
 
-    :param password(str): Password including alphabet character, number, and special character.
+    :param password: Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
-    :param args:
+    :param file_path:
+    :param url:
     :return:
     """
+    if not utils.validate_password(password):
+        raise PasswordIsNotAcceptable
+
+    try:
+        wallet_info = __read_wallet(file_path)
+        wallet_address = wallet_info['address']
+        balance = __get_balance(wallet_address, url)
+        return wallet_address, balance
+    except FileNotFoundError:
+        raise FilePathIsWrong
 
 
-def transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, file_path):
+def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url):
     """ Transfer the value to the specific address with the fee.
 
     :param password: Password including alphabet character, number, and special character.
@@ -97,11 +124,28 @@ def transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, f
         url = f'{url}v2'
         private_key_bytes = key_from_key_store(file_path, bytes(password, 'utf-8'))
         user_address = get_address_by_privkey(private_key_bytes)
+        _ = validate_address(user_address[2:])
         method = 'icx_sendTransaction'
-        params = make_params(user_address, to, amount, fee, method, private_key_bytes)
+        amount_wei = icx_to_wei(amount)
+        fee_wei = icx_to_wei(amount)
+        fixed_amount = int(floor_point(amount_wei, decimal_point))
+        fixed_fee = int(floor_point(fee_wei, decimal_point))
 
+        params = make_params(user_address, to, fixed_amount, fixed_amount, method, private_key_bytes, decimal_point)
         payload = create_jsonrpc_request_content(0, method, params)
-        response = requests.post(url, json=payload, verify=False)
+
+        payload_for_balance = make_payload_for_get_balance(user_address, url)
+        request_gen = request_generator(url)
+        next(request_gen)
+        balance_content = request_gen.send(payload_for_balance).json()
+        wei = int(balance_content['result']['response'], 16)
+        balance = float(get_string_decimal(wei, 18))
+
+        check_balance_enough(balance, amount, fee)
+        next(request_gen)
+        response = request_gen.send(payload)
+
+        return response
 
     except FileNotFoundError:
         print("File does not exists.")
@@ -112,16 +156,14 @@ def transfer_value_with_the_fee(password, fee, decimal_point, url, to, amount, f
     except ValueError:
         print("Incorrect password.")
         raise PasswordIsIncorrect
-    except WalletAddressIsInvalid:
-        print("Wallet address is invalid.")
 
 
-def make_params(user_address, to, amount, fee, method, private_key_bytes):
+def make_params(user_address, to, amount, fee, method, private_key_bytes, decimal_point):
     params = {
         'from': user_address,
         'to': to,
-        'value': hex(icx_to_wei(amount)),
-        'fee': hex(icx_to_wei(fee)),
+        'value': hex(amount),
+        'fee': hex(icx_to_wei(0.01)),
         'timestamp': str(get_timestamp_us())
     }
     tx_hash_bytes = get_tx_hash(method, params)
@@ -133,6 +175,7 @@ def make_params(user_address, to, amount, fee, method, private_key_bytes):
 
 
 def __store_wallet(file_path, json_string):
+
     """ Store wallet information file in JSON format.
     :param file_path: The path where the file will be saved. type: str
     :param json_string: Contents of key_store_file
@@ -141,11 +184,12 @@ def __store_wallet(file_path, json_string):
         raise FileExistsError
 
     with open(file_path, 'wt') as f:
-            f.write(json_string)
+        f.write(json_string)
 
 
 def __make_key_store_content(password):
-    """Make a content of key_store.
+
+    """ Make a content of key_store.
 
     :param password: Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
@@ -169,3 +213,48 @@ def key_from_key_store(file_path, password):
     """
     private_key = extract_key_from_keyfile(file_path, password)
     return private_key
+
+
+def __get_balance(address, url):
+
+    """ Get balance of the address indicated by address.
+
+    :param address: icx account address starting with 'hx'
+    :param url:
+    :return: icx
+    """
+    url = f'{url}v2'
+
+    method = 'icx_getBalance'
+    params = {'address': address}
+    payload = create_jsonrpc_request_content(0, method, params)
+    response = post(url, payload)
+    content = response.json()
+    wei = int(content['result']['response'], 16)
+    icx = get_string_decimal(wei, 18)
+
+    return icx
+
+
+def __read_wallet(file_path):
+
+    """ Read keystore file
+
+    :param file_path:
+    :return: wallet_info
+    """
+
+    if not os.path.isfile(file_path):
+        raise FileNotFoundError
+
+    with open(file_path, 'r') as f:
+        wallet_info = json.loads(f.read())
+        f.close()
+
+    return wallet_info
+
+
+def request_generator(url):
+    while True:
+        payload = yield
+        yield post(url, payload)
