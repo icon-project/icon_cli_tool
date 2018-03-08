@@ -59,10 +59,11 @@ def parse_args():
             help
 
         Wallet Commands:
-            wallet create <file path> -p <password>  | -n <network id=mainnet>
-            wallet show <file path> -p <password>   | -n <network id=mainnet>
-            asset list <file path> -p <password>        | -n <network id=mainnet>
-            transfer <to> <amount> <file path> -p <password> -f <fee=0.01> -d <decimal point=18> |-n <network id=mainnet>
+
+            wallet create <file path> -p <password>  | -n <network id: mainnet | testnet>
+            wallet show <file path> -p <password>    | -n <network id: mainnet | testnet>
+            asset list <file path> -p <password>     | -n <network id: mainnet | testnet>
+            transfer  <to> <amount> <file path> -p <password> -f <fee=0.01> -d <decimal point=18>  | -n <network id: mainnet | testnet>
 
         IF YOU MISS -n, icli WILL USE MAINNET.
 

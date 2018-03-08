@@ -75,17 +75,33 @@ $ icli help
 
 
 ```shell
-$ icli help
+$ icli  --help
+usage: 
+        Normal commands:
+            version
+            help
 
-Normal commands:
-      version
-      help
+        Wallet Commands:
+            wallet create <file path> -p <password>  | -n <network id: mainnet | testnet>
+            wallet show <file path> -p <password>   | -n <network id: mainnet | testnet>
+            asset list <file path> -p <password>    | -n <network id: mainnet | testnet>
+            transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>  | -n <network id: mainnet | testnet>
 
-Wallet Commands:
-      wallet create <file path> -p <password>
-      wallet show <file path> -p <password>
-      asset list <file path> -p <password>
-      transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>
+        IF YOU MISS --networkid, icli WILL USE MAINNET.
+
+          
+
+positional arguments:
+  command           wallet create, wallet show, asset list, transfer
+
+optional arguments:
+  -h, --help        show this help message and exit
+  -p PASSWORD       password
+  -f FEE            transaction fee
+  -d DECIMAL_POINT  decimal point
+  -n NETWORK_ID     which network
+
+
 ```
 
 ## Console instructions
