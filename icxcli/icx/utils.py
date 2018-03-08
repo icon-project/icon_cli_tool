@@ -79,13 +79,52 @@ def post(url, payload):
     return requests.post(url, json=payload, verify=False)
 
 
-def change_hex_balance_to_decimal_balance(hex_balance, place=18):
-    """ Change hex balance to decimal decimal icx balance
+def make_payload_for_get_balance(address, url):
 
+    url = f'{url}v2'
+
+    method = 'icx_getBalance'
+    params = {'address': address}
+    payload = create_jsonrpc_request_content(0, method, params)
+    return payload
+
+
+def check_balance_enough(balance, amount, fee):
+    """Check if the user has enough balance to transfer.
+
+    :param balance: Balance of the user's wallet.
+    :param amount: Amount of money. type(str)
+    :param fee: Transfer fee.
+    :return:
+    True when the user has enough balance.
+    """
+    if balance > float(amount) + fee:
+        return True
+    else:
+        raise NoEnoughBalanceInWallet
+    pass
+
+
+def floor_point(amount_wei, decimal_point):
+    """To process up to 'decimal_point' decimal places, change it backwards to 0 by (18-decimal_point).
+
+    :param amount_wei: Wei value of amount. type(int)
+    :param decimal_point: A user can change the decimal point to express all numbers including fee and amount.
+    :return:
+    """
+    str_amount = str(amount_wei)
+    if len(str_amount) < 18:
+        return amount_wei
+    if decimal_point == 18:
+        return amount_wei
+    return f'{str_amount[0:-(18-decimal_point)]}{"0"*(18-decimal_point)}'
+
+
+def change_hex_balance_to_decimal_balance(hex_balance, place=18):
+    """Change hex balance to decimal decimal icx balance
     :param: hex_balance
     :return: result_decimal_icx: string decimal icx
     """
-
     dec_balance = int(hex_balance, 16)
     str_dec_balance = str(dec_balance)
     if dec_balance >= 10 ** place:
@@ -96,9 +135,8 @@ def change_hex_balance_to_decimal_balance(hex_balance, place=18):
 
     else:
         zero = "0."
-        val_point = len(str_dec_balance)  # val_point : 몇자릿수인지 계산
+        val_point = len(str_dec_balance)
         point_difference = place - val_point
         str_zero = "0" * point_difference
         result_decimal_icx = f'{zero}{str_zero}{dec_balance}'
         return result_decimal_icx
-

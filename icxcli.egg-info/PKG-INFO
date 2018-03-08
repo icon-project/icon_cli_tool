@@ -1,0 +1,594 @@
+Metadata-Version: 1.1
+Name: icxcli
+Version: 0.10b0
+Summary: A Universal Command Line Environment for ICON.
+Home-page: https://github.com/icon-project/icon_cli_tool
+Author: ICON foundation
+Author-email: foo@icon.foundation
+License: Apache License 2.0
+Description-Content-Type: UNKNOWN
+Description: ICON CLI tool
+        =============
+        
+        ICON supports Command Line Interface(CLI interface) for 3rd party or
+        user services development. With this single tool, you can control all
+        ICON functions and automate them using scripts.
+        
+        .. raw:: html
+        
+           <!-- TOC depthFrom:1 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
+        
+        -  `Prerequisite <#prerequisite>`__
+        -  `Version <#version>`__
+        -  `Glossary <#glossary>`__
+        -  `Technical information <#technical-information>`__
+        -  `Getting started <#getting-started>`__
+        
+           -  `Installation <#installation>`__
+           -  `Run CLI <#run-cli>`__
+           -  `Console instructions <#console-instructions>`__
+           -  `Wallet operation <#wallet-operation>`__
+        
+              -  `Create wallet file <#create-wallet-file>`__
+              -  `Show wallet information <#show-wallet-information>`__
+              -  `List up all assets in current
+                 wallet <#list-up-all-assets-in-current-wallet>`__
+              -  `Transfer the value to the specific address with the
+                 fee. <#transfer-the-value-to-the-specific-address-with-the-fee>`__
+        
+        .. raw:: html
+        
+           <!-- /TOC -->
+        
+        Prerequisite
+        ============
+        
+        -  Python 3.6.x
+        
+        Version
+        =======
+        
+        -  0.01 beta
+        
+        Glossary
+        ========
+        
+        -  Address of wallet: Unique string to identify the address to transfer
+           value. It begins with hx.
+        
+        -  Private key: A tiny bit of code that is paired with a public key to
+           set off algorithms to encrypt and decrypt a text for the specific
+           address.
+        
+        -  Public key: Long alphanumeric characters that is used to encrypt data
+           (message).
+        
+        Technical information
+        =====================
+        
+        There are five steps to get from private->public -> address:
+        
+        1. Generate a private key.
+        
+        2. Derive a public key from the private key.
+        
+        3. H1 = sha3_256( Public key) => 32 byte
+        
+        4. BitAddress = last 20 bytes of H1
+        
+        5. Address = hx \|\| HexString(BitAddress) ex)
+           hxaa688d74eb5f98b577883ca203535d2aa4f0838c
+        
+        Getting started
+        ===============
+        
+        Installation
+        ------------
+        
+        1. Clone this repository.
+        
+        2. Change the just cloned project directory.
+        
+        3. Execute following scripts.
+        
+        .. code:: shell
+        
+            $ python3 -m python3 venv
+            $ source venv/bin/activate
+            $ pip install -r requirements
+            $ icli help
+        
+        Run CLI
+        -------
+        
+        Run command icli in command line. There are many sub commands for ICX
+        service. You can get the help page by adding help.
+        
+        .. code:: shell
+        
+            $ icli help
+        
+            Normal commands:
+                  version
+                  help
+        
+            Wallet Commands:
+                  wallet create <file path> -p <password>
+                  wallet show <file path> -p <password>
+                  asset list <file path> -p <password>
+                  transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>
+        
+        Console instructions
+        --------------------
+        
+        .. raw:: html
+        
+           <table>
+        
+        .. raw:: html
+        
+           <tr>
+        
+        .. raw:: html
+        
+           <td>
+        
+        Command
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           <td>
+        
+        Function description
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           </tr>
+        
+        .. raw:: html
+        
+           <tr>
+        
+        .. raw:: html
+        
+           <td>
+        
+        version
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           <td>
+        
+        Shows the current software version.
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           </tr>
+        
+        .. raw:: html
+        
+           <tr>
+        
+        .. raw:: html
+        
+           <td>
+        
+        help
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           <td>
+        
+        Shows Help menu
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           </tr>
+        
+        .. raw:: html
+        
+           </table>
+        
+        Wallet operation
+        ----------------
+        
+        .. raw:: html
+        
+           <table>
+        
+        .. raw:: html
+        
+           <tr>
+        
+        .. raw:: html
+        
+           <td>
+        
+        Command
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           <td>
+        
+        Function description
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           </tr>
+        
+        .. raw:: html
+        
+           <tr>
+        
+        .. raw:: html
+        
+           <td>
+        
+        wallet create -p
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           <td>
+        
+        Create a wallet file.
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           </tr>
+        
+        .. raw:: html
+        
+           <tr>
+        
+        .. raw:: html
+        
+           <td>
+        
+        wallet show -p
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           <td>
+        
+        Show current wallet information.
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           </tr>
+        
+        .. raw:: html
+        
+           <tr>
+        
+        .. raw:: html
+        
+           <td>
+        
+        asset list -p
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           <td>
+        
+        Enumerate the asset in the wallet. (ICX, ICX token)
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           </tr>
+        
+        .. raw:: html
+        
+           <tr>
+        
+        .. raw:: html
+        
+           <td>
+        
+        transfer -p -f -d
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           <td>
+        
+        Transfer the value to the specific address with the fee.
+        
+        .. raw:: html
+        
+           </td>
+        
+        .. raw:: html
+        
+           </tr>
+        
+        .. raw:: html
+        
+           </table>
+        
+        Create wallet file
+        ~~~~~~~~~~~~~~~~~~
+        
+        .. code:: shell
+        
+            $ icli wallet create <wallet name> <file path> -p <password>
+        
+        Create a wallet file with given wallet name, password and file path.
+        
+        Arguments
+        ^^^^^^^^^
+        
+        -  file path : File path for the keystore file of the wallet.
+        
+        -  password: Password including alphabet character, number, and special
+           character. If the user doesn’t give password with -p, then CLI will
+           show the prompt and user need to type the password.
+        
+        Output
+        ^^^^^^
+        
+        Successful case
+        '''''''''''''''
+        
+        Return 0 : Succeed to generate the keystore file for the wallet.
+        
+        Error cases
+        '''''''''''
+        
+        icli will return following error code and message.
+        
+        -  Return 122: File path is wrong.
+        
+        -  Return 123: Password is wrong.
+        
+        -  Return 136: User does not have enough permission to write the file.
+        
+        -  Return 124: Keystore file exists.
+        
+        Show wallet information
+        ~~~~~~~~~~~~~~~~~~~~~~~
+        
+        .. code:: shell
+        
+            $ icli wallet show <file path> -p <password>
+        
+        Show wallet information.
+        
+        .. _arguments-1:
+        
+        Arguments
+        ^^^^^^^^^
+        
+        -  file path : File path for the keystore file of the wallet.
+        
+        -  password: Password including alphabet character, number, and special
+           character. If the user doesn’t give password with -p, then CLI will
+           show the prompt and user need to type the password.
+        
+        .. _output-1:
+        
+        Output
+        ^^^^^^
+        
+        Shows the all information of wallet.
+        
+        .. _successful-case-1:
+        
+        Successful case
+        '''''''''''''''
+        
+        Return 0 : Print out wallet information including asset list.
+        
+        .. _error-cases-1:
+        
+        Error cases
+        '''''''''''
+        
+        -  Return 122: File path is wrong.
+        
+        -  Return 123: Password is wrong.
+        
+        -  Return 130: Wallet address is wrong.
+        
+        List up all assets in current wallet
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+        ::
+        
+            $ icli asset list <file path> -p <password>
+        
+        Enumerate the list of all the assets of the wallet.
+        
+        .. _arguments-2:
+        
+        Arguments
+        ^^^^^^^^^
+        
+        -  file path : File path for the keystore file of the wallet.
+        
+        -  password: Password including alphabet character, number, and special
+           character. If the user doesn’t give password with -p, then CLI will
+           show the prompt and user need to type the password.
+        
+        .. _output-2:
+        
+        Output
+        ^^^^^^
+        
+        -  List of all assets in current wallet.
+        
+        .. _successful-case-2:
+        
+        Successful case
+        '''''''''''''''
+        
+        -  Return 0 : Succeed to display.
+        
+        .. _error-cases-2:
+        
+        Error cases
+        '''''''''''
+        
+        -  Return 122: File path is wrong.
+        
+        -  Return 123: Password is wrong.
+        
+        -  Return 130: Wallet address is wrong.
+        
+        Transfer the value to the specific address with the fee.
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+        .. code:: shell
+        
+            $ icli transfer <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>
+        
+        Transfer the value from A address to B address with the fee.
+        
+        .. _arguments-3:
+        
+        Arguments
+        ^^^^^^^^^
+        
+        -  amount : Amount of money. **The decimal point number is valid up to
+           tenth power of 18. **
+        
+        -  to: Address of wallet to receive the asset.
+        
+        -  fee : Transfer fee
+        
+        -  file path : File path for the keystore file of the wallet.
+        
+        -  password: Password including alphabet character, number, and special
+           character. If the user doesn’t give password with -p, then CLI will
+           show the prompt and user need to type the password.
+        
+        -  decimal point : A user can change the decimal point to express all
+           numbers including fee and amount.
+        
+           -  **YOU SHOULD CHANGE BOTH THE EXPRESSION OF AMOUNT AND THE
+              EXPRESSION OF FEE IF ANY.**
+           -  Ex) Amount value 0.001 with default decimal point will be
+              0.001*10^12 = 10,000,000,000.0 with decimal point = 12.
+        
+        .. _output-3:
+        
+        Output
+        ^^^^^^
+        
+        .. _successful-case-3:
+        
+        Successful case
+        '''''''''''''''
+        
+        Return 0 : Succeed to transfer
+        
+        .. _error-cases-3:
+        
+        Error cases
+        '''''''''''
+        
+        icli will return following error code and message.
+        
+        -  Return 122: File path is wrong.
+        
+        -  Return 123: Password is wrong.
+        
+        -  Return 127: Wallet does not have enough balance.
+        
+        -  Return 128: Transfer fee is invalid.
+        
+        -  Return 129: Timestamp is not correct. (Reset your computer’s time and
+           date.)
+        
+        -  Return 130: Wallet address is wrong.
+        
+        Development
+        ===========
+        
+        Run ``icli`` in development.
+        ----------------------------
+        
+        .. code:: bash
+        
+            $ python -m icxcli $commands $args...
+        
+        Build package in egg package file.
+        ----------------------------------
+        
+        .. code:: bash
+        
+            $ python setup.py bdist_egg 
+        
+        Test package.
+        -------------
+        
+        .. code:: bash
+        
+            $ python setup.py test
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: Natural Language :: English
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.6

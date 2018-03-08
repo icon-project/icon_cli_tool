@@ -128,8 +128,27 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     :param file_path: File path for the keystore file of the wallet. type(str)
     :return: Predefined exit code
     """
-    print(password, fee, decimal_point, to, amount, file_path)
-    pass
+    try:
+        transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url)
+        print("Succeed transfer value.")
+        return ExitCode.SUCCEED.value
+    except FilePathIsWrong:
+        return ExitCode.FILE_PATH_IS_WRONG.value
+    except PasswordIsWrong:
+        print("Password is wrong.")
+        return ExitCode.PASSWORD_IS_WRONG.value
+    except AddressIsWrong:
+        print("Wallet address is wrong.")
+        return ExitCode.WALLET_ADDRESS_IS_WRONG.value
+    except NoEnoughBalanceInWallet:
+        print("Wallet does not have enough balance.")
+        return ExitCode.WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE.value
+    except AmountIsInvalid:
+        print("The amount you want to transfer is not valid.")
+        return ExitCode.AMOUNT_IS_INVALID.value
+    except TransferFeeIsInvalid:
+        print("Transaction Fee is invalid.")
+        return ExitCode.TRANSFER_FEE_IS_INVALID.value
 
 
 def store_wallet(file_path, json_string) -> int:
