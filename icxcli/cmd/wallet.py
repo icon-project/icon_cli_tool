@@ -133,6 +133,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     """
     try:
         transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url)
+        print(bool(transfer_result))
         print("Succeed transfer value.")
         return ExitCode.SUCCEED.value
     except FilePathIsWrong:

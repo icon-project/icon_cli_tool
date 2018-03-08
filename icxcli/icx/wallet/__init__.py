@@ -126,7 +126,9 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
         url = f'{url}v2'
         private_key_bytes = key_from_key_store(file_path, bytes(password, 'utf-8'))
         user_address = get_address_by_privkey(private_key_bytes)
-        _ = validate_address(user_address[2:])
+        validate_address(user_address[2:])
+        validate_address(to[2:])
+
         method = 'icx_sendTransaction'
 
         amount_wei = icx_str_to_wei(amount)
