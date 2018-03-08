@@ -270,12 +270,14 @@ def get_string_decimal(value, place):
 
     :param value type(int)
     """
-    strValue = str(value)
-    if value >= 10 ** place:
-        strInt = strValue[:len(strValue) - place]
-        strDecimal = strValue[len(strValue) - place:]
-        result = f'{strInt}.{strDecimal}'
-        return result
+
+    dec_balance = int(hex_balance, 16)
+    str_dec_balance = str(dec_balance)
+    if dec_balance >= 10 ** place:
+        str_int = str_dec_balance[:len(str_dec_balance) - place]
+        str_decimal = str_dec_balance[len(str_dec_balance) - place:]
+        result_decimal_icx = f'{str_int}.{str_decimal}'
+        return result_decimal_icx
 
     else:
         zero = "0."

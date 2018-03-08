@@ -30,7 +30,7 @@ from icxcli.icx.utils import get_address_by_privkey, icx_to_wei, get_timestamp_u
     create_jsonrpc_request_content, validate_address, make_payload_for_get_balance, floor_point, check_balance_enough, \
     icx_str_to_wei, get_fee_wei
 from icxcli.icx.utils import post
-from icxcli.icx.utils import get_string_decimal
+from icxcli.icx.utils import change_hex_balance_to_decimal_balance
 import requests
 requests.packages.urllib3.disable_warnings()
 
@@ -241,10 +241,10 @@ def __get_balance(address, url):
     payload = create_jsonrpc_request_content(0, method, params)
     response = post(url, payload)
     content = response.json()
-    wei = int(content['result']['response'], 16)
-    icx = get_string_decimal(wei, 18)
+    hex_balance = content['result']['response']
+    dec_balance = change_hex_balance_to_decimal_balance(hex_balance)
 
-    return icx
+    return dec_balance
 
 
 def __read_wallet(file_path):
