@@ -225,7 +225,8 @@ def key_from_key_store(file_path, password):
     :param file_path:
     :return:
     """
-    private_key = extract_key_from_keyfile(file_path, password)
+    with open(file_path, 'rb') as file:
+        private_key = extract_key_from_keyfile(file, password)
     return private_key
 
 

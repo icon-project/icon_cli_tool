@@ -53,6 +53,8 @@ class TestAPI(unittest.TestCase):
         # Then
         except icx.FilePathIsWrong:
             self.assertTrue(True)
+        except FileNotFoundError:
+            self.assertTrue(True)
 
     def test_show_wallet_case2(self):
         """Test for show_wallet function.

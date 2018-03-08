@@ -8,6 +8,7 @@ from icxcli.cmd.wallet import ExitCode
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 url = 'https://testwallet.icon.foundation/api/'
 
+
 class TestAPI(unittest.TestCase):
     """
     Test that execute the api about transfer icx.
@@ -49,7 +50,7 @@ class TestAPI(unittest.TestCase):
 
         # Given
         password = "1234"
-        file_path = os.path.join(TEST_DIR, "keystore")
+        file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
 
         # When
         try:
@@ -69,7 +70,7 @@ class TestAPI(unittest.TestCase):
         """
         # Given
         password = "1234"
-        file_path = os.path.join(TEST_DIR, "keystore")
+        file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
@@ -85,13 +86,13 @@ class TestAPI(unittest.TestCase):
         Case when password is wrong.
         """
         # Given
-        password = "123"
-        file_path = os.path.join(TEST_DIR, "keystore")
+        password = "wrong_password"
+        file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
                 password, 0.01, 18, to="hxa23651905dfa12221dd36b860dc114ef7f7a0786",
-                amount="1", file_path='./keystore', url=url)
+                amount="1", file_path=file_path, url=url)
             # Then
 
         except PasswordIsWrong:
@@ -103,12 +104,12 @@ class TestAPI(unittest.TestCase):
         """
         # Given
         password = "1234"
-        file_path = os.path.join(TEST_DIR, "keystore")
+        file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
                 password, 0.01, 18, to="hxa23651905dfa12221dd36b860dc114ef7f7a0786",
-                amount="100000000", file_path='./keystore', url=url)
+                amount="100000000", file_path=file_path, url=url)
             # Then
 
         except NoEnoughBalanceInWallet:
@@ -120,12 +121,12 @@ class TestAPI(unittest.TestCase):
         """
         # Given
         password = "1234"
-        file_path = os.path.join(TEST_DIR, "keystore")
+        file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
                 password, -1, 18, to="hxa23651905dfa12221dd36b860dc114ef7f7a0786",
-                amount="1000", file_path='./keystore', url=url)
+                amount="1000", file_path=file_path, url=url)
             # Then
 
         except TransferFeeIsInvalid:
@@ -137,12 +138,13 @@ class TestAPI(unittest.TestCase):
         """
         # Given
         password = "1234"
-        file_path = os.path.join(TEST_DIR, "keystore")
+        file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
+        print()
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
                 password, 0.01, 18, to="hxa23651905d221dd36b",
-                amount="1", file_path='./keystore', url=url)
+                amount="1", file_path=file_path, url=url)
             # Then
 
         except AddressIsWrong:
