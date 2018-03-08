@@ -202,6 +202,9 @@ Show wallet information.
 #### Output
 
 Shows the all information of wallet.
+* Wallet address
+* Current balance
+* Keystore file contents 
 
 ##### Successful case
 
@@ -284,7 +287,5 @@ icli will return following error code and message.
 * Return 127: Wallet does not have enough balance.
 
 * Return 128: Transfer fee is invalid.
-
-* Return 129: Timestamp is not correct. (Reset your computer’s time and date.)
 
 * Return 130: Wallet address is wrong.

@@ -59,12 +59,13 @@ def parse_args():
             help
 
         Wallet Commands:
-            wallet create <file path> -p <password>  | -n <network id: mainnet | testnet>
-            wallet show <file path> -p <password>   | -n <network id: mainnet | testnet>
-            asset list <file path> -p <password>    | -n <network id: mainnet | testnet>
-            transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>  | -n <network id: mainnet | testnet>
 
-        IF YOU MISS --networkid, icli WILL USE MAINNET.
+            wallet create <file path> -p <password>  | -n <network id: mainnet | testnet>
+            wallet show <file path> -p <password>    | -n <network id: mainnet | testnet>
+            asset list <file path> -p <password>     | -n <network id: mainnet | testnet>
+            transfer  <to> <amount> <file path> -p <password> -f <fee=0.01> -d <decimal point=18>  | -n <network id: mainnet | testnet>
+
+        IF YOU MISS -n, icli WILL USE MAINNET.
 
           ''')
 
@@ -72,9 +73,9 @@ def parse_args():
     parser.add_argument('-p', dest='password'
                         , help='password')
     parser.add_argument('-f', dest='fee'
-                        , help='transaction fee')
+                        , help='transaction fee', type=float, default=0.01)
     parser.add_argument('-d', dest='decimal_point'
-                        , help='decimal point', default=18)
+                        , help='decimal point', default=18, type=int)
     parser.add_argument('-n', dest='network_id'
                         , help='which network', default='mainnet')
 
@@ -93,26 +94,35 @@ def call_wallet_method(command, parser):
    """
 
     args = parser.parse_args()
+    url = None
+    if args.decimal_point < 1 or args.decimal_point > 18:
+        print("Decimal point is invalid.")
+        return ExitCode.DECIMAL_POINT_INVALID.value
     try:
         url = get_selected_url(args.network_id)
     except NonExistKey:
         return ExitCode.DICTIONARY_HAS_NOT_KEY.value
 
     password = args.password
-    if len(args.command) > 1 and args.password is None:
-        password = input("You missed your password! input your password : ")
-
     if command == 'wallet create' and len(args.command) == 3:
+        if password is None:
+            password = input("You missed your password! input your password : ")
         return wallet.create_wallet(password, args.command[2])
     elif command == 'wallet show' and len(args.command) == 3:
+        if password is None:
+            password = input("You missed your password! input your password : ")
         return wallet.show_wallet(password, args.command[2], url)
     elif command == 'asset list' and len(args.command) == 3:
+        if password is None:
+            password = input("You missed your password! input your password : ")
         return wallet.show_asset_list(password, args.command[2], url)
-    elif command.split(' ')[0] == 'transfer' and len(args.command) == 4 and check_required_argument_in_args(
-            fee=args.fee, decimal_point=args.decimal_point):
+    elif command.split(' ')[0] == 'transfer' and len(args.command) == 4 \
+            and check_required_argument_in_args(fee=args.fee, decimal_point=args.decimal_point):
+        if password is None:
+            password = input("You missed your password! input your password : ")
         return wallet.transfer_value_with_the_fee(
             password, args.fee, args.decimal_point, to=args.command[1],
-            amount=args.command[2], file_path=args.command[3])
+            amount=args.command[2], file_path=args.command[3], url=url)
     elif command.split(' ')[0] == 'version':
         print(f"version : {__version__}")
     else:

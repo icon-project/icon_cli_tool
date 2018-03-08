@@ -16,7 +16,8 @@
 # limitations under the License.
 
 from enum import Enum
-from icxcli.icx import wallet
+from icxcli.icx import wallet, NoEnoughBalanceInWallet, AddressIsWrong, PasswordIsWrong, FilePathIsWrong, \
+    AmountIsInvalid, TransferFeeIsInvalid
 
 
 class ExitCode(Enum):
@@ -32,6 +33,8 @@ class ExitCode(Enum):
     TIMESTAMP_IS_NOT_CORRECT = 129
     WALLET_ADDRESS_IS_WRONG = 130
     NO_PERMISSION_TO_WRITE_FILE = 136
+    AMOUNT_IS_INVALID = 131
+    DECIMAL_POINT_INVALID = 132
 
 
 def create_wallet(password, file_path) -> int:
@@ -115,7 +118,7 @@ def show_asset_list(password, file_path, url) -> int:
         return ExitCode.FILE_PATH_IS_WRONG.value
 
 
-def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path) -> int:
+def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url) -> int:
     """ Transfer the value to the specific address with the fee.
 
     :param password: Password including alphabet character, number, and special character.
@@ -130,6 +133,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     """
     try:
         transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url)
+        print(bool(transfer_result))
         print("Succeed transfer value.")
         return ExitCode.SUCCEED.value
     except FilePathIsWrong:

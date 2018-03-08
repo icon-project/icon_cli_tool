@@ -27,7 +27,6 @@ class TestAPI(unittest.TestCase):
 
         # When
         try:
-
             address, balance, wallet_info = icx.wallet.show_wallet(password, file_path, url)
 
             # Then
@@ -52,6 +51,8 @@ class TestAPI(unittest.TestCase):
 
         # Then
         except icx.FilePathIsWrong:
+            self.assertTrue(True)
+        except FileNotFoundError:
             self.assertTrue(True)
 
     def test_show_wallet_case2(self):
