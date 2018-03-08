@@ -3,7 +3,7 @@ import os
 import unittest
 
 from icxcli import icx
-from icxcli.icx import wallet,utils
+from icxcli.icx import wallet, utils
 
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
