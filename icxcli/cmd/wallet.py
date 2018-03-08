@@ -16,8 +16,7 @@
 # limitations under the License.
 
 from enum import Enum
-from icxcli.icx import wallet, NoEnoughBalanceInWallet, AddressIsWrong, PasswordIsWrong, FilePathIsWrong, \
-    AmountIsInvalid, TransferFeeIsInvalid
+from icxcli.icx import wallet
 
 
 class ExitCode(Enum):
@@ -33,8 +32,6 @@ class ExitCode(Enum):
     TIMESTAMP_IS_NOT_CORRECT = 129
     WALLET_ADDRESS_IS_WRONG = 130
     NO_PERMISSION_TO_WRITE_FILE = 136
-    AMOUNT_IS_INVALID = 131
-    DECIMAL_POINT_INVALID = 132
 
 
 def create_wallet(password, file_path) -> int:
@@ -118,7 +115,7 @@ def show_asset_list(password, file_path, url) -> int:
         return ExitCode.FILE_PATH_IS_WRONG.value
 
 
-def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url) -> int:
+def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path) -> int:
     """ Transfer the value to the specific address with the fee.
 
     :param password: Password including alphabet character, number, and special character.
@@ -131,27 +128,8 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     :param file_path: File path for the keystore file of the wallet. type(str)
     :return: Predefined exit code
     """
-    try:
-        transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url)
-        print("Transfer value succeed.")
-        return ExitCode.SUCCEED.value
-    except FilePathIsWrong:
-        return ExitCode.FILE_PATH_IS_WRONG.value
-    except PasswordIsWrong:
-        print("Password is wrong.")
-        return ExitCode.PASSWORD_IS_WRONG.value
-    except AddressIsWrong:
-        print("Wallet address is wrong.")
-        return ExitCode.WALLET_ADDRESS_IS_WRONG.value
-    except NoEnoughBalanceInWallet:
-        print("Wallet does not have enough balance.")
-        return ExitCode.WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE.value
-    except AmountIsInvalid:
-        print("The amount you want to transfer is not valid.")
-        return ExitCode.AMOUNT_IS_INVALID.value
-    except TransferFeeIsInvalid:
-        print("Transaction Fee is invalid.")
-        return ExitCode.TRANSFER_FEE_IS_INVALID.value
+    print(password, fee, decimal_point, to, amount, file_path)
+    pass
 
 
 def store_wallet(file_path, json_string) -> int:

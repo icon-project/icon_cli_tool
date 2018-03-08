@@ -17,7 +17,7 @@
 
 import json
 import hashlib
-from secp256k1 import PrivateKey, PublicKey, FLAG_VERIFY
+from secp256k1 import PrivateKey
 
 
 class WalletInfo:
@@ -60,30 +60,6 @@ class IcxSigner(object):
         public_key_bytes = self.public_key_bytes
         return hashlib.sha3_256(public_key_bytes[1:]).digest()[-20:]
 
-    def sign(self, msg_hash):
-        """Make a signature using the hash value of msg.
-
-        :param msg_hash: Result of sha3_256(msg) type(bytes)
-        :return:
-        Signature. type(bytes)
-        """
-        private_key_object = self.__private_key
-        signature = private_key_object.ecdsa_sign(msg_hash, raw=True)
-        return private_key_object.ecdsa_serialize(signature)
-
-    def sign_recoverable(self, msg_hash):
-        """Make a recoverable signature using message hash data.
-        We can extract public key from recoverable signature.
-
-        :param msg_hash: Hash data of message. type(bytes)
-        :return:
-        type(tuple)
-        type(bytes): 65 bytes data , type(int): recovery id
-        """
-        private_key_object = self.__private_key
-        recoverable_signature = private_key_object.ecdsa_sign_recoverable(msg_hash, raw=True)
-        return private_key_object.ecdsa_recoverable_serialize(recoverable_signature)
-
     @staticmethod
     def from_bytes(data):
         return IcxSigner(data, raw=True)
@@ -102,7 +78,7 @@ class Error(Exception):
 
 
 class PasswordIsNotAcceptable(Error):
-    """Exception raised for "Password is wrong"."""
+    """Exception raised for "password is wrong"."""
     pass
 
 
@@ -126,26 +102,11 @@ class NonExistKey(Error):
     pass
 
 
-class PasswordIsWrong(Error):
-    """Exception raised for "Password is incorrect." """
+class WalletAddressIsWrong(Error):
+    """Exception raised for "Wallet address is wrong." """
     pass
 
 
-class AddressIsWrong(Error):
-    """Exception raised for "Wallet address is invalid." """
-    pass
-
-
-class NoEnoughBalanceInWallet(Error):
-    """Exception raised for "Wallet does not have enough balance." """
-    pass
-
-
-class AmountIsInvalid(Error):
-    """Exception raised for "Amount is Invalid." """
-    pass
-
-
-class TransferFeeIsInvalid(Error):
-    """Exception raised for "Transfer Fee is Invalid." """
+class WalletAddressIsWrong(Error):
+    """Exception raised for "Wallet address is wrong." """
     pass
