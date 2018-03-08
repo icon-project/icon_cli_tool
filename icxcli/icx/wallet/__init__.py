@@ -143,6 +143,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
         balance = get_balance(user_address, url, request_gen)
 
         check_balance_enough(balance, amount, fee)
+
         next(request_gen)
         response = request_gen.send(payload)
 
@@ -280,7 +281,7 @@ def get_balance(address, url, request_gen):
     next(request_gen)
     balance_content = request_gen.send(payload_for_balance).json()
 
-    wei = int(balance_content['result']['response'], 16)
-    balance = float(get_string_decimal(wei, 18))
+    wei = balance_content['result']['response']
+    balance = float(change_hex_balance_to_decimal_balance(wei))
 
     return balance

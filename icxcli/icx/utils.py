@@ -265,29 +265,6 @@ def post(url, payload):
     return requests.post(url, json=payload, verify=False)
 
 
-def get_string_decimal(value, place):
-    """Returns the value divided by the place square of 10 converted to a string.
-
-    :param value type(int)
-    """
-
-    dec_balance = int(hex_balance, 16)
-    str_dec_balance = str(dec_balance)
-    if dec_balance >= 10 ** place:
-        str_int = str_dec_balance[:len(str_dec_balance) - place]
-        str_decimal = str_dec_balance[len(str_dec_balance) - place:]
-        result_decimal_icx = f'{str_int}.{str_decimal}'
-        return result_decimal_icx
-
-    else:
-        zero = "0."
-        valPoint = len(strValue)
-        pointDifference = place - valPoint
-        strZero = "0" * pointDifference
-        result = f'{zero}{strZero}{value}'
-        return result
-
-
 def make_payload_for_get_balance(address, url):
 
     url = f'{url}v2'
@@ -322,7 +299,30 @@ def floor_point(amount_wei, decimal_point):
     :return:
     """
     str_amount = str(amount_wei)
+    if len(str_amount) < 18:
+        return amount_wei
     if decimal_point == 18:
         return amount_wei
+    return f'{str_amount[0:-(18-decimal_point)]}{"0"*(18-decimal_point)}'
 
-    return f'{str_amount[:-(18-decimal_point)]}{"0"*(18-decimal_point)}'
+
+def change_hex_balance_to_decimal_balance(hex_balance, place=18):
+    """Change hex balance to decimal decimal icx balance
+    :param: hex_balance
+    :return: result_decimal_icx: string decimal icx
+    """
+    dec_balance = int(hex_balance, 16)
+    str_dec_balance = str(dec_balance)
+    if dec_balance >= 10 ** place:
+        str_int = str_dec_balance[:len(str_dec_balance) - place]
+        str_decimal = str_dec_balance[len(str_dec_balance) - place:]
+        result_decimal_icx = f'{str_int}.{str_decimal}'
+        return result_decimal_icx
+
+    else:
+        zero = "0."
+        val_point = len(str_dec_balance)
+        point_difference = place - val_point
+        str_zero = "0" * point_difference
+        result_decimal_icx = f'{zero}{str_zero}{dec_balance}'
+        return result_decimal_icx
