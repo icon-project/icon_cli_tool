@@ -19,4 +19,4 @@ ICXCLI
 A Universal Command Line Environment for ICON.
 """
 
-__version__ = '0.10b0'
+__version__ = '0.0.1'
