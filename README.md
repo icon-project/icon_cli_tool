@@ -202,6 +202,9 @@ Show wallet information.
 #### Output
 
 Shows the all information of wallet.
+* Wallet address
+* Current balance
+* Keystore file contents 
 
 ##### Successful case
 

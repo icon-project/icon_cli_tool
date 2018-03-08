@@ -157,13 +157,11 @@ def get_address_by_privkey(privkey_bytes):
 def get_tx_hash(method, params):
     """Create tx_hash from params object.
 
-
-    :param params: The value of 'params' key in jsonrpc.
     :param method: Method name. type(str)
-
-    Returns:
-    bytes: sha3_256 hash value
+    :param params: The value of 'params' key in jsonrpc.
+    :return: bytes: sha3_256 hash value
     """
+
     tx_phrase = get_tx_phrase(method, params)
     return sha3_256(tx_phrase.encode())
 
@@ -172,11 +170,9 @@ def get_tx_phrase(method, params):
     """Create tx phrase from method and params.
     tx_phrase means input text to create tx_hash.
 
-    Args:
-    :param params: The value of 'params' key in jsonrpc. type(dict)
-    :param method: Method name. type(str)
-    Returns:
-    sha3_256 hash format without '0x' prefix
+    :param method: The value of 'params' key in jsonrpc. type(dict)
+    :param params: Method name. type(str)
+    :return: sha3_256 hash format without '0x' prefix
     """
     keys = [key for key in params]
 
@@ -221,12 +217,10 @@ def get_params_phrase(params):
 
 def sign_recoverable(private_key_bytes, tx_hash_bytes):
     """
-    Args:
-    :param tx_hash_bytes: 32byte tx_hash data. type(bytes)
-    :param private_key_bytes: Byte private key value.
 
-    Returns:
-    signature_bytes + recovery_id(1)
+    :param private_key_bytes: Byte private key value.
+    :param tx_hash_bytes: 32 byte tx_hash data. type(bytes)
+    :return: signature_bytes + recovery_id(1)
     """
     signer = IcxSigner.from_bytes(private_key_bytes)
     signature_bytes, recovery_id = signer.sign_recoverable(tx_hash_bytes)
@@ -237,18 +231,18 @@ def sign_recoverable(private_key_bytes, tx_hash_bytes):
 
 def sign(private_key_bytes, tx_hash_bytes):
     """
-    Args:
-    :param private_key_bytes. type(bytes)
-    :param tx_hash_bytes. type(bytes)
 
-    Returns:
-    base64-encoded string of recoverable signature data
+    :param private_key_bytes:
+    :param tx_hash_bytes:
+    :return: base64-encoded string of recoverable signature data
     """
+
     recoverable_sig_bytes = sign_recoverable(private_key_bytes, tx_hash_bytes)
     return base64.b64encode(recoverable_sig_bytes)
 
 
 def create_jsonrpc_request_content(_id, method, params):
+
     content = {
         'jsonrpc': '2.0',
         'method': method,
@@ -262,12 +256,14 @@ def create_jsonrpc_request_content(_id, method, params):
 
 
 def post(url, payload):
-    return requests.post(url, json=payload, verify=False)
+    try:
+        r = requests.post(url, json=payload, verify=False)
+        return r
+    except requests.exceptions.Timeout:
+        raise RuntimeError("Timeout happened. Check your internet connection status.")
 
 
-def make_payload_for_get_balance(address, url):
-
-    url = f'{url}v2'
+def get_payload_of_json_rpc_get_balance(address, url):
 
     method = 'icx_getBalance'
     params = {'address': address}

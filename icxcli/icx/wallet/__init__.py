@@ -27,7 +27,7 @@ from icxcli.icx import WalletInfo
 from icxcli.icx import utils
 from icxcli.icx import IcxSigner
 from icxcli.icx.utils import get_address_by_privkey, icx_to_wei, get_timestamp_us, get_tx_hash, sign, \
-    create_jsonrpc_request_content, validate_address, make_payload_for_get_balance, floor_point, check_balance_enough, \
+    create_jsonrpc_request_content, validate_address, get_payload_of_json_rpc_get_balance, floor_point, check_balance_enough, \
     icx_str_to_wei, get_fee_wei
 from icxcli.icx.utils import post
 from icxcli.icx.utils import change_hex_balance_to_decimal_balance
@@ -124,7 +124,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     """
     try:
         url = f'{url}v2'
-        private_key_bytes = key_from_key_store(file_path, bytes(password, 'utf-8'))
+        private_key_bytes = __key_from_key_store(file_path, bytes(password, 'utf-8'))
         user_address = get_address_by_privkey(private_key_bytes)
         validate_address(user_address[2:])
         validate_address(to[2:])
@@ -137,18 +137,15 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
         fee_wei = get_fee_wei(fee)
         fixed_fee = int(floor_point(fee_wei, decimal_point))
 
-        params = make_params(user_address, to, fixed_amount, fixed_fee, method, private_key_bytes)
+        params = __make_params(user_address, to, fixed_amount, fixed_fee, method, private_key_bytes)
         payload = create_jsonrpc_request_content(0, method, params)
 
+        # Request the balance repeatedly until we get the response from ICON network.
         request_gen = request_generator(url)
-
-        balance = get_balance(user_address, url, request_gen)
-
+        balance = __get_balance_after_trasfer(user_address, url, request_gen)
         check_balance_enough(balance, amount, fee)
-
         next(request_gen)
         response = request_gen.send(payload)
-
         return response
 
     except FileNotFoundError:
@@ -161,7 +158,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
         raise PasswordIsWrong
 
 
-def make_params(user_address, to, amount, fee, method, private_key_bytes):
+def __make_params(user_address, to, amount, fee, method, private_key_bytes):
     """Make params for jsonrpc format.
 
     :param user_address: Address of user's wallet.
@@ -219,7 +216,7 @@ def __make_key_store_content(password):
     return key_store_contents
 
 
-def key_from_key_store(file_path, password):
+def __key_from_key_store(file_path, password):
     """
 
     :param file_path:
@@ -271,7 +268,7 @@ def request_generator(url):
         yield post(url, payload)
 
 
-def get_balance(address, url, request_gen):
+def __get_balance_after_trasfer(address, url, request_gen):
     """ Get balance of the address indicated by address for check balance before transfer icx.
 
     :param address: Icx account address starting with 'hx'
@@ -279,7 +276,7 @@ def get_balance(address, url, request_gen):
     :param request_gen:
     :return: Balance of the user's wallet.
     """
-    payload_for_balance = make_payload_for_get_balance(address, url)
+    payload_for_balance = get_payload_of_json_rpc_get_balance(address, url)
 
     next(request_gen)
     balance_content = request_gen.send(payload_for_balance).json()

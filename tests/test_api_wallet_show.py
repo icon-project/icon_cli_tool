@@ -27,7 +27,6 @@ class TestAPI(unittest.TestCase):
 
         # When
         try:
-
             address, balance, wallet_info = icx.wallet.show_wallet(password, file_path, url)
 
             # Then
