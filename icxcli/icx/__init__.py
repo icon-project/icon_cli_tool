@@ -126,16 +126,26 @@ class NonExistKey(Error):
     pass
 
 
-class PasswordIsIncorrect(Error):
+class PasswordIsWrong(Error):
     """Exception raised for "Password is incorrect." """
     pass
 
 
-class WalletAddressIsInvalid(Error):
+class AddressIsWrong(Error):
     """Exception raised for "Wallet address is invalid." """
     pass
 
 
-class NotEnoughBalance(Error):
+class NoEnoughBalanceInWallet(Error):
     """Exception raised for "Wallet does not have enough balance." """
+    pass
+
+
+class AmountIsInvalid(Error):
+    """Exception raised for "Amount is Invalid." """
+    pass
+
+
+class TransferFeeIsInvalid(Error):
+    """Exception raised for "Transfer Fee is Invalid." """
     pass

@@ -17,16 +17,18 @@
 
 import json
 import os
+import codecs
 
 from eth_keyfile import create_keyfile_json, extract_key_from_keyfile
 
 from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToWriteFile, FileExists, \
-    PasswordIsIncorrect, WalletAddressIsInvalid
+    PasswordIsWrong
 from icxcli.icx import WalletInfo
 from icxcli.icx import utils
 from icxcli.icx import IcxSigner
 from icxcli.icx.utils import get_address_by_privkey, icx_to_wei, get_timestamp_us, get_tx_hash, sign, \
-    create_jsonrpc_request_content, validate_address, make_payload_for_get_balance, floor_point, check_balance_enough
+    create_jsonrpc_request_content, validate_address, make_payload_for_get_balance, floor_point, check_balance_enough, \
+    icx_str_to_wei, get_fee_wei
 from icxcli.icx.utils import post
 from icxcli.icx.utils import get_string_decimal
 import requests
@@ -69,7 +71,7 @@ def show_wallet(password, file_path, url):
     :param password:  Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     :param file_path:
-    :param url:
+    :param url: api url. type(str)
     :return:
     """
 
@@ -117,7 +119,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     :param to: Address of wallet to receive the asset.
     :param amount: Amount of money. *The decimal point number is valid up to tenth power of 18. *
     :param file_path: File path for the keystore file of the wallet.
-    :param url:
+    :param url: Api url. type(str)
     :return:
     """
     try:
@@ -126,20 +128,19 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
         user_address = get_address_by_privkey(private_key_bytes)
         _ = validate_address(user_address[2:])
         method = 'icx_sendTransaction'
-        amount_wei = icx_to_wei(amount)
-        fee_wei = icx_to_wei(amount)
+
+        amount_wei = icx_str_to_wei(amount)
         fixed_amount = int(floor_point(amount_wei, decimal_point))
+
+        fee_wei = get_fee_wei(fee)
         fixed_fee = int(floor_point(fee_wei, decimal_point))
 
-        params = make_params(user_address, to, fixed_amount, fixed_amount, method, private_key_bytes, decimal_point)
+        params = make_params(user_address, to, fixed_amount, fixed_fee, method, private_key_bytes)
         payload = create_jsonrpc_request_content(0, method, params)
 
-        payload_for_balance = make_payload_for_get_balance(user_address, url)
         request_gen = request_generator(url)
-        next(request_gen)
-        balance_content = request_gen.send(payload_for_balance).json()
-        wei = int(balance_content['result']['response'], 16)
-        balance = float(get_string_decimal(wei, 18))
+
+        balance = get_balance(user_address, url, request_gen)
 
         check_balance_enough(balance, amount, fee)
         next(request_gen)
@@ -154,16 +155,26 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
         print(f"{file_path} is a directory.")
         raise FilePathIsWrong
     except ValueError:
-        print("Incorrect password.")
-        raise PasswordIsIncorrect
+        raise PasswordIsWrong
 
 
-def make_params(user_address, to, amount, fee, method, private_key_bytes, decimal_point):
+def make_params(user_address, to, amount, fee, method, private_key_bytes):
+    """Make params for jsonrpc format.
+
+    :param user_address: Address of user's wallet.
+    :param to: Address of wallet to receive the asset.
+    :param amount: Amount of money.
+    :param fee: Transaction fee.
+    :param method: Method type. type(str)
+    :param private_key_bytes: Private key of user's wallet.
+    :return:
+    type(dict)
+    """
     params = {
         'from': user_address,
         'to': to,
         'value': hex(amount),
-        'fee': hex(icx_to_wei(0.01)),
+        'fee': hex(fee),
         'timestamp': str(get_timestamp_us())
     }
     tx_hash_bytes = get_tx_hash(method, params)
@@ -237,18 +248,14 @@ def __get_balance(address, url):
 
 
 def __read_wallet(file_path):
-
-    """ Read keystore file
-
+    """Read keystore file
     :param file_path:
     :return: wallet_info
     """
-
     if not os.path.isfile(file_path):
         raise FileNotFoundError
-
-    with open(file_path, 'r') as f:
-        wallet_info = json.loads(f.read())
+    with codecs.open(file_path, 'r', 'utf-8-sig') as f:
+        wallet_info = json.load(f)
         f.close()
 
     return wallet_info
@@ -258,3 +265,22 @@ def request_generator(url):
     while True:
         payload = yield
         yield post(url, payload)
+
+
+def get_balance(address, url, request_gen):
+    """ Get balance of the address indicated by address for check balance before transfer icx.
+
+    :param address: Icx account address starting with 'hx'
+    :param url: Api url. type(str)
+    :param request_gen:
+    :return: Balance of the user's wallet.
+    """
+    payload_for_balance = make_payload_for_get_balance(address, url)
+
+    next(request_gen)
+    balance_content = request_gen.send(payload_for_balance).json()
+
+    wei = int(balance_content['result']['response'], 16)
+    balance = float(get_string_decimal(wei, 18))
+
+    return balance

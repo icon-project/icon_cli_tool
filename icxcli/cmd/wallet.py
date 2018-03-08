@@ -16,7 +16,8 @@
 # limitations under the License.
 
 from enum import Enum
-from icxcli.icx import wallet, NotEnoughBalance
+from icxcli.icx import wallet, NoEnoughBalanceInWallet, AddressIsWrong, PasswordIsWrong, FilePathIsWrong, \
+    AmountIsInvalid, TransferFeeIsInvalid
 
 
 class ExitCode(Enum):
@@ -32,6 +33,8 @@ class ExitCode(Enum):
     TIMESTAMP_IS_NOT_CORRECT = 129
     WALLET_ADDRESS_IS_WRONG = 130
     NO_PERMISSION_TO_WRITE_FILE = 136
+    AMOUNT_IS_INVALID = 131
+    DECIMAL_POINT_INVALID = 132
 
 
 def create_wallet(password, file_path) -> int:
@@ -132,17 +135,23 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
         transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url)
         print("Transfer value succeed.")
         return ExitCode.SUCCEED.value
-    except wallet.FilePathIsWrong:
+    except FilePathIsWrong:
         return ExitCode.FILE_PATH_IS_WRONG.value
-    except wallet.PasswordIsIncorrect:
+    except PasswordIsWrong:
+        print("Password is wrong.")
         return ExitCode.PASSWORD_IS_WRONG.value
-    except wallet.WalletAddressIsInvalid:
-        print("Wallet address is invalid.")
+    except AddressIsWrong:
+        print("Wallet address is wrong.")
         return ExitCode.WALLET_ADDRESS_IS_WRONG.value
-    except NotEnoughBalance:
+    except NoEnoughBalanceInWallet:
         print("Wallet does not have enough balance.")
-        return ExitCode.WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE
-
+        return ExitCode.WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE.value
+    except AmountIsInvalid:
+        print("The amount you want to transfer is not valid.")
+        return ExitCode.AMOUNT_IS_INVALID.value
+    except TransferFeeIsInvalid:
+        print("Transaction Fee is invalid.")
+        return ExitCode.TRANSFER_FEE_IS_INVALID.value
 
 
 def store_wallet(file_path, json_string) -> int:

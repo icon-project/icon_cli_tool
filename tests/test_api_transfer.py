@@ -12,7 +12,8 @@ class TestAPI(unittest.TestCase):
     """
 
     def test_get_tx(self):
-
+        """Test for get_tx_hash function.
+        """
         # Given
         method = "method"
         params = {"param1": 1}
@@ -25,6 +26,8 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(expect, tx_hash)
 
     def test_sign(self):
+        """Test for sign function.
+        """
 
         # Given
         tx_hash = b'\xc0\x84\x19o\xd3\xe6<\x9e%\xd9\x05\xd4\x8di\x17\xd3\x02<a\xc6\xa2\xb2\xec I-\x12\xe1n\xd5\xac:'

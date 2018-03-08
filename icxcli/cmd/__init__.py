@@ -59,12 +59,12 @@ def parse_args():
             help
 
         Wallet Commands:
-            wallet create <file path> -p <password>  | --networkid <testnet>
-            wallet show <file path> -p <password>   | --networkid <testnet>
-            asset list <file path> -p <password>        | --networkid <testnet>
-            transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>  | --n <network id>
+            wallet create <file path> -p <password>  | -n <network id=mainnet>
+            wallet show <file path> -p <password>   | -n <network id=mainnet>
+            asset list <file path> -p <password>        | -n <network id=mainnet>
+            transfer <to> <amount> <file path> -p <password> -f <fee=0.01> -d <decimal point=18> |-n <network id=mainnet>
 
-        IF YOU MISS --networkid, icli WILL USE MAINNET.
+        IF YOU MISS -n, icli WILL USE MAINNET.
 
           ''')
 
@@ -94,6 +94,9 @@ def call_wallet_method(command, parser):
 
     args = parser.parse_args()
     url = None
+    if args.decimal_point < 1 or args.decimal_point > 18:
+        print("Decimal point is invalid.")
+        return ExitCode.DECIMAL_POINT_INVALID
     try:
         url = get_selected_url(args.network_id)
     except NonExistKey:
@@ -118,7 +121,7 @@ def call_wallet_method(command, parser):
             password = input("You missed your password! input your password : ")
         return wallet.transfer_value_with_the_fee(
             password, args.fee, args.decimal_point, to=args.command[1],
-            amount=float(args.command[2]), file_path=args.command[3], url=url)
+            amount=args.command[2], file_path=args.command[3], url=url)
     elif command.split(' ')[0] == 'version':
         print(f"version : {__version__}")
     else:
