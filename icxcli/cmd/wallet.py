@@ -54,7 +54,7 @@ def create_wallet(password, file_path) -> int:
         return ExitCode.SUCCEED.value
     except wallet.PasswordIsNotAcceptable:
         print("Fail: Password is not acceptable. ")
-        print("Password including alphabet character, number, and special character.")
+        print("Passwords must be at least 8 characters long including alphabet, number, and special character.")
         return ExitCode.PASSWORD_IS_WRONG.value
     except wallet.FilePathIsWrong:
         print(f"Fail: Fail to open {file_path}. Change file path.")
