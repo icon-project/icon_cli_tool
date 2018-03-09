@@ -23,7 +23,7 @@ class TestAPI(unittest.TestCase):
         Case when created wallet successfully.
         """
         # Given
-        password="w3fasd"
+        password="Adas21312**"
         file_path=os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -49,7 +49,7 @@ class TestAPI(unittest.TestCase):
         Case when user enters a directory that does not exist.
         """
         # Given
-        password = "w3fasd"
+        password = "Adas21312**"
         wallet_name = "wname"
         file_path=os.path.join(TEST_DIR,"unknown_folder" ,"test_keystore.txt")
 
@@ -83,7 +83,7 @@ class TestAPI(unittest.TestCase):
         Case when user enters a directory without permission to write file.
         """
         # Given
-        password = "Adas2131231"
+        password = "Adas21312**"
         wallet_name = "wname"
         file_path=os.path.join("/", "test_keystore.txt")
 
@@ -99,7 +99,7 @@ class TestAPI(unittest.TestCase):
         Case when user tries to overwrite keystore file.
         """
         # Given
-        password = "Adas2][231"
+        password = "Adas21312**"
         wallet_name = "wname"
         file_path = os.path.join(TEST_DIR, "test_keystore2.txt")
 
@@ -120,7 +120,7 @@ class TestAPI(unittest.TestCase):
         """Check the file is saved in the correct format.
         """
         # Given
-        password = "Adas2131231"
+        password = "Adas21312**"
         wallet_name = "wname"
         file_path=os.path.join(TEST_DIR, "test_keystore.txt")
 

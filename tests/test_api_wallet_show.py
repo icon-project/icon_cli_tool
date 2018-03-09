@@ -22,7 +22,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "Adas2131231"
+        password = "Adas21312**"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -42,7 +42,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "Adas2131231"
+        password = "Adas21312**"
         file_path = os.path.join(TEST_DIR, "unknown_folder", "test_keystore.txt")
 
         # When
@@ -61,7 +61,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "wrong_password"
+        password = "1234**wrongpassword"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -79,7 +79,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "Adas2131231"
+        password = "Adas21312**"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -96,7 +96,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "Adas2131231"
+        password = "Adas21312**"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When

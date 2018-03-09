@@ -149,3 +149,9 @@ class AmountIsInvalid(Error):
 class TransferFeeIsInvalid(Error):
     """Exception raised for "Transfer Fee is Invalid." """
     pass
+
+
+class FilePathWithoutFileName(Error):
+    """Exception raised for "File Path without a file name." """
+    pass
+

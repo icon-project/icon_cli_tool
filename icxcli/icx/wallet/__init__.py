@@ -22,7 +22,7 @@ import codecs
 from eth_keyfile import create_keyfile_json, extract_key_from_keyfile
 
 from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToWriteFile, FileExists, \
-    PasswordIsWrong
+    PasswordIsWrong, FilePathWithoutFileName
 from icxcli.icx import WalletInfo
 from icxcli.icx import utils
 from icxcli.icx import IcxSigner
@@ -63,6 +63,8 @@ def create_wallet(password, file_path):
         raise NoPermissionToWriteFile
     except FileNotFoundError:
         raise FilePathIsWrong
+    except IsADirectoryError:
+        raise FilePathWithoutFileName
 
 
 def show_wallet(password, file_path, url):

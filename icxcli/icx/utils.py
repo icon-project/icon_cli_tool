@@ -32,8 +32,8 @@ def validate_password(password) -> bool:
     True: When the password is valid format
     False: When the password is invalid format
     """
-    password_regular_expression = re.compile(r'[a-zA-Z0-9\'";:/.,<>?!@#$%^&*()_+=-\]\\[{}]+$')
-    return bool(password_regular_expression.match(password))
+
+    return bool(re.match(r'^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=*-]).{8,}$', password))
 
 
 def hex_to_bytes(value):
