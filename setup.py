@@ -33,7 +33,7 @@ setup_options = {
     'url': 'https://github.com/icon-project/icon_cli_tool',
     'scripts': ['bin/icli'],
     'packages': find_packages(exclude=['tests*']),
-    'package_data': {'icxcli': ['README.rst']},
+    'package_data': {'icxcli': ['README.rst', 'cmd/network_conf.json'] },
     'license': "Apache License 2.0",
     'install_requires': requires,
     'classifiers': [
