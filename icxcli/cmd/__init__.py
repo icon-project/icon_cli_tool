@@ -54,6 +54,10 @@ def parse_args():
     """
 
     parser = argparse.ArgumentParser(prog='icli.py', usage='''
+    
+    ==============================
+    icli: ICON CLI tool 
+    ==============================
         Normal commands:
             version
             help
@@ -124,7 +128,7 @@ def call_wallet_method(command, parser):
             password, args.fee, args.decimal_point, to=args.command[1],
             amount=args.command[2], file_path=args.command[3], url=url)
     elif command.split(' ')[0] == 'version':
-        print(f"version : {__version__}")
+        print(f"icli {__version__}")
     else:
         parser.print_help()
         return 0

@@ -56,22 +56,23 @@ ex) hxaa688d74eb5f98b577883ca203535d2aa4f0838c
 
 ## Installation
 
-1. Clone this repository.
 
-2. Change the just cloned project directory.
+The easiest way to install ```icxcli``` is to use [pip](http://www.pip-installer.org/en/latest/):
 
-3. Execute following scripts.
+```$ pip install icxcli```
 
-```shell
-$ python3 -m python3 venv
-$ source venv/bin/activate
-$ pip install -r requirements
-$ icli help
-```
+or, if you are not installing in a virtualenv:
+
+```$ sudo pip install icxcli ```
+
+If you have the aws-cli installed and want to upgrade to the latest version you can run:
+
+``` $ pip install --upgrade icxcli ```
+
 
 ## Run CLI
 
- Run command icli in command line.  There are many sub commands for ICX service. You can get the help page by adding help.
+ Run command ```icli``` in command line.  There are many sub commands for ICX service. You can get the help page by adding help.
 
 
 ```shell
