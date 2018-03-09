@@ -52,6 +52,7 @@ def get_timestamp_us():
 
 def icx_to_wei(icx):
     """Convert amount in icx unit to wei unit.
+
     :param icx: 1icx = 10**18 wei
     :return:
     """
@@ -60,6 +61,7 @@ def icx_to_wei(icx):
 
 def icx_str_to_wei(icx):
     """Convert amount in icx unit to wei unit.
+
     :param icx: type(str)
     :return:
     Wei value of icx.
@@ -67,6 +69,7 @@ def icx_str_to_wei(icx):
     """
     try:
         icx_float = float(icx)
+        icx_wei = 0
         if icx_float <= 0:
             raise AmountIsInvalid
 
@@ -76,13 +79,22 @@ def icx_str_to_wei(icx):
             raise AmountIsInvalid
         elif icx[0] == "0" and icx[1] == ".":
             decimal_length = len(icx[2:])
-            return int(f'{icx[2:]}{"0"*(18-decimal_length)}')
+            if decimal_length > 18:
+                icx = icx[:18]
+            icx_wei = int(f'{icx[2:]}{"0"*(18-decimal_length)}')
+
         elif icx.find(".") == -1:
-            return int(f'{icx}{"0"*18}')
+            icx_wei = int(f'{icx}{"0"*18}')
         else:
             num, decimal = str.split(icx, ".")
             decimal_length = len(decimal)
-            return int(f'{num}{decimal}{"0"*(18-decimal_length)}')
+            if decimal_length > 18:
+                decimal = decimal[:18]
+            icx_wei = int(f'{num}{decimal}{"0"*(18-decimal_length)}')
+
+        if icx_wei == 0:
+            raise AmountIsInvalid
+        return icx_wei
 
     except ValueError:
         raise AmountIsInvalid
@@ -90,6 +102,7 @@ def icx_str_to_wei(icx):
 
 def get_fee_wei(fee):
     """Convert fee in icx unit to wei unit.
+
     :param fee: Transaction fee. type(float)
     :return:
     Wei value of fee.
@@ -105,6 +118,7 @@ def validate_address(address) -> bool:
         int(address, 16)
         if len(address) == 40:
             return True
+        raise AddressIsWrong
     except ValueError:
         raise AddressIsWrong
 
@@ -287,23 +301,28 @@ def check_balance_enough(balance, amount, fee):
     pass
 
 
-def floor_point(amount_wei, decimal_point):
+def floor_point(icx_wei, decimal_point):
     """To process up to 'decimal_point' decimal places, change it backwards to 0 by (18-decimal_point).
 
-    :param amount_wei: Wei value of amount. type(int)
+    :param icx_wei: Wei value of amount. type(int)
     :param decimal_point: A user can change the decimal point to express all numbers including fee and amount.
     :return:
     """
-    str_amount = str(amount_wei)
-    if len(str_amount) < 18:
-        return amount_wei
+    str_icx = str(icx_wei)
+    modified_icx = str_icx
     if decimal_point == 18:
-        return amount_wei
-    return f'{str_amount[0:-(18-decimal_point)]}{"0"*(18-decimal_point)}'
+        modified_icx = str_icx
+    else:
+        modified_icx = f'{str_icx[0:-(18-decimal_point)]}{"0"*(18-decimal_point)}'
+
+    if int(modified_icx) <= 0:
+        return "0"
+    return modified_icx
 
 
 def change_hex_balance_to_decimal_balance(hex_balance, place=18):
-    """Change hex balance to decimal decimal icx balance
+    """Change hex balance to decimal decimal icx balance.
+
     :param: hex_balance
     :return: result_decimal_icx: string decimal icx
     """
@@ -322,3 +341,10 @@ def change_hex_balance_to_decimal_balance(hex_balance, place=18):
         str_zero = "0" * point_difference
         result_decimal_icx = f'{zero}{str_zero}{dec_balance}'
         return result_decimal_icx
+
+
+def check_amount_and_fee_is_valid(amount, fee):
+    if int(amount) <= 0:
+        raise AmountIsInvalid
+    if int(fee) <= 0:
+        raise TransferFeeIsInvalid

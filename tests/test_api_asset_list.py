@@ -23,7 +23,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "w3fasd"
+        password = "Adas2131231"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -47,7 +47,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "w3fasd"
+        password = "Adas2131231"
         file_path = os.path.join(TEST_DIR, "unknown_folder", "test_keystore.txt")
 
         # When
@@ -65,7 +65,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "123 4"
+        password = "wrongPassword"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -73,7 +73,7 @@ class TestAPI(unittest.TestCase):
             address, balance = icx.wallet.show_asset_list(password, file_path, url)
 
         # Then
-        except icx.PasswordIsNotAcceptable:
+        except icx.PasswordIsWrong:
             self.assertTrue(True)
 
     def test_change_hex_balance_to_decimal_balance_case1(self):
@@ -117,7 +117,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "w3fasd"
+        password = "Adas2131231"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When

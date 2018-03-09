@@ -2,7 +2,7 @@ import os
 import unittest
 
 from icxcli.icx.utils import get_tx_hash, sign
-from icxcli.icx import wallet, utils, FilePathIsWrong, PasswordIsWrong, NoEnoughBalanceInWallet, TransferFeeIsInvalid, \
+from icxcli.icx import wallet, FilePathIsWrong, PasswordIsWrong, NoEnoughBalanceInWallet, TransferFeeIsInvalid, \
     AddressIsWrong
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 url = 'https://testwallet.icon.foundation/api/'
