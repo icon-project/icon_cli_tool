@@ -24,6 +24,7 @@ class ExitCode(Enum):
     """Exit codes for command line interface
     """
     SUCCEED = 0
+    FILE_PATH_WITHOUT_FILE_NAME = 121
     FILE_PATH_IS_WRONG = 122
     PASSWORD_IS_WRONG = 123
     FILE_EXISTS = 124
@@ -64,6 +65,9 @@ def create_wallet(password, file_path) -> int:
     except wallet.FileExists:
         print(f"Fail: {file_path} exists. Change keystore file name.")
         return ExitCode.FILE_EXISTS.value
+    except wallet.FilePathWithoutFileName:
+        print(f"Fail: File path needs a file name. Change file path.")
+        return ExitCode.FILE_PATH_WITHOUT_FILE_NAME.value
 
 
 def show_wallet(password, file_path, url) -> int:
