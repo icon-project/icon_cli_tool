@@ -17,7 +17,7 @@
 
 import json
 import hashlib
-from secp256k1 import PrivateKey, PublicKey, FLAG_VERIFY
+from secp256k1 import PrivateKey
 
 
 class WalletInfo:

@@ -75,7 +75,6 @@ def show_wallet(password, file_path, url) -> int:
     :param url: api url. type(str)
     :return: Predefined exit code
     """
-
     try:
         wallet_address, balance, wallet_info = wallet.show_wallet(password, file_path, url)
         print(f"Succeed to show wallet in {file_path}. ")
@@ -90,11 +89,13 @@ def show_wallet(password, file_path, url) -> int:
     except wallet.FilePathIsWrong:
         print(f"Fail: Fail to open {file_path}. Change file path.")
         return ExitCode.FILE_PATH_IS_WRONG.value
+    except PasswordIsWrong:
+        print("Password is wrong.")
+        return ExitCode.PASSWORD_IS_WRONG.value
 
 
 def show_asset_list(password, file_path, url) -> int:
     """ Enumerate the list of all the assets of the wallet. Show the balance.
-
     :param password: Password including alphabet character, number, and special character.
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     type(str)
@@ -102,7 +103,6 @@ def show_asset_list(password, file_path, url) -> int:
     :param url: api url. type(str)
     :return: Predefined exit code
     """
-
     try:
         wallet_address, balance = wallet.show_asset_list(password, file_path, url)
         print(f"Succeed to show asset list in {file_path}. ")
@@ -116,6 +116,9 @@ def show_asset_list(password, file_path, url) -> int:
     except wallet.FilePathIsWrong:
         print(f"Fail: Fail to open {file_path}. Change file path.")
         return ExitCode.FILE_PATH_IS_WRONG.value
+    except PasswordIsWrong:
+        print("Password is wrong.")
+        return ExitCode.PASSWORD_IS_WRONG.value
 
 
 def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url) -> int:
@@ -133,7 +136,6 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     """
     try:
         transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url)
-        print(bool(transfer_result))
         print("Succeed transfer value.")
         return ExitCode.SUCCEED.value
     except FilePathIsWrong:

@@ -1,4 +1,3 @@
-import json
 import os
 import unittest
 
@@ -133,6 +132,7 @@ class TestAPI(unittest.TestCase):
             self.assertTrue(utils.validate_key_store_file(file_path))
         except:
             self.assertTrue(False) # Never happen this case.
+
 
 if __name__ == "__main__":
     unittest.main()
