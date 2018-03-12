@@ -29,7 +29,7 @@ from icxcli.icx import IcxSigner
 from icxcli.icx.utils import get_address_by_privkey, icx_to_wei, get_timestamp_us, get_tx_hash, sign, \
     create_jsonrpc_request_content, validate_address, get_payload_of_json_rpc_get_balance, floor_point, \
     check_balance_enough, \
-    icx_str_to_wei, get_fee_wei, check_amount_and_fee_is_valid
+    icx_str_to_wei, get_fee_wei, check_amount_and_fee_is_valid, validate_key_store_file
 from icxcli.icx.utils import post
 from icxcli.icx.utils import change_hex_balance_to_decimal_balance
 import requests
@@ -80,6 +80,7 @@ def show_wallet(password, file_path, url):
         raise PasswordIsNotAcceptable
 
     try:
+        validate_key_store_file(file_path)
         private_key_bytes = __key_from_key_store(file_path, bytes(password, 'utf-8'))
 
         wallet_info = __read_wallet(file_path)
@@ -105,6 +106,7 @@ def show_asset_list(password, file_path, url):
         raise PasswordIsNotAcceptable
 
     try:
+        validate_key_store_file(file_path)
         private_key_bytes = __key_from_key_store(file_path, bytes(password, 'utf-8'))
         wallet_info = __read_wallet(file_path)
         wallet_address = wallet_info['address']
@@ -131,6 +133,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     """
     try:
         url = f'{url}v2'
+        validate_key_store_file(file_path)
         private_key_bytes = __key_from_key_store(file_path, bytes(password, 'utf-8'))
         user_address = get_address_by_privkey(private_key_bytes)
         validate_address(user_address[2:])

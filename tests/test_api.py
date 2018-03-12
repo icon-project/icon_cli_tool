@@ -1,6 +1,8 @@
 import os
 import unittest
 
+import eth_keyfile
+
 from icxcli import icx
 from icxcli.icx import wallet, utils
 
@@ -132,6 +134,18 @@ class TestAPI(unittest.TestCase):
             self.assertTrue(utils.validate_key_store_file(file_path))
         except:
             self.assertTrue(False) # Never happen this case.
+
+    def test_validate_key_store_file(self):
+        """Check the file is saved in the correct format.
+        """
+        # Given
+        file_path = os.path.join(TEST_DIR, "test_keystore2.txt")
+
+        # When
+        # key_file = eth_keyfile.load_keyfile(file_path)
+
+        # Then
+        self.assertTrue(utils.validate_key_store_file(file_path))
 
 
 if __name__ == "__main__":

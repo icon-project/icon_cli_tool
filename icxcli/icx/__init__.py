@@ -155,3 +155,7 @@ class FilePathWithoutFileName(Error):
     """Exception raised for "File Path without a file name." """
     pass
 
+
+class NotAKeyStoreFile(Error):
+    """Exception raised for 'Not a Key Store File.' """
+    pass
