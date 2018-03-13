@@ -16,14 +16,9 @@
 # limitations under the License.
 
 from enum import Enum
-<<<<<<< HEAD
-=======
 from icxcli.icx import wallet, NoEnoughBalanceInWallet, AddressIsWrong, PasswordIsWrong, FilePathIsWrong, \
     AmountIsInvalid, TransferFeeIsInvalid, FeeIsBiggerThanAmount, NotAKeyStoreFile
->>>>>>> cc334605cb3e2ab77e48253c553b2d37f098995b
 import json
-from icxcli.icx import wallet, NoEnoughBalanceInWallet, AddressIsWrong, PasswordIsWrong, FilePathIsWrong, \
-    AmountIsInvalid, TransferFeeIsInvalid, FeeIsBiggerThanAmount, NotAKeyStoreFile
 
 
 class ExitCode(Enum):
@@ -34,7 +29,7 @@ class ExitCode(Enum):
     FILE_PATH_IS_WRONG = 122
     PASSWORD_IS_WRONG = 123
     FILE_EXISTS = 124
-    DICTIONARY_HAS_NOT_KEY = 125
+    NETWORK_ID_IS_WRONG = 125
     WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE = 127
     TRANSFER_FEE_IS_INVALID = 128
     TIMESTAMP_IS_NOT_CORRECT = 129
@@ -173,21 +168,12 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     except TransferFeeIsInvalid:
         print("Transaction Fee is invalid.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
-<<<<<<< HEAD
     except FeeIsBiggerThanAmount:
         print("Fee is bigger than transaction amount. Ple∂ase check your fee again.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
-<<<<<<< HEAD
     except NotAKeyStoreFile:
         print(f"{file_path} is not a Key store File.")
         return ExitCode.NOT_A_KEY_STORE_FILE.value
-=======
-=======
-    except NotAKeyStoreFile:
-        print(f"{file_path} is not a Key store File.")
-        return ExitCode.NOT_A_KEY_STORE_FILE.value
->>>>>>> origin/develop
->>>>>>> cc334605cb3e2ab77e48253c553b2d37f098995b
 
 
 def store_wallet(file_path, json_string) -> int:
