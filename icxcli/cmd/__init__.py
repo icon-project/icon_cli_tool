@@ -113,7 +113,7 @@ def call_wallet_method(command, parser):
     try:
         url = get_selected_url(args.network_id)
     except NonExistKey:
-        return ExitCode.DICTIONARY_HAS_NOT_KEY.value
+        return ExitCode.NETWORK_ID_IS_WRONG.value
 
     password = args.password
     if command == 'wallet create' and len(args.command) == 3:
