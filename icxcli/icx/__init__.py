@@ -160,14 +160,7 @@ class FeeIsBiggerThanAmount(Error):
     """Exception raised for "Fee is bigger than Amount" """
     pass
 
-<<<<<<< HEAD
 
 class NotAKeyStoreFile(Error):
     """Exception raised for 'Not a Key Store File.' """
     pass
-
-=======
-class NotAKeyStoreFile(Error):
-    """Exception raised for 'Not a Key Store File.' """
-    pass
->>>>>>> cc334605cb3e2ab77e48253c553b2d37f098995b
