@@ -16,6 +16,11 @@
 # limitations under the License.
 
 from enum import Enum
+<<<<<<< HEAD
+=======
+from icxcli.icx import wallet, NoEnoughBalanceInWallet, AddressIsWrong, PasswordIsWrong, FilePathIsWrong, \
+    AmountIsInvalid, TransferFeeIsInvalid, FeeIsBiggerThanAmount, NotAKeyStoreFile
+>>>>>>> cc334605cb3e2ab77e48253c553b2d37f098995b
 import json
 from icxcli.icx import wallet, NoEnoughBalanceInWallet, AddressIsWrong, PasswordIsWrong, FilePathIsWrong, \
     AmountIsInvalid, TransferFeeIsInvalid, FeeIsBiggerThanAmount, NotAKeyStoreFile
@@ -168,12 +173,21 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     except TransferFeeIsInvalid:
         print("Transaction Fee is invalid.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
+<<<<<<< HEAD
     except FeeIsBiggerThanAmount:
         print("Fee is bigger than transaction amount. Ple∂ase check your fee again.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
+<<<<<<< HEAD
     except NotAKeyStoreFile:
         print(f"{file_path} is not a Key store File.")
         return ExitCode.NOT_A_KEY_STORE_FILE.value
+=======
+=======
+    except NotAKeyStoreFile:
+        print(f"{file_path} is not a Key store File.")
+        return ExitCode.NOT_A_KEY_STORE_FILE.value
+>>>>>>> origin/develop
+>>>>>>> cc334605cb3e2ab77e48253c553b2d37f098995b
 
 
 def store_wallet(file_path, json_string) -> int:

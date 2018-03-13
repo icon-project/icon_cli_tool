@@ -22,7 +22,11 @@ from json import JSONDecodeError
 import eth_keyfile
 import requests
 from icxcli.icx import IcxSigner, NoEnoughBalanceInWallet, AmountIsInvalid, AddressIsWrong, TransferFeeIsInvalid, \
+<<<<<<< HEAD
     NotAKeyStoreFile, FeeIsBiggerThanAmount
+=======
+    FeeIsBiggerThanAmount, NotAKeyStoreFile
+>>>>>>> cc334605cb3e2ab77e48253c553b2d37f098995b
 
 
 def validate_password(password) -> bool:
