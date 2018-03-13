@@ -1,9 +1,11 @@
 import os
 import unittest
 
+import eth_keyfile
+
 from icxcli import icx
 from icxcli.icx import wallet, utils
-
+from icxcli.icx.utils import validate_key_store_file
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -51,7 +53,7 @@ class TestAPI(unittest.TestCase):
         # Given
         password = "Adas21312**"
         wallet_name = "wname"
-        file_path=os.path.join(TEST_DIR,"unknown_folder" ,"test_keystore.txt")
+        file_path = os.path.join(TEST_DIR,'unknown', "test_keystore.txt")
 
         # When
         try:
@@ -101,7 +103,7 @@ class TestAPI(unittest.TestCase):
         # Given
         password = "Adas21312**"
         wallet_name = "wname"
-        file_path = os.path.join(TEST_DIR, "test_keystore2.txt")
+        file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
         wallet_info = icx.wallet.create_wallet(password, file_path)
@@ -115,6 +117,20 @@ class TestAPI(unittest.TestCase):
 
             # Remove used file.
             os.remove(file_path)
+
+    def test_create_wallet_case5(self):
+        """Test for create_wallet function.
+        Case when user entered the file, not a key_store_file.
+        """
+        # Given
+        file_path = os.path.join(TEST_DIR, "not_a_key_store_file.txt")
+        password = "Adas21312**"
+
+        # When
+        try:
+            wallet_info = validate_key_store_file(file_path)
+        except icx.NotAKeyStoreFile:
+            self.assertTrue(True)
 
     def test_created_store_key_file(self):
         """Check the file is saved in the correct format.

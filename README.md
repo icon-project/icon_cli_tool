@@ -27,7 +27,7 @@
 
 # Version
 
-* 0.01 beta
+* 0.0.1
 
 # Glossary
 
@@ -83,10 +83,16 @@ usage:
             help
 
         Wallet Commands:
-            wallet create <file path> -p <password>  | -n <network id: mainnet | testnet>
+            wallet create <file path> -p <password> 
             wallet show <file path> -p <password>   | -n <network id: mainnet | testnet>
             asset list <file path> -p <password>    | -n <network id: mainnet | testnet>
             transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>  | -n <network id: mainnet | testnet>
+
+        WARNING: 
+            Fee feature is the experimental feature; fee is fixed to 0.01 ICX for now so if you 
+            try to make a transaction with the modified fee, which is not 0.01 ICX, then you would 
+            not be able to make the transaction. you will be notified 
+            when it is possible to make a transaction with the modified fee.
 
         IF YOU MISS --networkid, icli WILL USE MAINNET.
 
@@ -151,6 +157,9 @@ optional arguments:
     <td>Transfer the value to the specific address with the fee. </td>
   </tr>
 </table>
+
+### WARNING
+ Fee feature is the experimental feature; **fee is fixed to 0.01 ICX for now** so if you try to make a transaction with the modified fee, which is not 0.01 ICX, then you would not be able to make the transaction. you will be notified when it is possible to make a transaction with the modified fee.
 
 
 ### Create wallet file
@@ -279,7 +288,7 @@ Return 0 : Succeed to transfer
 
 ##### Error cases
 
-icli will return following error code and message.
+```icli``` will return following error code and message.
 
 * Return 122: File path is wrong.
 

@@ -17,11 +17,12 @@
 import base64
 import hashlib
 import re
-import eth_keyfile
 import time
-
-from icxcli.icx import IcxSigner, NoEnoughBalanceInWallet, AmountIsInvalid, AddressIsWrong, TransferFeeIsInvalid, FeeIsBiggerThanAmount
+from json import JSONDecodeError
+import eth_keyfile
 import requests
+from icxcli.icx import IcxSigner, NoEnoughBalanceInWallet, AmountIsInvalid, AddressIsWrong, TransferFeeIsInvalid, \
+    FeeIsBiggerThanAmount, NotAKeyStoreFile
 
 
 def validate_password(password) -> bool:
@@ -33,7 +34,7 @@ def validate_password(password) -> bool:
     False: When the password is invalid format
     """
 
-    return bool(re.match(r'^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=*-]).{8,}$', password))
+    return bool(re.match(r'^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+{}:<>?]).{8,}$', password))
 
 
 def hex_to_bytes(value):
@@ -136,9 +137,18 @@ def validate_key_store_file(key_store_file_path: object) -> bool:
     crypto_keys = ["ciphertext", "cipherparams", "cipher", "kdf", "kdfparams", "mac"]
     crypto_cipherparams_keys = ["iv"]
     crypto_kdfparams_keys = ["dklen", "salt", "c", "prf"]
+    is_valid = False
 
-    keyfile = eth_keyfile.load_keyfile(key_store_file_path)
-    is_valid = has_keys(keyfile, root_keys) and has_keys(keyfile["crypto"], crypto_keys) and has_keys(keyfile["crypto"]["cipherparams"], crypto_cipherparams_keys) and has_keys(keyfile["crypto"]["kdfparams"], crypto_kdfparams_keys)
+    try:
+        with open(key_store_file_path, 'rb') as key_store_file:
+            key_file = eth_keyfile.load_keyfile(key_store_file)
+        is_valid = has_keys(key_file, root_keys) and has_keys(key_file["crypto"], crypto_keys) and has_keys(key_file["crypto"]["cipherparams"], crypto_cipherparams_keys) and has_keys(key_file["crypto"]["kdfparams"], crypto_kdfparams_keys)
+    except KeyError:
+        raise NotAKeyStoreFile
+    except JSONDecodeError:
+        raise NotAKeyStoreFile
+    if is_valid is not True:
+        raise NotAKeyStoreFile
     return is_valid
 
 
