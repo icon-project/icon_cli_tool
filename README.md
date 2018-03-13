@@ -83,7 +83,7 @@ usage:
             help
 
         Wallet Commands:
-            wallet create <file path> -p <password>  | -n <network id: mainnet | testnet>
+            wallet create <file path> -p <password> 
             wallet show <file path> -p <password>   | -n <network id: mainnet | testnet>
             asset list <file path> -p <password>    | -n <network id: mainnet | testnet>
             transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>  | -n <network id: mainnet | testnet>

@@ -23,18 +23,18 @@ Getting started
 Installation
 ------------
 
-1. Clone this repository.
+The easiest way to install ```icxcli``` is to use [pip](http://www.pip-installer.org/en/latest/):
 
-2. Change the just cloned project directory.
+```$ pip install icxcli```
 
-3. Execute following scripts.
+or, if you are not installing in a virtualenv:
 
-.. code:: shell
+```$ sudo pip install icxcli ```
 
-    $ python3 -m python3 venv
-    $ source venv/bin/activate
-    $ pip install -r requirements
-    $ icli help
+If you have the aws-cli installed and want to upgrade to the latest version you can run:
+
+``` $ pip install --upgrade icxcli ```
+
 
 Run CLI
 -------
