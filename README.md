@@ -27,7 +27,7 @@
 
 # Version
 
-* 0.01 beta
+* 0.0.1
 
 # Glossary
 
@@ -38,6 +38,8 @@
 * Public key: Long alphanumeric characters that is used to encrypt data (message).
 
 # Technical information
+
+## Private key, public key and wallet address
 
 There are five steps to get from  private->public -> address:
 
@@ -51,6 +53,10 @@ There are five steps to get from  private->public -> address:
 
 5. Address = hx || HexString(BitAddress)
 ex) hxaa688d74eb5f98b577883ca203535d2aa4f0838c
+
+## Tested platform
+
+We tested on window and macOS. If you find some problems on window, please send the report of the problems.
 
 # Getting started
 
@@ -87,6 +93,12 @@ usage:
             wallet show <file path> -p <password>   | -n <network id: mainnet | testnet>
             asset list <file path> -p <password>    | -n <network id: mainnet | testnet>
             transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>  | -n <network id: mainnet | testnet>
+
+        WARNING: 
+            Fee feature is the experimental feature; fee is fixed to 0.01 ICX for now so if you 
+            try to make a transaction with the modified fee, which is not 0.01 ICX, then you would 
+            not be able to make the transaction. you will be notified 
+            when it is possible to make a transaction with the modified fee.
 
         IF YOU MISS --networkid, icli WILL USE MAINNET.
 
@@ -152,6 +164,9 @@ optional arguments:
   </tr>
 </table>
 
+### WARNING
+ Fee feature is the experimental feature; **fee is fixed to 0.01 ICX for now** so if you try to make a transaction with the modified fee, which is not 0.01 ICX, then you would not be able to make the transaction. you will be notified when it is possible to make a transaction with the modified fee.
+
 
 ### Create wallet file
 
@@ -177,13 +192,15 @@ Return 0 : Succeed to generate the keystore file for the wallet.
 
 icli will return following error code and message.
 
-* Return 122: File path is wrong.
+* Return 121: The file path is without a file name.
 
-* Return 123: Password is wrong.
+* Return 122: The file path is wrong.
 
-* Return 136: User does not have enough permission to write the file.
+* Return 123: The password is wrong.
 
-* Return 124: Keystore file exists. 
+* Return 124: The keystore file has already existed.
+
+* Return 136: User doesn't have a permission to write the file.
 
 
 ### Show wallet information
@@ -213,9 +230,11 @@ Return 0 : Print out wallet information including asset list.
 
 ##### Error cases
 
-* Return 122: File path is wrong.
+* Return 122: The file path is wrong.
 
-* Return 123: Password is wrong.
+* Return 123: The password is wrong.
+
+* Return 133: The file is not a key store file.
 
 ### List up all assets in current wallet
 
@@ -241,9 +260,11 @@ $ icli asset list <file path> -p <password>
 
 ##### Error cases
 
-* Return 122: File path is wrong.
+* Return 122: The file path is wrong.
 
-* Return 123: Password is wrong.
+* Return 123: The password is wrong.
+
+* Return 133: The file is not a key store file.
 
 ### Transfer the value to the specific address with the fee.
 
@@ -279,14 +300,17 @@ Return 0 : Succeed to transfer
 
 ##### Error cases
 
-icli will return following error code and message.
+```icli``` will return following error code and message.
 
-* Return 122: File path is wrong.
+* Return 122: The file path is wrong.
 
-* Return 123: Password is wrong.
+* Return 123: The password is wrong.
 
-* Return 127: Wallet does not have enough balance.
+* Return 127: The wallet doesn't have enough balance.
 
-* Return 128: Transfer fee is invalid.
+* Return 128: The fee is invalid.
 
-* Return 130: Wallet address is wrong.
+* Return 130: The wallet address is wrong.
+
+* Return 133: The file is not a key store file.
+

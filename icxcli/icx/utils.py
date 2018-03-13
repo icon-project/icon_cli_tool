@@ -16,17 +16,13 @@
 # limitations under the License.
 import base64
 import hashlib
-import json
 import re
-
 import time
 from json import JSONDecodeError
-
 import eth_keyfile
-
-from icxcli.icx import IcxSigner, NoEnoughBalanceInWallet, AmountIsInvalid, AddressIsWrong, TransferFeeIsInvalid, \
-    NotAKeyStoreFile
 import requests
+from icxcli.icx import IcxSigner, NoEnoughBalanceInWallet, AmountIsInvalid, AddressIsWrong, TransferFeeIsInvalid, \
+    FeeIsBiggerThanAmount, NotAKeyStoreFile
 
 
 def validate_password(password) -> bool:
@@ -120,8 +116,7 @@ def get_fee_wei(fee):
 
 def validate_address(address) -> bool:
     try:
-        int(address, 16)
-        if len(address) == 40:
+        if len(address) == 42 and address.startswith('hx'):
             return True
         raise AddressIsWrong
     except ValueError:
@@ -362,3 +357,6 @@ def check_amount_and_fee_is_valid(amount, fee):
         raise AmountIsInvalid
     if int(fee) <= 0:
         raise TransferFeeIsInvalid
+    if float(amount) < float(fee):
+        raise FeeIsBiggerThanAmount
+

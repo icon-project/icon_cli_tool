@@ -156,6 +156,11 @@ class FilePathWithoutFileName(Error):
     pass
 
 
+class FeeIsBiggerThanAmount(Error):
+    """Exception raised for "Fee is bigger than Amount" """
+    pass
+
+
 class NotAKeyStoreFile(Error):
     """Exception raised for 'Not a Key Store File.' """
     pass
