@@ -68,9 +68,17 @@ def parse_args():
             wallet show <file path> -p <password>    | -n <network id: mainnet | testnet>
             asset list <file path> -p <password>     | -n <network id: mainnet | testnet>
             transfer  <to> <amount> <file path> -p <password> -f <fee=0.01> -d <decimal point=18>  | -n <network id: mainnet | testnet>
+            
+        WARNING: 
+        
+            Fee feature is the experimental feature; fee is fixed to 0.01 ICX for now so if you 
+            try to make a transaction with the modified fee, which is not 0.01 ICX, then you would 
+            not be able to make the transaction. you will be notified 
+            when it is possible to make a transaction with the modified fee.
 
-        IF YOU MISS -n, icli WILL USE MAINNET.
-
+            
+        IF YOU MISS -n, icli WILL USE TESTNET.
+        
           ''')
 
     parser.add_argument('command', nargs='*', help='wallet create, wallet show, asset list, transfer')
@@ -81,7 +89,7 @@ def parse_args():
     parser.add_argument('-d', dest='decimal_point'
                         , help='decimal point', default=18, type=int)
     parser.add_argument('-n', dest='network_id'
-                        , help='which network', default='mainnet')
+                        , help='which network', default='testnet')
 
     args = parser.parse_args()
 

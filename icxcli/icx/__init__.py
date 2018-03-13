@@ -155,3 +155,8 @@ class FilePathWithoutFileName(Error):
     """Exception raised for "File Path without a file name." """
     pass
 
+
+class FeeIsBiggerThanAmount(Error):
+    """Exception raised for "Fee is bigger than Amount" """
+    pass
+

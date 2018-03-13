@@ -20,7 +20,6 @@ import os
 import codecs
 
 from eth_keyfile import create_keyfile_json, extract_key_from_keyfile
-
 from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToWriteFile, FileExists, \
     PasswordIsWrong, FilePathWithoutFileName
 from icxcli.icx import WalletInfo
@@ -32,6 +31,7 @@ from icxcli.icx.utils import get_address_by_privkey, icx_to_wei, get_timestamp_u
     icx_str_to_wei, get_fee_wei, check_amount_and_fee_is_valid
 from icxcli.icx.utils import post
 from icxcli.icx.utils import change_hex_balance_to_decimal_balance
+
 import requests
 requests.packages.urllib3.disable_warnings()
 
@@ -133,8 +133,9 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
         url = f'{url}v2'
         private_key_bytes = __key_from_key_store(file_path, bytes(password, 'utf-8'))
         user_address = get_address_by_privkey(private_key_bytes)
-        validate_address(user_address[2:])
-        validate_address(to[2:])
+
+        validate_address(user_address)
+        validate_address(to)
 
         method = 'icx_sendTransaction'
 
