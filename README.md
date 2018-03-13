@@ -14,7 +14,7 @@
 	- [Run CLI](#run-cli)
 	- [Console instructions](#console-instructions)
 	- [Wallet operation](#wallet-operation)
-		- [Create wallet from file](#create-wallet-from-file)
+		- [Create wallet file](#create-wallet-file)
 		- [Show wallet information](#show-wallet-information)
 		- [List up all assets in current wallet](#list-up-all-assets-in-current-wallet)
 		- [Transfer the value to the specific address with the fee.](#transfer-the-value-to-the-specific-address-with-the-fee)
@@ -27,7 +27,7 @@
 
 # Version
 
-* 0.01 beta
+* 0.0.1
 
 # Glossary
 
@@ -38,6 +38,8 @@
 * Public key: Long alphanumeric characters that is used to encrypt data (message).
 
 # Technical information
+
+## Private key, public key and wallet address
 
 There are five steps to get from  private->public -> address:
 
@@ -52,40 +54,67 @@ There are five steps to get from  private->public -> address:
 5. Address = hx || HexString(BitAddress)
 ex) hxaa688d74eb5f98b577883ca203535d2aa4f0838c
 
+## Tested platform
+
+We tested on window and macOS. If you find some problems on window, please send the report of the problems.
+
 # Getting started
 
 ## Installation
 
-1. Clone this repository.
 
-2. Change the just cloned project directory.
+The easiest way to install ```icxcli``` is to use [pip](http://www.pip-installer.org/en/latest/):
 
-3. Execute following scripts.
+```$ pip install icxcli```
 
-```shell
-$ python3 -m python3 venv
-$ source venv/bin/activate
-$ pip install -r requirements
-$ icli help
-```
+or, if you are not installing in a virtualenv:
+
+```$ sudo pip install icxcli ```
+
+If you have the aws-cli installed and want to upgrade to the latest version you can run:
+
+``` $ pip install --upgrade icxcli ```
+
 
 ## Run CLI
 
- Run command icli in command line.  There are many sub commands for ICX service. You can get the help page by adding help.
+ Run command ```icli``` in command line.  There are many sub commands for ICX service. You can get the help page by adding help.
 
 
 ```shell
-$ icli help
+$ icli  --help
+usage: 
+        Normal commands:
+            version
+            help
 
-Normal commands:
-      version
-      help
+        Wallet Commands:
+            wallet create <file path> -p <password> 
+            wallet show <file path> -p <password>   | -n <network id: mainnet | testnet>
+            asset list <file path> -p <password>    | -n <network id: mainnet | testnet>
+            transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>  | -n <network id: mainnet | testnet>
 
-Wallet Commands:
-      wallet create <file path> -p <password>
-      wallet show <file path> -p <password>
-      asset list <file path> -p <password>
-      transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>
+        WARNING: 
+            Fee feature is the experimental feature; fee is fixed to 0.01 ICX for now so if you 
+            try to make a transaction with the modified fee, which is not 0.01 ICX, then you would 
+            not be able to make the transaction. you will be notified 
+            when it is possible to make a transaction with the modified fee.
+
+        IF YOU MISS --networkid, icli WILL USE MAINNET.
+
+          
+
+positional arguments:
+  command           wallet create, wallet show, asset list, transfer
+
+optional arguments:
+  -h, --help        show this help message and exit
+  -p PASSWORD       password
+  -f FEE            transaction fee
+  -d DECIMAL_POINT  decimal point
+  -n NETWORK_ID     which network
+
+
 ```
 
 ## Console instructions
@@ -135,8 +164,11 @@ Wallet Commands:
   </tr>
 </table>
 
+### WARNING
+ Fee feature is the experimental feature; **fee is fixed to 0.01 ICX for now** so if you try to make a transaction with the modified fee, which is not 0.01 ICX, then you would not be able to make the transaction. you will be notified when it is possible to make a transaction with the modified fee.
 
-### Create wallet from file
+
+### Create wallet file
 
 ```shell
 $ icli wallet create <wallet name> <file path> -p <password>
@@ -160,11 +192,16 @@ Return 0 : Succeed to generate the keystore file for the wallet.
 
 icli will return following error code and message.
 
-* Return 122: File path is wrong.
+* Return 121: The file path is without a file name.
 
-* Return 123: Password is wrong.
+* Return 122: The file path is wrong.
 
-* Return 136: User does not have enough permission to write the file.
+* Return 123: The password is wrong.
+
+* Return 124: The keystore file has already existed.
+
+* Return 136: User doesn't have a permission to write the file.
+
 
 ### Show wallet information
 
@@ -183,6 +220,9 @@ Show wallet information.
 #### Output
 
 Shows the all information of wallet.
+* Wallet address
+* Current balance
+* Keystore file contents 
 
 ##### Successful case
 
@@ -190,11 +230,11 @@ Return 0 : Print out wallet information including asset list.
 
 ##### Error cases
 
-* Return 122: File path is wrong.
+* Return 122: The file path is wrong.
 
-* Return 123: Password is wrong.
+* Return 123: The password is wrong.
 
-* Return 130: Wallet address is wrong.
+* Return 133: The file is not a key store file.
 
 ### List up all assets in current wallet
 
@@ -220,11 +260,11 @@ $ icli asset list <file path> -p <password>
 
 ##### Error cases
 
-* Return 122: File path is wrong.
+* Return 122: The file path is wrong.
 
-* Return 123: Password is wrong.
+* Return 123: The password is wrong.
 
-* Return 130: Wallet address is wrong.
+* Return 133: The file is not a key store file.
 
 ### Transfer the value to the specific address with the fee.
 
@@ -260,35 +300,17 @@ Return 0 : Succeed to transfer
 
 ##### Error cases
 
-icli will return following error code and message.
+```icli``` will return following error code and message.
 
-* Return 122: File path is wrong.
+* Return 122: The file path is wrong.
 
-* Return 123: Password is wrong.
+* Return 123: The password is wrong.
 
-* Return 127: Wallet does not have enough balance.
+* Return 127: The wallet doesn't have enough balance.
 
-* Return 128: Transfer fee is invalid.
+* Return 128: The fee is invalid.
 
-* Return 129: Timestamp is not correct. (Reset your computer’s time and date.)
+* Return 130: The wallet address is wrong.
 
-* Return 130: Wallet address is wrong.
+* Return 133: The file is not a key store file.
 
-
-# Development
-
-## Run ```icli``` in development.
-
-```bash
-$ python -m icxcli $commands $args...
-``` 
-
-## Build package in egg package file. 
-```bash
-$ python setup.py bdist_egg 
-```
-
-## Test package.
-```bash
-$ python setup.py test
-```

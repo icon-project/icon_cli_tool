@@ -14,9 +14,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import json
+import sys
 import argparse
-from icxcli.icx import wallet
+import os
+
+from icxcli.cmd import wallet
+from icxcli.icx import NonExistKey
+from icxcli.cmd.wallet import ExitCode
 from icxcli import __version__
 
 
@@ -26,12 +31,10 @@ def main():
     :return:
     """
     command, parser = parse_args()
-    call_wallet_method(command, parser)
-    return 0
+    sys.exit(call_wallet_method(command, parser))
 
 
-
-def check_required_argument_in_args(*args):
+def check_required_argument_in_args(**kwargs):
     """Make sure user has entered all the required arguments.
 
     :return:
@@ -39,8 +42,8 @@ def check_required_argument_in_args(*args):
     False when arguments are invalid.
     """
     flag = True
-    for arg in args:
-        flag = flag and bool(arg)
+    for key, value in kwargs.items():
+        flag = flag and bool(value)
     return flag
 
 
@@ -51,27 +54,42 @@ def parse_args():
     """
 
     parser = argparse.ArgumentParser(prog='icli.py', usage='''
+    
+    ==============================
+    icli: ICON CLI tool 
+    ==============================
         Normal commands:
-          version
-          help
+            version
+            help
 
         Wallet Commands:
-          wallet create <wallet name> <file path> -p <password>
-          wallet show <file path> -p <password>
-          asset list <file path> -p <password>
-          transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>
 
+            wallet create <file path> -p <password>  
+            wallet show <file path> -p <password>    | -n <network id: mainnet | testnet>
+            asset list <file path> -p <password>     | -n <network id: mainnet | testnet>
+            transfer  <to> <amount> <file path> -p <password> -f <fee=0.01> -d <decimal point=18>  | -n <network id: mainnet | testnet>
+            
+        WARNING: 
+        
+            Fee feature is the experimental feature; fee is fixed to 0.01 ICX for now so if you 
+            try to make a transaction with the modified fee, which is not 0.01 ICX, then you would 
+            not be able to make the transaction. you will be notified 
+            when it is possible to make a transaction with the modified fee.
+
+            
+        IF YOU MISS -n, icli WILL USE TESTNET.
+        
           ''')
 
     parser.add_argument('command', nargs='*', help='wallet create, wallet show, asset list, transfer')
     parser.add_argument('-p', dest='password'
                         , help='password')
     parser.add_argument('-f', dest='fee'
-                        , help='transaction fee')
+                        , help='transaction fee', type=float, default=0.01)
     parser.add_argument('-d', dest='decimal_point'
-                        , help='decimal point')
+                        , help='decimal point', default=18, type=int)
     parser.add_argument('-n', dest='network_id'
-                        , help='which network', default='main_net_network')
+                        , help='which network', default='testnet')
 
     args = parser.parse_args()
 
@@ -83,23 +101,55 @@ def parse_args():
 def call_wallet_method(command, parser):
     """ Call the specific wallet method when having right number of arguments.
 
-    :param command: Command part of interface. type: str
-    :param parser: ArgumentParser
-    """
+   :param command: Command part of interface. type: str
+   :param parser: ArgumentParser
+   """
 
     args = parser.parse_args()
+    url = None
+    if args.decimal_point < 1 or args.decimal_point > 18:
+        print("Decimal point is invalid.")
+        return ExitCode.DECIMAL_POINT_INVALID.value
+    try:
+        url = get_selected_url(args.network_id)
+    except NonExistKey:
+        return ExitCode.NETWORK_ID_IS_WRONG.value
 
-    if command == 'wallet create' and len(args.command) == 4 and check_required_argument_in_args(args.password):
-        wallet.create_wallet(args.password, args.command[2], args.command[3])
-    elif command == 'wallet show' and len(args.command) == 3 and check_required_argument_in_args(args.password):
-        wallet.show_wallet(args.password, *args.command)
-    elif command == 'asset list' and len(args.command) == 3 and check_required_argument_in_args(args.password):
-        wallet.show_asset_list(args.password, *args.command)
+    password = args.password
+    if command == 'wallet create' and len(args.command) == 3:
+        if password is None:
+            password = input("You missed your password! input your password : ")
+        return wallet.create_wallet(password, args.command[2])
+    elif command == 'wallet show' and len(args.command) == 3:
+        if password is None:
+            password = input("You missed your password! input your password : ")
+        return wallet.show_wallet(password, args.command[2], url)
+    elif command == 'asset list' and len(args.command) == 3:
+        if password is None:
+            password = input("You missed your password! input your password : ")
+        return wallet.show_asset_list(password, args.command[2], url)
     elif command.split(' ')[0] == 'transfer' and len(args.command) == 4 \
-            and check_required_argument_in_args(args.password, args.fee, args.decimal_point):
-        wallet.transfer(*args.command, password=args.password, fee=args.fee, decimal_point=args.decimal_point)
+            and check_required_argument_in_args(fee=args.fee, decimal_point=args.decimal_point):
+        if password is None:
+            password = input("You missed your password! input your password : ")
+        return wallet.transfer_value_with_the_fee(
+            password, args.fee, args.decimal_point, to=args.command[1],
+            amount=args.command[2], file_path=args.command[3], url=url)
     elif command.split(' ')[0] == 'version':
-        print(f"version : {__version__}")
+        print(f"icli {__version__}")
     else:
         parser.print_help()
+        return 0
 
+
+def get_selected_url(network_id):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    with open(f"{current_dir}/network_conf.json", 'r') as f:
+        network_config_json_str = f.read()
+    network_config_json = json.loads(network_config_json_str)
+
+    try:
+        return network_config_json["networkid"][network_id]
+    except KeyError:
+        print(f"{network_id} is not valid network id")
+        raise NonExistKey
