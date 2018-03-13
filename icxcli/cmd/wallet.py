@@ -17,7 +17,7 @@
 
 from enum import Enum
 from icxcli.icx import wallet, NoEnoughBalanceInWallet, AddressIsWrong, PasswordIsWrong, FilePathIsWrong, \
-    AmountIsInvalid, TransferFeeIsInvalid
+    AmountIsInvalid, TransferFeeIsInvalid, NotAKeyStoreFile
 
 
 class ExitCode(Enum):
@@ -36,6 +36,7 @@ class ExitCode(Enum):
     NO_PERMISSION_TO_WRITE_FILE = 136
     AMOUNT_IS_INVALID = 131
     DECIMAL_POINT_INVALID = 132
+    NOT_A_KEY_STORE_FILE = 133
 
 
 def create_wallet(password, file_path) -> int:
@@ -96,6 +97,9 @@ def show_wallet(password, file_path, url) -> int:
     except PasswordIsWrong:
         print("Password is wrong.")
         return ExitCode.PASSWORD_IS_WRONG.value
+    except NotAKeyStoreFile:
+        print(f"{file_path} is not a Key store File.")
+        return ExitCode.NOT_A_KEY_STORE_FILE.value
 
 
 def show_asset_list(password, file_path, url) -> int:
@@ -123,6 +127,9 @@ def show_asset_list(password, file_path, url) -> int:
     except PasswordIsWrong:
         print("Password is wrong.")
         return ExitCode.PASSWORD_IS_WRONG.value
+    except NotAKeyStoreFile:
+        print(f"{file_path} is not a Key store File.")
+        return ExitCode.NOT_A_KEY_STORE_FILE.value
 
 
 def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url) -> int:
@@ -159,6 +166,9 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     except TransferFeeIsInvalid:
         print("Transaction Fee is invalid.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
+    except NotAKeyStoreFile:
+        print(f"{file_path} is not a Key store File.")
+        return ExitCode.NOT_A_KEY_STORE_FILE.value
 
 
 def store_wallet(file_path, json_string) -> int:
