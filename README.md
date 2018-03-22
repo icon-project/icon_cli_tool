@@ -23,7 +23,37 @@
 
 # Prerequisite
 
-* Python 3.6.x
+You need Python 3.6 or later to run ```icxcli```. You can have multiple Python versions (2.x and 3.x) installed on the same system without problems. 
+
+On macOS(Sierra and after) and Ubuntu 16.04 for example the necessary packages are:
+- automake
+- pkg-config
+- virtualenv
+- autoconf
+- libtool
+
+In Ubuntu 16.04, you can install Python 3.6.
+```shell
+$ sudo add-apt-repository ppa:jonathonf/python-3.6
+$ sudo apt update
+$ sudo apt install python3.6
+$ sudo apt install python3.6-dev
+
+$ sudo apt install virtualenv
+$ virtualenv -p python3.6 .venv
+```
+
+You can install pip3 for python 3.6 like this:
+
+```shell
+$ wget https://bootstrap.pypa.io/get-pip.py
+$ sudo python3.6 get-pip.py
+```
+
+You can install autoconf, libtool and automake for python3.6.
+```shell
+$ sudo apt install autoconf libtool automake
+```
 
 # Version
 
