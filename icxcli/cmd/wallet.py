@@ -166,7 +166,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
         print("The amount you want to transfer is not valid.")
         return ExitCode.AMOUNT_IS_INVALID.value
     except TransferFeeIsInvalid:
-        print("Transaction Fee is invalid.")
+        print("Transaction Fee is invalid. The fee should be 0.01.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
     except FeeIsBiggerThanAmount:
         print("Fee is bigger than transaction amount. Ple∂ase check your fee again.")
