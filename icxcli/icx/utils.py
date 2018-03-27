@@ -355,7 +355,7 @@ def change_hex_balance_to_decimal_balance(hex_balance, place=18):
 def check_amount_and_fee_is_valid(amount, fee):
     if int(amount) <= 0:
         raise AmountIsInvalid
-    if int(fee) <= 0:
+    if int(fee) <= 0 or fee != 10000000000000000:
         raise TransferFeeIsInvalid
     if float(amount) < float(fee):
         raise FeeIsBiggerThanAmount
