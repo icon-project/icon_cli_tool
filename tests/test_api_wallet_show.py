@@ -18,11 +18,10 @@ class TestAPI(unittest.TestCase):
     def test_show_wallet_case0(self):
         """Test for show_wallet function.
          Case when returning the wallet address successfully.
-
         """
 
         # Given
-        password = "ejfnvm1234*"
+        password = "Adas21312**"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -42,7 +41,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "ejfnvm1234*"
+        password = "Adas21312**"
         file_path = os.path.join(TEST_DIR, "unknown_folder", "test_keystore.txt")
 
         # When
@@ -61,7 +60,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "ejfnvm1234*"
+        password = "1234**wrongpassword"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -75,11 +74,10 @@ class TestAPI(unittest.TestCase):
     def test_show_wallet_case3(self):
         """Test for show_wallet function.
          Case when returning the balance successfully.
-
         """
 
         # Given
-        password = "ejfnvm1234*"
+        password = "Adas21312**"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -92,11 +90,10 @@ class TestAPI(unittest.TestCase):
     def test_show_wallet_case4(self):
         """Test for show_wallet function.
          Case when returning the wallet info in keystore file successfully.
-
         """
 
         # Given
-        password = "ejfnvm1234*"
+        password = "Adas21312**"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When

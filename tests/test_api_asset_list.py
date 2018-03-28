@@ -19,17 +19,15 @@ class TestAPI(unittest.TestCase):
     def test_show_asset_list_case0(self):
         """Test for show_asset_list function.
          Case when returning the wallet address successfully.
-
         """
 
         # Given
-        password = "ejfnvm1234*"
+        password = "Adas21312**"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
         try:
 
-            print(file_path)
             address, balance = icx.wallet.show_asset_list(password, file_path, url)
 
             # Then
@@ -42,11 +40,10 @@ class TestAPI(unittest.TestCase):
     def test_show_asset_list_case1(self):
         """Test for show_asset_list function.
         Case when user enters a directory that does not exist.
-
         """
 
         # Given
-        password = "ejfnvm1234*"
+        password = "Adas21312**"
         file_path = os.path.join(TEST_DIR, "unknown_folder", "test_keystore.txt")
 
         # When
@@ -60,7 +57,6 @@ class TestAPI(unittest.TestCase):
     def test_show_asset_list_case2(self):
         """Test for show_asset_list function.
         Case when user enters a invalid password.
-
         """
 
         # Given
@@ -78,7 +74,6 @@ class TestAPI(unittest.TestCase):
     def test_change_hex_balance_to_decimal_balance_case1(self):
         """Test for change_hex_balance_to_decimal_balance function.
         Case when returning the right balance.
-
         """
 
         # Given
@@ -95,7 +90,6 @@ class TestAPI(unittest.TestCase):
     def test_change_hex_balance_to_decimal_balance_case2(self):
         """Test for change_hex_balance_to_decimal_balance function.
         Case when returning the wrong balance.
-
         """
 
         # Given
@@ -112,11 +106,10 @@ class TestAPI(unittest.TestCase):
     def test_show_asset_list_case3(self):
         """Test for show_asset_list function.
          Case when show asset list's balance successfully.
-
         """
 
         # Given
-        password = "ejfnvm1234*"
+        password = "Adas21312**"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
