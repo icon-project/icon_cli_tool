@@ -101,19 +101,6 @@ def icx_str_to_wei(icx):
         raise AmountIsInvalid
 
 
-def get_fee_wei(fee):
-    """Convert fee in icx unit to wei unit.
-
-    :param fee: Transaction fee. type(float)
-    :return:
-    Wei value of fee.
-    """
-    try:
-        return icx_str_to_wei(str(fee))
-    except AmountIsInvalid:
-        raise TransferFeeIsInvalid
-
-
 def validate_address(address) -> bool:
     try:
         if len(address) == 42 and address.startswith('hx'):

@@ -85,7 +85,7 @@ def parse_args():
     parser.add_argument('-p', dest='password'
                         , help='password')
     parser.add_argument('-f', dest='fee'
-                        , help='transaction fee', type=float, default=0.01)
+                        , help='transaction fee', type=int, default=10000000000000000)
     parser.add_argument('-n', dest='network_id'
                         , help='which network', default='testnet')
 

@@ -144,7 +144,6 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
 
         check_amount_and_fee_is_valid(amount, fee)
 
-        print(amount, fee)
         params = __make_params(user_address, to, amount, fee, method, private_key_bytes)
         payload = create_jsonrpc_request_content(0, method, params)
 
@@ -152,7 +151,6 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
         request_gen = request_generator(url)
         balance = __get_balance_after_trasfer(user_address, url, request_gen)
 
-        print(balance)
         check_balance_enough(balance, amount, fee)
         next(request_gen)
         response = request_gen.send(payload)
