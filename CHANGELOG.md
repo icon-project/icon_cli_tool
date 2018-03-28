@@ -4,7 +4,8 @@
 ### Added
 
 ### Changed
- Use ```loop```, 10<sup>18</sup> icx , for value in ```transfer``` command.  
+* Use ```loop```, 10<sup>18</sup> icx , for value in ```transfer``` command, not ICX. 
+* Removed ```-d``` in ```transfer``` command. 
 
 ### Removed
 N/A
