@@ -57,7 +57,7 @@ $ sudo apt install autoconf libtool automake
 
 # Version
 
-* 0.0.1
+* 0.0.2
 
 # Glossary
 
@@ -119,18 +119,20 @@ usage:
             help
 
         Wallet Commands:
-            wallet create <file path> -p <password> 
-            wallet show <file path> -p <password>   | -n <network id: mainnet | testnet>
-            asset list <file path> -p <password>    | -n <network id: mainnet | testnet>
-            transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>  | -n <network id: mainnet | testnet>
 
+            wallet create <file path> -p <password>  
+            wallet show <file path> -p <password>    | -n <network id: mainnet | testnet>
+            asset list <file path> -p <password>     | -n <network id: mainnet | testnet>
+            transfer  <to> <amount> <file path> -p <password> -f <fee=10000000000000000>  | -n <network id: mainnet | testnet>
+            
         WARNING: 
-            Fee feature is the experimental feature; fee is fixed to 0.01 ICX for now so if you 
-            try to make a transaction with the modified fee, which is not 0.01 ICX, then you would 
+        
+            Fee feature is the experimental feature; fee is fixed to 10000000000000000 loop for now so if you 
+            try to make a transaction with the modified fee, which is not 10000000000000000 loop, then you would 
             not be able to make the transaction. you will be notified 
             when it is possible to make a transaction with the modified fee.
-
-        IF YOU MISS --networkid, icli WILL USE MAINNET.
+            
+        IF YOU MISS --networkid, icli WILL USE TESTNET.
 
           
 
@@ -141,7 +143,6 @@ optional arguments:
   -h, --help        show this help message and exit
   -p PASSWORD       password
   -f FEE            transaction fee
-  -d DECIMAL_POINT  decimal point
   -n NETWORK_ID     which network
 
 
@@ -188,14 +189,14 @@ optional arguments:
     <td>Enumerate the asset in the wallet. (ICX, ICX token) </td>
   </tr>
   <tr>
-    <td>transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>
+    <td>transfer  <to> <amount> <file path> -p <password> -f <fee> 
 </td>
     <td>Transfer the value to the specific address with the fee. </td>
   </tr>
 </table>
 
 ### WARNING
- Fee feature is the experimental feature; **fee is fixed to 0.01 ICX for now** so if you try to make a transaction with the modified fee, which is not 0.01 ICX, then you would not be able to make the transaction. you will be notified when it is possible to make a transaction with the modified fee.
+ Fee feature is the experimental feature; **fee is fixed to 10000000000000000 loop for now** so if you try to make a transaction with the modified fee, which is not 10000000000000000 loop, then you would not be able to make the transaction. you will be notified when it is possible to make a transaction with the modified fee.
 
 
 ### Create wallet file
@@ -299,7 +300,7 @@ $ icli asset list <file path> -p <password>
 ### Transfer the value to the specific address with the fee.
 
 ```shell
-$ icli transfer <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>
+$ icli transfer <to> <amount> <file path> -p <password> -f <fee> 
 ```
 
 
@@ -307,20 +308,21 @@ Transfer the value from  A address to B address with the fee.
 
 #### Arguments
 
-* amount : Amount of money. **The decimal point number is valid up to tenth power of 18. **
-
 * to: Address of wallet to receive the asset.
-
-* fee : Transfer fee
 
 * file path : File path for the keystore file of the wallet.
 
 * password:  Password including alphabet character, number, and  special character. If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
 
-* decimal point :  A user can change the decimal point to express all numbers including fee and amount.
+* amount : Amount of money. (Unit:loop)
 
-    * **YOU SHOULD CHANGE BOTH THE EXPRESSION OF AMOUNT AND THE EXPRESSION OF FEE IF ANY.**
-    - Ex) Amount value  0.001 with default decimal point will be 0.001*10^12 = 10,000,000,000.0 with decimal point = 12.
+* fee : Transfer fee (Unit:loop)
+
+    * **YOU SHOULD CHANGE BOTH THE UNIT OF AMOUNT AND FEE TO LOOP.**
+        - Unit: loop 
+            * Ex) 1 icx = 10<sup>18</sup> loop
+     
+
 
 #### Output
 

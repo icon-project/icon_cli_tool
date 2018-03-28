@@ -14,7 +14,7 @@ Prerequisite
 Version
 =======
 
--  0.0.1
+-  0.0.2
 
 
 Getting started
@@ -54,9 +54,9 @@ $ icli  --help
                 wallet create <file path> -p <password>  | -n <network id: mainnet | testnet>
                 wallet show <file path> -p <password>   | -n <network id: mainnet | testnet>
                 asset list <file path> -p <password>    | -n <network id: mainnet | testnet>
-                transfer  <to> <amount> <file path> -p <password> -f <fee> -d <decimal point=18>  | -n <network id: mainnet | testnet>
+                transfer  <to> <amount> <file path> -p <password> -f <fee>  | -n <network id: mainnet | testnet>
 
-                IF YOU MISS --networkid, icli WILL USE MAINNET.
+                IF YOU MISS --networkid, icli WILL USE TESTNET.
 
 
 
@@ -67,5 +67,4 @@ $ icli  --help
       -h, --help        show this help message and exit
       -p PASSWORD       password
       -f FEE            transaction fee
-      -d DECIMAL_POINT  decimal point
       -n NETWORK_ID     which network

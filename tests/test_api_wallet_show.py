@@ -18,7 +18,6 @@ class TestAPI(unittest.TestCase):
     def test_show_wallet_case0(self):
         """Test for show_wallet function.
          Case when returning the wallet address successfully.
-
         """
 
         # Given
@@ -75,7 +74,6 @@ class TestAPI(unittest.TestCase):
     def test_show_wallet_case3(self):
         """Test for show_wallet function.
          Case when returning the balance successfully.
-
         """
 
         # Given
@@ -85,14 +83,13 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             address, balance, wallet_info = icx.wallet.show_wallet(password, file_path, url)
-            self.assertTrue(type(balance) == str)
+            self.assertTrue(type(balance) == int)
         finally:
             pass
 
     def test_show_wallet_case4(self):
         """Test for show_wallet function.
          Case when returning the wallet info in keystore file successfully.
-
         """
 
         # Given

@@ -164,3 +164,10 @@ class FeeIsBiggerThanAmount(Error):
 class NotAKeyStoreFile(Error):
     """Exception raised for 'Not a Key Store File.' """
     pass
+
+
+class AddressIsSame(Error):
+    """Exception raised for 'Wallet address to transfer is same as Wallet address to deposit.' """
+    pass
+
+

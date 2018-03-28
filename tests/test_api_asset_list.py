@@ -19,7 +19,6 @@ class TestAPI(unittest.TestCase):
     def test_show_asset_list_case0(self):
         """Test for show_asset_list function.
          Case when returning the wallet address successfully.
-
         """
 
         # Given
@@ -29,9 +28,7 @@ class TestAPI(unittest.TestCase):
         # When
         try:
 
-            print(file_path)
             address, balance = icx.wallet.show_asset_list(password, file_path, url)
-            print(address, balance)
 
             # Then
             prefix = address[0:2]
@@ -43,7 +40,6 @@ class TestAPI(unittest.TestCase):
     def test_show_asset_list_case1(self):
         """Test for show_asset_list function.
         Case when user enters a directory that does not exist.
-
         """
 
         # Given
@@ -61,7 +57,6 @@ class TestAPI(unittest.TestCase):
     def test_show_asset_list_case2(self):
         """Test for show_asset_list function.
         Case when user enters a invalid password.
-
         """
 
         # Given
@@ -79,7 +74,6 @@ class TestAPI(unittest.TestCase):
     def test_change_hex_balance_to_decimal_balance_case1(self):
         """Test for change_hex_balance_to_decimal_balance function.
         Case when returning the right balance.
-
         """
 
         # Given
@@ -96,7 +90,6 @@ class TestAPI(unittest.TestCase):
     def test_change_hex_balance_to_decimal_balance_case2(self):
         """Test for change_hex_balance_to_decimal_balance function.
         Case when returning the wrong balance.
-
         """
 
         # Given
@@ -113,7 +106,6 @@ class TestAPI(unittest.TestCase):
     def test_show_asset_list_case3(self):
         """Test for show_asset_list function.
          Case when show asset list's balance successfully.
-
         """
 
         # Given
@@ -123,7 +115,7 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             address, balance = icx.wallet.show_asset_list(password, file_path, url)
-            self.assertTrue(type(balance) == str)
+            self.assertTrue(type(balance) == int)
         finally:
             pass
 

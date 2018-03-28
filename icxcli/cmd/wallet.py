@@ -17,7 +17,7 @@
 
 from enum import Enum
 from icxcli.icx import wallet, NoEnoughBalanceInWallet, AddressIsWrong, PasswordIsWrong, FilePathIsWrong, \
-    AmountIsInvalid, TransferFeeIsInvalid, FeeIsBiggerThanAmount, NotAKeyStoreFile
+    AmountIsInvalid, TransferFeeIsInvalid, FeeIsBiggerThanAmount, NotAKeyStoreFile, AddressIsSame
 import json
 
 
@@ -38,6 +38,7 @@ class ExitCode(Enum):
     AMOUNT_IS_INVALID = 131
     DECIMAL_POINT_INVALID = 132
     NOT_A_KEY_STORE_FILE = 133
+    WALLET_ADDRESS_IS_SAME = 134
 
 
 def create_wallet(password, file_path) -> int:
@@ -85,7 +86,7 @@ def show_wallet(password, file_path, url) -> int:
         wallet_address, balance, wallet_info = wallet.show_wallet(password, file_path, url)
         print(f"Succeed to show wallet in {file_path}. ")
         print(f"Wallet address : {wallet_address} ")
-        print(f"Wallet balance : {balance} ")
+        print(f"Wallet balance : {balance} loop")
         wallet_info = json.dumps(wallet_info, indent=4, sort_keys=True)
         print(f"Wallet keystore_file_info : \n{wallet_info} ")
         return ExitCode.SUCCEED.value
@@ -117,7 +118,7 @@ def show_asset_list(password, file_path, url) -> int:
         wallet_address, balance = wallet.show_asset_list(password, file_path, url)
         print(f"Succeed to show asset list in {file_path}. ")
         print(f"Wallet address : {wallet_address} ")
-        print(f"Wallet balance : {balance} ")
+        print(f"Wallet balance : {balance} loop")
         return ExitCode.SUCCEED.value
     except wallet.PasswordIsNotAcceptable:
         print("Fail: Password is not acceptable. ")
@@ -134,7 +135,7 @@ def show_asset_list(password, file_path, url) -> int:
         return ExitCode.NOT_A_KEY_STORE_FILE.value
 
 
-def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url) -> int:
+def transfer_value_with_the_fee(password, fee, to, amount, file_path, url) -> int:
     """ Transfer the value to the specific address with the fee.
 
     :param password: Password including alphabet character, number, and special character.
@@ -148,7 +149,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     :return: Predefined exit code
     """
     try:
-        transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url)
+        transfer_result = wallet.transfer_value_with_the_fee(password, fee, to, amount, file_path, url)
         print("Transaction has been completed successfully.")
         return ExitCode.SUCCEED.value
     except FilePathIsWrong:
@@ -166,7 +167,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
         print("The amount you want to transfer is not valid.")
         return ExitCode.AMOUNT_IS_INVALID.value
     except TransferFeeIsInvalid:
-        print("Transaction Fee is invalid.")
+        print("Transaction Fee is invalid. The fee should be 10000000000000000.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
     except FeeIsBiggerThanAmount:
         print("Fee is bigger than transaction amount. Ple∂ase check your fee again.")
@@ -174,6 +175,9 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     except NotAKeyStoreFile:
         print(f"{file_path} is not a Key store File.")
         return ExitCode.NOT_A_KEY_STORE_FILE.value
+    except AddressIsSame:
+        print("Wallet address to transfer must be different from Wallet address to deposit.")
+        return ExitCode.WALLET_ADDRESS_IS_SAME.value
 
 
 def store_wallet(file_path, json_string) -> int:
