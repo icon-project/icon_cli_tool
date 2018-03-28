@@ -303,35 +303,24 @@ def check_balance_enough(balance, amount, fee):
     :return:
     True when the user has enough balance.
     """
-    if balance > float(amount) + fee:
+    if balance > amount + fee:
         return True
     else:
         raise NoEnoughBalanceInWallet
     pass
 
 
-def floor_point(icx_wei, decimal_point):
-    """To process up to 'decimal_point' decimal places, change it backwards to 0 by (18-decimal_point).
-
-    :param icx_wei: Wei value of amount. type(int)
-    :param decimal_point: A user can change the decimal point to express all numbers including fee and amount.
-    :return:
-    """
-    str_icx = str(icx_wei)
-    modified_icx = str_icx
-    if decimal_point == 18:
-        modified_icx = str_icx
-    else:
-        modified_icx = f'{str_icx[0:-(18-decimal_point)]}{"0"*(18-decimal_point)}'
-
-    if int(modified_icx) <= 0:
-        return "0"
-    return modified_icx
+def check_amount_and_fee_is_valid(amount, fee):
+    if amount <= 0:
+        raise AmountIsInvalid
+    if fee <= 0 or fee != 10000000000000000:
+        raise TransferFeeIsInvalid
+    if amount < fee:
+        raise FeeIsBiggerThanAmount
 
 
 def change_hex_balance_to_decimal_balance(hex_balance, place=18):
     """Change hex balance to decimal decimal icx balance.
-
     :param: hex_balance
     :return: result_decimal_icx: string decimal icx
     """
@@ -350,13 +339,3 @@ def change_hex_balance_to_decimal_balance(hex_balance, place=18):
         str_zero = "0" * point_difference
         result_decimal_icx = f'{zero}{str_zero}{dec_balance}'
         return result_decimal_icx
-
-
-def check_amount_and_fee_is_valid(amount, fee):
-    if int(amount) <= 0:
-        raise AmountIsInvalid
-    if int(fee) <= 0 or fee != 10000000000000000:
-        raise TransferFeeIsInvalid
-    if float(amount) < float(fee):
-        raise FeeIsBiggerThanAmount
-

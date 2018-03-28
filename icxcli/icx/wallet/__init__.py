@@ -25,12 +25,10 @@ from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToW
 from icxcli.icx import WalletInfo
 from icxcli.icx import utils
 from icxcli.icx import IcxSigner
-from icxcli.icx.utils import get_address_by_privkey, icx_to_wei, get_timestamp_us, get_tx_hash, sign, \
-    create_jsonrpc_request_content, validate_address, get_payload_of_json_rpc_get_balance, floor_point, \
-    check_balance_enough, \
-    icx_str_to_wei, get_fee_wei, check_amount_and_fee_is_valid, validate_key_store_file
+from icxcli.icx.utils import get_address_by_privkey, get_timestamp_us, get_tx_hash, sign, \
+    create_jsonrpc_request_content, validate_address, get_payload_of_json_rpc_get_balance, \
+    check_balance_enough, check_amount_and_fee_is_valid, validate_key_store_file, change_hex_balance_to_decimal_balance
 from icxcli.icx.utils import post
-from icxcli.icx.utils import change_hex_balance_to_decimal_balance
 
 import requests
 requests.packages.urllib3.disable_warnings()
@@ -118,15 +116,14 @@ def show_asset_list(password, file_path, url):
         raise PasswordIsWrong
 
 
-def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url):
+def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
     """ Transfer the value to the specific address with the fee.
 
     :param password: Password including alphabet character, number, and special character.
     If the user doesn't give password with -p, then CLI will show the prompt and user need to type the password.
     :param fee: Transaction fee.
-    :param decimal_point: A user can change the decimal point to express all numbers including fee and amount.
     :param to: Address of wallet to receive the asset.
-    :param amount: Amount of money. *The decimal point number is valid up to tenth power of 18. *
+    :param amount: Amount of money.
     :param file_path: File path for the keystore file of the wallet.
     :param url: Api url. type(str)
     :return:
@@ -142,20 +139,20 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
 
         method = 'icx_sendTransaction'
 
-        amount_wei = icx_str_to_wei(amount)
-        fixed_amount = int(floor_point(amount_wei, decimal_point))
+        amount = int(amount)
+        fee = int(fee)
 
-        fee_wei = get_fee_wei(fee)
-        fixed_fee = int(floor_point(fee_wei, decimal_point))
+        check_amount_and_fee_is_valid(amount, fee)
 
-        check_amount_and_fee_is_valid(fixed_amount, fixed_fee)
-
-        params = __make_params(user_address, to, fixed_amount, fixed_fee, method, private_key_bytes)
+        print(amount, fee)
+        params = __make_params(user_address, to, amount, fee, method, private_key_bytes)
         payload = create_jsonrpc_request_content(0, method, params)
 
         # Request the balance repeatedly until we get the response from ICON network.
         request_gen = request_generator(url)
         balance = __get_balance_after_trasfer(user_address, url, request_gen)
+
+        print(balance)
         check_balance_enough(balance, amount, fee)
         next(request_gen)
         response = request_gen.send(payload)
@@ -293,7 +290,6 @@ def __get_balance_after_trasfer(address, url, request_gen):
     next(request_gen)
     balance_content = request_gen.send(payload_for_balance).json()
 
-    wei = balance_content['result']['response']
-    balance = float(change_hex_balance_to_decimal_balance(wei))
-
-    return balance
+    balance = balance_content['result']['response']
+    balance_loop = int(balance, 16)
+    return balance_loop

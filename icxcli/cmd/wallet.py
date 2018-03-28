@@ -134,7 +134,7 @@ def show_asset_list(password, file_path, url) -> int:
         return ExitCode.NOT_A_KEY_STORE_FILE.value
 
 
-def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url) -> int:
+def transfer_value_with_the_fee(password, fee, to, amount, file_path, url) -> int:
     """ Transfer the value to the specific address with the fee.
 
     :param password: Password including alphabet character, number, and special character.
@@ -148,7 +148,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
     :return: Predefined exit code
     """
     try:
-        transfer_result = wallet.transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_path, url)
+        transfer_result = wallet.transfer_value_with_the_fee(password, fee, to, amount, file_path, url)
         print("Transaction has been completed successfully.")
         return ExitCode.SUCCEED.value
     except FilePathIsWrong:
@@ -166,7 +166,7 @@ def transfer_value_with_the_fee(password, fee, decimal_point, to, amount, file_p
         print("The amount you want to transfer is not valid.")
         return ExitCode.AMOUNT_IS_INVALID.value
     except TransferFeeIsInvalid:
-        print("Transaction Fee is invalid. The fee should be 0.01.")
+        print("Transaction Fee is invalid. The fee should be 10000000000000000.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
     except FeeIsBiggerThanAmount:
         print("Fee is bigger than transaction amount. Ple∂ase check your fee again.")

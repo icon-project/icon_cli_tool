@@ -54,8 +54,8 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = bool(wallet.transfer_value_with_the_fee(
-                password, 0.01, 18, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
-                amount="1", file_path=file_path, url=url))
+                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                amount="1000000000000000000", file_path=file_path, url=url))
 
             # Then
             self.assertEqual(True, ret)
@@ -73,8 +73,8 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 0.01, 18, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
-                amount="1", file_path='./wrong_path', url=url)
+                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                amount="10000000000000000000", file_path='./wrong_path', url=url)
             # Then
 
         except FilePathIsWrong:
@@ -90,8 +90,8 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 0.01, 18, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
-                amount="1", file_path=file_path, url=url)
+                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                amount="1000000000000000000", file_path=file_path, url=url)
             # Then
 
         except PasswordIsWrong:
@@ -107,8 +107,8 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 0.01, 18, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
-                amount="100000000", file_path=file_path, url=url)
+                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                amount="10000000000000000000000000000000000000000000000000", file_path=file_path, url=url)
             # Then
 
         except NoEnoughBalanceInWallet:
@@ -124,8 +124,8 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, -1, 18, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
-                amount="1000", file_path=file_path, url=url)
+                password, 100000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                amount="1000000000000000000", file_path=file_path, url=url)
             # Then
 
         except TransferFeeIsInvalid:
@@ -142,8 +142,8 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 0.01, 18, to="hxa23651905d221dd36b",
-                amount="1", file_path=file_path, url=url)
+                password, 10000000000000000, to="hxa23651905d221dd36b",
+                amount="1000000000000000000", file_path=file_path, url=url)
             # Then
 
         except AddressIsWrong:
@@ -160,8 +160,26 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 0.1, 3, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
-                amount="1.1234444", file_path=file_path, url=url)
+                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                amount="11234440000000000000", file_path=file_path, url=url)
+            # Then
+
+        except TransferFeeIsInvalid:
+            self.assertTrue(True)
+
+    def test_transfer_case7(self):
+        """Test for transfer_value_with_the_fee function.
+        Case when Fee is not 0.01.
+        """
+        # Given
+        password = "ejfnvm1234*"
+        file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
+        print()
+        # When
+        try:
+            ret = wallet.transfer_value_with_the_fee(
+                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                amount="11234440000000000000", file_path=file_path, url=url)
             # Then
 
         except TransferFeeIsInvalid:
