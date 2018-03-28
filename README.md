@@ -57,7 +57,7 @@ $ sudo apt install autoconf libtool automake
 
 # Version
 
-* 0.0.1
+* 0.0.2
 
 # Glossary
 

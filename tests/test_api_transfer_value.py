@@ -3,7 +3,7 @@ import unittest
 
 from icxcli.icx.utils import get_tx_hash, sign
 from icxcli.icx import wallet, FilePathIsWrong, PasswordIsWrong, NoEnoughBalanceInWallet, TransferFeeIsInvalid, \
-    AddressIsWrong, FeeIsBiggerThanAmount, AmountIsInvalid
+    AddressIsWrong, FeeIsBiggerThanAmount, AmountIsInvalid, AddressIsSame
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 url = 'https://testwallet.icon.foundation/api/'
 
@@ -206,6 +206,47 @@ class TestAPI(unittest.TestCase):
                 amount="0", file_path=file_path, url=url)
 
         except AmountIsInvalid:
+            self.assertTrue(True)
+        else:
+            self.assertTrue(False)
+
+    def test_transfer_case9(self):
+        """Test for transfer_value_with_the_fee function.
+        Case when balance is same as sum of Amount and Fee.
+        """
+
+        password = "ejfnvm1234*"
+        file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
+
+        try:
+            ret = wallet.transfer_value_with_the_fee(
+                password, 10000000000000000, to="hx95e12b1f98f9b847175849f51bed5d121e742f6a",
+                amount="1020000000000000000", file_path=file_path, url=url)
+
+            password = "Adas21312**"
+            file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer2.txt")
+            ret = wallet.transfer_value_with_the_fee(
+                password, 10000000000000000, to="hx66425784bfddb5b430136b38268c3ce1fb68e8c5",
+                amount="1000000000000000000", file_path=file_path, url=url)
+
+        except AmountIsInvalid:
+            self.assertTrue(False)
+        else:
+            self.assertTrue(True)
+
+    def test_transfer_case10(self):
+        """Test for transfer_value_with_the_fee function.
+        Case when wallet address to transfer is same as wallet address to be sent.
+        """
+
+        password = "ejfnvm1234*"
+        file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
+        try:
+            ret = wallet.transfer_value_with_the_fee(
+                password, 10000000000000000, to="hx66425784bfddb5b430136b38268c3ce1fb68e8c5",
+                amount="0", file_path=file_path, url=url)
+
+        except AddressIsSame:
             self.assertTrue(True)
         else:
             self.assertTrue(False)

@@ -22,7 +22,7 @@ from json import JSONDecodeError
 import eth_keyfile
 import requests
 from icxcli.icx import IcxSigner, NoEnoughBalanceInWallet, AmountIsInvalid, AddressIsWrong, TransferFeeIsInvalid, \
-    FeeIsBiggerThanAmount, NotAKeyStoreFile
+    FeeIsBiggerThanAmount, NotAKeyStoreFile, AddressIsSame
 
 
 def validate_password(password) -> bool:
@@ -108,6 +108,13 @@ def validate_address(address) -> bool:
         raise AddressIsWrong
     except ValueError:
         raise AddressIsWrong
+
+
+def validate_address_is_not_same(to_address, from_address) -> bool:
+    if to_address != from_address:
+        return True
+    else:
+        raise AddressIsSame
 
 
 def validate_key_store_file(key_store_file_path: object) -> bool:
@@ -290,7 +297,7 @@ def check_balance_enough(balance, amount, fee):
     :return:
     True when the user has enough balance.
     """
-    if balance > amount + fee:
+    if balance >= amount + fee:
         return True
     else:
         raise NoEnoughBalanceInWallet

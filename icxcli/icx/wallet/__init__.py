@@ -27,7 +27,7 @@ from icxcli.icx import utils
 from icxcli.icx import IcxSigner
 from icxcli.icx.utils import get_address_by_privkey, get_timestamp_us, get_tx_hash, sign, \
     create_jsonrpc_request_content, validate_address, get_payload_of_json_rpc_get_balance, \
-    check_balance_enough, check_amount_and_fee_is_valid, validate_key_store_file, change_hex_balance_to_decimal_balance
+    check_balance_enough, check_amount_and_fee_is_valid, validate_key_store_file, validate_address_is_not_same
 from icxcli.icx.utils import post
 
 import requests
@@ -137,6 +137,8 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
         validate_address(user_address)
         validate_address(to)
 
+        validate_address_is_not_same(user_address, to)
+
         method = 'icx_sendTransaction'
 
         amount = int(amount)
@@ -150,7 +152,6 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
         # Request the balance repeatedly until we get the response from ICON network.
         request_gen = request_generator(url)
         balance = __get_balance_after_trasfer(user_address, url, request_gen)
-
         check_balance_enough(balance, amount, fee)
         next(request_gen)
         response = request_gen.send(payload)
