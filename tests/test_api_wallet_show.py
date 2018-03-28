@@ -22,7 +22,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "Adas21312**"
+        password = "ejfnvm1234*"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -42,7 +42,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "Adas21312**"
+        password = "ejfnvm1234*"
         file_path = os.path.join(TEST_DIR, "unknown_folder", "test_keystore.txt")
 
         # When
@@ -61,7 +61,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "1234**wrongpassword"
+        password = "ejfnvm1234*"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -79,13 +79,13 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "Adas21312**"
+        password = "ejfnvm1234*"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
         try:
             address, balance, wallet_info = icx.wallet.show_wallet(password, file_path, url)
-            self.assertTrue(type(balance) == str)
+            self.assertTrue(type(balance) == int)
         finally:
             pass
 
@@ -96,7 +96,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "Adas21312**"
+        password = "ejfnvm1234*"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When

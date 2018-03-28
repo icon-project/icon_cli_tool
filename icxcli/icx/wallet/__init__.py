@@ -249,9 +249,9 @@ def __get_balance(address, url):
     response = post(url, payload)
     content = response.json()
     hex_balance = content['result']['response']
-    dec_balance = change_hex_balance_to_decimal_balance(hex_balance)
+    dec_loop_balance = int(hex_balance, 16)
 
-    return dec_balance
+    return dec_loop_balance
 
 
 def __read_wallet(file_path):

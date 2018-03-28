@@ -132,7 +132,7 @@ usage:
             not be able to make the transaction. you will be notified 
             when it is possible to make a transaction with the modified fee.
             
-        IF YOU MISS --networkid, icli WILL USE MAINNET.
+        IF YOU MISS --networkid, icli WILL USE TESTNET.
 
           
 

@@ -85,7 +85,7 @@ def show_wallet(password, file_path, url) -> int:
         wallet_address, balance, wallet_info = wallet.show_wallet(password, file_path, url)
         print(f"Succeed to show wallet in {file_path}. ")
         print(f"Wallet address : {wallet_address} ")
-        print(f"Wallet balance : {balance} ")
+        print(f"Wallet balance : {balance} loop")
         wallet_info = json.dumps(wallet_info, indent=4, sort_keys=True)
         print(f"Wallet keystore_file_info : \n{wallet_info} ")
         return ExitCode.SUCCEED.value
@@ -117,7 +117,7 @@ def show_asset_list(password, file_path, url) -> int:
         wallet_address, balance = wallet.show_asset_list(password, file_path, url)
         print(f"Succeed to show asset list in {file_path}. ")
         print(f"Wallet address : {wallet_address} ")
-        print(f"Wallet balance : {balance} ")
+        print(f"Wallet balance : {balance} loop")
         return ExitCode.SUCCEED.value
     except wallet.PasswordIsNotAcceptable:
         print("Fail: Password is not acceptable. ")

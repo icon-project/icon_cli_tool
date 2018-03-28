@@ -23,7 +23,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "Adas21312**"
+        password = "ejfnvm1234*"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
@@ -31,7 +31,6 @@ class TestAPI(unittest.TestCase):
 
             print(file_path)
             address, balance = icx.wallet.show_asset_list(password, file_path, url)
-            print(address, balance)
 
             # Then
             prefix = address[0:2]
@@ -47,7 +46,7 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "Adas21312**"
+        password = "ejfnvm1234*"
         file_path = os.path.join(TEST_DIR, "unknown_folder", "test_keystore.txt")
 
         # When
@@ -117,13 +116,13 @@ class TestAPI(unittest.TestCase):
         """
 
         # Given
-        password = "Adas21312**"
+        password = "ejfnvm1234*"
         file_path = os.path.join(TEST_DIR, "test_keystore.txt")
 
         # When
         try:
             address, balance = icx.wallet.show_asset_list(password, file_path, url)
-            self.assertTrue(type(balance) == str)
+            self.assertTrue(type(balance) == int)
         finally:
             pass
 
