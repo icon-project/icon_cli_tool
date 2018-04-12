@@ -202,7 +202,7 @@ optional arguments:
 ### Create wallet file
 
 ```shell
-$ icli wallet create <wallet name> <file path> -p <password>
+$ icli wallet create <file path> -p <password>
 ```
 
 Create a wallet file with given wallet name, password and file path.
