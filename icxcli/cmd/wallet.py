@@ -170,7 +170,7 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url) -> in
         print("Transaction Fee is invalid. The fee should be 10000000000000000.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
     except FeeIsBiggerThanAmount:
-        print("Fee is bigger than transaction amount. Ple∂ase check your fee again.")
+        print("Fee is bigger than transaction amount. Please check your fee again.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
     except NotAKeyStoreFile:
         print(f"{file_path} is not a Key store File.")
