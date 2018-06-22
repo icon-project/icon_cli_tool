@@ -141,8 +141,8 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
 
         method = 'icx_sendTransaction'
 
-        amount = int(amount)
-        fee = int(fee)
+        amount = int(float(amount))
+        fee = int(float(fee))
 
         check_amount_and_fee_is_valid(amount, fee)
 

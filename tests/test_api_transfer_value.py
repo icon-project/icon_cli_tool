@@ -63,6 +63,27 @@ class TestAPI(unittest.TestCase):
         except FileNotFoundError:
             self.assertFalse(True)
 
+    def test_transfer_case0_0(self):
+        """Test for transfer_value_with_the_fee function.
+         Case when transfer 0.1(float) value to a wallet.
+        """
+
+        # Given
+        password = "ejfnvm1234*"
+        file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
+
+        # When
+        try:
+            ret = bool(wallet.transfer_value_with_the_fee(
+                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                amount="0.5", file_path=file_path, url=url))
+
+            # Then
+            self.assertEqual(False, ret)
+
+        except AmountIsInvalid:
+            self.assertTrue(True)
+
     def test_transfer_case1(self):
         """Test for transfer_value_with_the_fee function.
         Case when key_store_file_path is wrong.
