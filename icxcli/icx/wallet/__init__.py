@@ -141,10 +141,7 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
 
         method = 'icx_sendTransaction'
 
-        amount = int(float(amount))
-        fee = int(float(fee))
-
-        check_amount_and_fee_is_valid(amount, fee)
+        amount, fee = check_amount_and_fee_is_valid(amount, fee)
 
         params = __make_params(user_address, to, amount, fee, method, private_key_bytes)
         payload = create_jsonrpc_request_content(0, method, params)

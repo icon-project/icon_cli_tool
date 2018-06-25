@@ -56,7 +56,7 @@ def parse_args():
     parser = argparse.ArgumentParser(prog='icli.py', usage='''
     
     ==============================
-    icli: ICON CLI tool (v 0.0.2)
+    icli: ICON CLI tool (v 0.0.3)
     ==============================
         Normal commands:
             version

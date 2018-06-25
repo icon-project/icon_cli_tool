@@ -22,5 +22,5 @@ venv.bak/
 
 build/
 icxcli.egg-info/
-Tests/test_keystore.txt
+tests/test_keystore.txt
 dist/

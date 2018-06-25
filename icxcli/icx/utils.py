@@ -22,7 +22,7 @@ from json import JSONDecodeError
 import eth_keyfile
 import requests
 from icxcli.icx import IcxSigner, NoEnoughBalanceInWallet, AmountIsInvalid, AddressIsWrong, TransferFeeIsInvalid, \
-    FeeIsBiggerThanAmount, NotAKeyStoreFile, AddressIsSame
+    FeeIsBiggerThanAmount, NotAKeyStoreFile, AddressIsSame, AmountOrFeeIsNotInteger
 
 
 def validate_password(password) -> bool:
@@ -58,47 +58,6 @@ def icx_to_wei(icx):
     :return:
     """
     return int(icx * 10 ** 18)
-
-
-def icx_str_to_wei(icx):
-    """Convert amount in icx unit to wei unit.
-
-    :param icx: type(str)
-    :return:
-    Wei value of icx.
-    type(int)
-    """
-    try:
-        icx_float = float(icx)
-        icx_wei = 0
-        if icx_float <= 0:
-            raise AmountIsInvalid
-
-        if icx == "0":
-            raise AmountIsInvalid
-        elif icx[0] == "0" and icx[1] != ".":
-            raise AmountIsInvalid
-        elif icx[0] == "0" and icx[1] == ".":
-            decimal_length = len(icx[2:])
-            if decimal_length > 18:
-                icx = icx[:18]
-            icx_wei = int(f'{icx[2:]}{"0"*(18-decimal_length)}')
-
-        elif icx.find(".") == -1:
-            icx_wei = int(f'{icx}{"0"*18}')
-        else:
-            num, decimal = str.split(icx, ".")
-            decimal_length = len(decimal)
-            if decimal_length > 18:
-                decimal = decimal[:18]
-            icx_wei = int(f'{num}{decimal}{"0"*(18-decimal_length)}')
-
-        if icx_wei == 0:
-            raise AmountIsInvalid
-        return icx_wei
-
-    except ValueError:
-        raise AmountIsInvalid
 
 
 def validate_address(address) -> bool:
@@ -305,12 +264,24 @@ def check_balance_enough(balance, amount, fee):
 
 
 def check_amount_and_fee_is_valid(amount, fee):
-    if amount <= 0:
+
+    def has_floating_point(str_number):
+        str_number = str(str_number)
+        if '.' in str_number:
+            return True
+        else:
+            return False
+
+    if has_floating_point(amount) or has_floating_point(fee) or not float(amount).is_integer or not float(fee).is_integer:
+        raise AmountOrFeeIsNotInteger
+    elif int(amount) <= 0:
         raise AmountIsInvalid
-    if fee <= 0 or fee != 10000000000000000:
+    elif int(fee) <= 0 or int(fee) != 10000000000000000:
         raise TransferFeeIsInvalid
-    if amount < fee:
+    elif int(amount) < int(fee):
         raise FeeIsBiggerThanAmount
+
+    return int(amount), int(fee)
 
 
 def change_hex_balance_to_decimal_balance(hex_balance, place=18):

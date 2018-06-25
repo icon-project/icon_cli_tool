@@ -57,7 +57,7 @@ $ sudo apt install autoconf libtool automake
 
 # Version
 
-* 0.0.2
+* 0.0.3
 
 # Glossary
 
@@ -318,7 +318,7 @@ Transfer the value from  A address to B address with the fee.
 
 * fee : Transfer fee (Unit:loop)
 
-    * **YOU SHOULD CHANGE BOTH THE UNIT OF AMOUNT AND FEE TO LOOP.**
+    * **YOU SHOULD CHANGE BOTH THE UNIT OF AMOUNT AND FEE TO LOOP. You should enter integer values for amount and fee, not floating number.**
         - Unit: loop 
             * Ex) 1 icx = 10<sup>18</sup> loop
      
@@ -345,4 +345,6 @@ Return 0 : Succeed to transfer
 * Return 130: The wallet address is wrong.
 
 * Return 133: The file is not a key store file.
+
+* Return 135: The amount and fee is not integer values. 
 

@@ -3,7 +3,7 @@ import unittest
 
 from icxcli.icx.utils import get_tx_hash, sign
 from icxcli.icx import wallet, FilePathIsWrong, PasswordIsWrong, NoEnoughBalanceInWallet, TransferFeeIsInvalid, \
-    AddressIsWrong, FeeIsBiggerThanAmount, AmountIsInvalid, AddressIsSame
+    AddressIsWrong, FeeIsBiggerThanAmount, AmountIsInvalid, AddressIsSame, AmountOrFeeIsNotInteger
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 url = 'https://testwallet.icon.foundation/api/'
 
@@ -76,13 +76,14 @@ class TestAPI(unittest.TestCase):
         try:
             ret = bool(wallet.transfer_value_with_the_fee(
                 password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
-                amount="0.5", file_path=file_path, url=url))
+                amount="10000000000000000.755", file_path=file_path, url=url))
 
             # Then
             self.assertEqual(False, ret)
 
-        except AmountIsInvalid:
+        except AmountOrFeeIsNotInteger:
             self.assertTrue(True)
+
 
     def test_transfer_case1(self):
         """Test for transfer_value_with_the_fee function.
