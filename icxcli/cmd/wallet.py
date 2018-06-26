@@ -155,12 +155,12 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url) -> in
         return ExitCode.SUCCEED.value
     except FilePathIsWrong:
         return ExitCode.FILE_PATH_IS_WRONG.value
-    except PasswordIsWrong:
-        print("Password is wrong.")
-        return ExitCode.PASSWORD_IS_WRONG.value
     except AddressIsWrong:
         print("The transaction target address does not have the correct format. please check the address again.")
         return ExitCode.WALLET_ADDRESS_IS_WRONG.value
+    except PasswordIsWrong:
+        print("Password is wrong.")
+        return ExitCode.PASSWORD_IS_WRONG.value
     except NoEnoughBalanceInWallet:
         print("Wallet does not have enough balance.")
         return ExitCode.WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE.value
