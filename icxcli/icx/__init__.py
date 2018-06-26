@@ -146,8 +146,8 @@ class AmountIsInvalid(Error):
     pass
 
 
-class AmountOrFeeIsNotInteger(Error):
-    """Exception raised for "Amount or fee is not integer" """
+class AmountIsNotInteger(Error):
+    """Exception raised for "Amount is not integer" """
     pass
 
 

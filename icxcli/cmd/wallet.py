@@ -17,7 +17,7 @@
 
 from enum import Enum
 from icxcli.icx import wallet, NoEnoughBalanceInWallet, AddressIsWrong, PasswordIsWrong, FilePathIsWrong, \
-    AmountIsInvalid, TransferFeeIsInvalid, FeeIsBiggerThanAmount, NotAKeyStoreFile, AddressIsSame, AmountOrFeeIsNotInteger
+    AmountIsInvalid, TransferFeeIsInvalid, FeeIsBiggerThanAmount, NotAKeyStoreFile, AddressIsSame, AmountIsNotInteger
 import json
 
 
@@ -38,7 +38,7 @@ class ExitCode(Enum):
     DECIMAL_POINT_INVALID = 132
     NOT_A_KEY_STORE_FILE = 133
     WALLET_ADDRESS_IS_SAME = 134
-    AMOUNT_OR_FEE_IS_NOT_INTEGER = 135
+    AMOUNT_IS_NOT_INTEGER = 135
     NO_PERMISSION_TO_WRITE_FILE = 136
 
 
@@ -179,9 +179,9 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url) -> in
     except AddressIsSame:
         print("Wallet address to transfer must be different from Wallet address to deposit.")
         return ExitCode.WALLET_ADDRESS_IS_SAME.value
-    except AmountOrFeeIsNotInteger:
-        print("Amount and fee should be integer and loop unit, not icx")
-        return ExitCode.AMOUNT_OR_FEE_IS_NOT_INTEGER.value
+    except AmountIsNotInteger:
+        print("Amount should be integer and loop unit, not icx")
+        return ExitCode.AMOUNT_IS_NOT_INTEGER.value
 
 
 def store_wallet(file_path, json_string) -> int:

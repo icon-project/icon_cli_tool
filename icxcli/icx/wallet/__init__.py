@@ -129,6 +129,7 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
     :return:
     """
     try:
+
         url = f'{url}v2'
         validate_key_store_file(file_path)
         private_key_bytes = __key_from_key_store(file_path, bytes(password, 'utf-8'))

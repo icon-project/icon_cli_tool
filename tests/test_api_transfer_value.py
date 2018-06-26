@@ -1,9 +1,9 @@
 import os
 import unittest
 
-from icxcli.icx.utils import get_tx_hash, sign
+from icxcli.icx.utils import get_tx_hash, sign, check_amount_and_fee_is_valid
 from icxcli.icx import wallet, FilePathIsWrong, PasswordIsWrong, NoEnoughBalanceInWallet, TransferFeeIsInvalid, \
-    AddressIsWrong, FeeIsBiggerThanAmount, AmountIsInvalid, AddressIsSame, AmountOrFeeIsNotInteger
+    AddressIsWrong, FeeIsBiggerThanAmount, AmountIsInvalid, AddressIsSame, AmountIsNotInteger
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 url = 'https://testwallet.icon.foundation/api/'
 
@@ -81,9 +81,8 @@ class TestAPI(unittest.TestCase):
             # Then
             self.assertEqual(False, ret)
 
-        except AmountOrFeeIsNotInteger:
+        except AmountIsNotInteger:
             self.assertTrue(True)
-
 
     def test_transfer_case1(self):
         """Test for transfer_value_with_the_fee function.
@@ -272,6 +271,28 @@ class TestAPI(unittest.TestCase):
             self.assertTrue(True)
         else:
             self.assertTrue(False)
+
+    def test_check_amount_and_fee_is_valid_1(self):
+        """Test for function called check_amount_and_fee_is_valid with floating values."""
+
+        count = 0
+        test_floating_values = ["123.5", "123.11111110", "100000000000000.12340000"]
+
+        for value in test_floating_values:
+            try:
+                check_amount_and_fee_is_valid(value, 10000000000000000)
+            except AmountIsNotInteger:
+                count += 1
+
+        self.assertEqual(count, 3)
+
+    def test_check_amount_and_fee_is_valid_2(self):
+        """Test for function called check_amount_and_fee_is_valid with integer values."""
+
+        test_integer_values = ["100000000000000123444", "12300000333000000000","12345678901234567"]
+
+        for value in test_integer_values:
+            self.assertEqual(check_amount_and_fee_is_valid(value, 10000000000000000), (int(value), 10000000000000000))
 
 
 if __name__ == "__main__":
