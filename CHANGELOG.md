@@ -1,8 +1,8 @@
 # Changelog
 
-## [0.0.3] - June 25, 2018
+## [0.0.3] - June 26, 2018
 ### Added
-* Added the error when amount and fee user put is not integer values. 
+* Added the error when amount and fee user put are not integer values. 
 
 ### Changed
 N/A
