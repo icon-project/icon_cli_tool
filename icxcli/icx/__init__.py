@@ -146,6 +146,11 @@ class AmountIsInvalid(Error):
     pass
 
 
+class AmountIsNotInteger(Error):
+    """Exception raised for "Amount is not integer" """
+    pass
+
+
 class TransferFeeIsInvalid(Error):
     """Exception raised for "Transfer Fee is Invalid." """
     pass

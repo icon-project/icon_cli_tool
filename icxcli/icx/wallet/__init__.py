@@ -129,6 +129,7 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
     :return:
     """
     try:
+
         url = f'{url}v2'
         validate_key_store_file(file_path)
         private_key_bytes = __key_from_key_store(file_path, bytes(password, 'utf-8'))
@@ -141,10 +142,7 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
 
         method = 'icx_sendTransaction'
 
-        amount = int(amount)
-        fee = int(fee)
-
-        check_amount_and_fee_is_valid(amount, fee)
+        amount, fee = check_amount_and_fee_is_valid(amount, fee)
 
         params = __make_params(user_address, to, amount, fee, method, private_key_bytes)
         payload = create_jsonrpc_request_content(0, method, params)
