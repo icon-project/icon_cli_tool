@@ -130,14 +130,13 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
     """
     try:
 
+        validate_address(to)
+
         url = f'{url}v2'
         validate_key_store_file(file_path)
         private_key_bytes = __key_from_key_store(file_path, bytes(password, 'utf-8'))
         user_address = get_address_by_privkey(private_key_bytes)
-
         validate_address(user_address)
-        validate_address(to)
-
         validate_address_is_not_same(user_address, to)
 
         method = 'icx_sendTransaction'

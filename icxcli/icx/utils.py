@@ -273,14 +273,16 @@ def check_amount_and_fee_is_valid(amount, fee):
 
     if has_floating_point(amount):
         raise AmountIsNotInteger
+    elif has_floating_point(fee):
+        raise TransferFeeIsInvalid
     elif int(amount) <= 0:
         raise AmountIsInvalid
-    elif fee <= 0 or fee != 10000000000000000:
+    elif int(fee) <= 0 or int(fee) != 10000000000000000:
         raise TransferFeeIsInvalid
-    elif int(amount) < fee:
+    elif int(amount) < int(fee):
         raise FeeIsBiggerThanAmount
 
-    return int(amount), fee
+    return int(amount), int(fee)
 
 
 def change_hex_balance_to_decimal_balance(hex_balance, place=18):
