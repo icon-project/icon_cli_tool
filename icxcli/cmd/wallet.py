@@ -150,6 +150,7 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url) -> in
     :return: Predefined exit code
     """
     try:
+
         transfer_result = wallet.transfer_value_with_the_fee(password, fee, to, amount, file_path, url)
         print("Transaction has been completed successfully.")
         return ExitCode.SUCCEED.value

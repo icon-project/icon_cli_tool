@@ -54,7 +54,7 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = bool(wallet.transfer_value_with_the_fee(
-                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                password, "10000000000000000", to="hxa974f512a510299b53c55535c105ed962fd01ee2",
                 amount="1000000000000000000", file_path=file_path, url=url))
 
             # Then
@@ -65,7 +65,7 @@ class TestAPI(unittest.TestCase):
 
     def test_transfer_case0_0(self):
         """Test for transfer_value_with_the_fee function.
-         Case when transfer 0.1(float) value to a wallet.
+         Case when transfer amount which is floating value to a wallet.
         """
 
         # Given
@@ -75,13 +75,34 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = bool(wallet.transfer_value_with_the_fee(
-                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
-                amount="10000000000000000.755", file_path=file_path, url=url))
+                password, "1000000000000000", to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                amount="10000000000000001.2", file_path=file_path, url=url))
 
             # Then
             self.assertEqual(False, ret)
 
         except AmountIsNotInteger:
+            self.assertTrue(True)
+
+    def test_transfer_case0_1(self):
+        """Test for transfer_value_with_the_fee function.
+         Case when transfering amount with fee which is floating value to a wallet.
+        """
+
+        # Given
+        password = "ejfnvm1234*"
+        file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
+
+        # When
+        try:
+            ret = bool(wallet.transfer_value_with_the_fee(
+                password, "1000000000000000.0", to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                amount="10000000000000001", file_path=file_path, url=url))
+
+            # Then
+            self.assertEqual(False, ret)
+
+        except TransferFeeIsInvalid:
             self.assertTrue(True)
 
     def test_transfer_case1(self):
@@ -94,7 +115,7 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                password, "10000000000000000", to="hxa974f512a510299b53c55535c105ed962fd01ee2",
                 amount="10000000000000000000", file_path='./wrong_path', url=url)
             # Then
 
@@ -113,7 +134,7 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                password, "10000000000000000", to="hxa974f512a510299b53c55535c105ed962fd01ee2",
                 amount="1000000000000000000", file_path=file_path, url=url)
             # Then
 
@@ -132,7 +153,7 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                password, "10000000000000000", to="hxa974f512a510299b53c55535c105ed962fd01ee2",
                 amount="10000000000000000000000000000000000000000000000000", file_path=file_path, url=url)
             # Then
 
@@ -151,7 +172,7 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 100000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                password, "100000000000", to="hxa974f512a510299b53c55535c105ed962fd01ee2",
                 amount="1000000000000000000", file_path=file_path, url=url)
             # Then
 
@@ -171,7 +192,7 @@ class TestAPI(unittest.TestCase):
         # When
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed9",
+                password, "10000000000000000", to="hxa974f512a510299b53c55535c105ed9",
                 amount="1000000000000000000", file_path=file_path, url=url)
             # Then
 
@@ -190,7 +211,7 @@ class TestAPI(unittest.TestCase):
 
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 100000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                password, "100000000000000", to="hxa974f512a510299b53c55535c105ed962fd01ee2",
                 amount="11234440000000000000", file_path=file_path, url=url)
 
         except TransferFeeIsInvalid:
@@ -207,7 +228,7 @@ class TestAPI(unittest.TestCase):
         file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                password, "10000000000000000", to="hxa974f512a510299b53c55535c105ed962fd01ee2",
                 amount="1000000000000000", file_path=file_path, url=url)
 
         except FeeIsBiggerThanAmount:
@@ -223,7 +244,7 @@ class TestAPI(unittest.TestCase):
         file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 10000000000000000, to="hxa974f512a510299b53c55535c105ed962fd01ee2",
+                password, "10000000000000000", to="hxa974f512a510299b53c55535c105ed962fd01ee2",
                 amount="0", file_path=file_path, url=url)
 
         except AmountIsInvalid:
@@ -241,13 +262,13 @@ class TestAPI(unittest.TestCase):
 
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 10000000000000000, to="hx95e12b1f98f9b847175849f51bed5d121e742f6a",
+                password, "10000000000000000", to="hx95e12b1f98f9b847175849f51bed5d121e742f6a",
                 amount="1020000000000000000", file_path=file_path, url=url)
 
             password = "Adas21312**"
             file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer2.txt")
             ret = wallet.transfer_value_with_the_fee(
-                password, 10000000000000000, to="hx66425784bfddb5b430136b38268c3ce1fb68e8c5",
+                password, "10000000000000000", to="hx66425784bfddb5b430136b38268c3ce1fb68e8c5",
                 amount="1000000000000000000", file_path=file_path, url=url)
 
         except AmountIsInvalid:
@@ -264,7 +285,7 @@ class TestAPI(unittest.TestCase):
         file_path = os.path.join(TEST_DIR, "test_keystore_for_transfer.txt")
         try:
             ret = wallet.transfer_value_with_the_fee(
-                password, 10000000000000000, to="hx66425784bfddb5b430136b38268c3ce1fb68e8c5",
+                password, "10000000000000000", to="hx66425784bfddb5b430136b38268c3ce1fb68e8c5",
                 amount="0", file_path=file_path, url=url)
 
         except AddressIsSame:
@@ -280,7 +301,7 @@ class TestAPI(unittest.TestCase):
 
         for value in test_floating_values:
             try:
-                check_amount_and_fee_is_valid(value, 10000000000000000)
+                check_amount_and_fee_is_valid(value, "10000000000000000")
             except AmountIsNotInteger:
                 count += 1
 
@@ -292,7 +313,7 @@ class TestAPI(unittest.TestCase):
         test_integer_values = ["100000000000000123444", "12300000333000000000","12345678901234567"]
 
         for value in test_integer_values:
-            self.assertEqual(check_amount_and_fee_is_valid(value, 10000000000000000), (int(value), 10000000000000000))
+            self.assertEqual(check_amount_and_fee_is_valid(value, "10000000000000000"), (int(value), 10000000000000000))
 
 
 if __name__ == "__main__":

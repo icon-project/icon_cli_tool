@@ -20,7 +20,7 @@ import argparse
 import os
 
 from icxcli.cmd import wallet
-from icxcli.icx import NonExistKey
+from icxcli.icx import NonExistKey, TransferFeeIsInvalid
 from icxcli.cmd.wallet import ExitCode
 from icxcli import __version__
 
@@ -85,7 +85,7 @@ def parse_args():
     parser.add_argument('-p', dest='password'
                         , help='password')
     parser.add_argument('-f', dest='fee'
-                        , help='transaction fee', type=int, default=10000000000000000)
+                        , help='transaction fee', default="10000000000000000")
     parser.add_argument('-n', dest='network_id'
                         , help='which network', default='testnet')
 
@@ -104,7 +104,6 @@ def call_wallet_method(command, parser):
    """
 
     args = parser.parse_args()
-    url = None
     try:
         url = get_selected_url(args.network_id)
     except NonExistKey:

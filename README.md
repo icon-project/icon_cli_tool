@@ -318,7 +318,7 @@ Transfer the value from  A address to B address with the fee.
 
 * fee : Transfer fee (Unit:loop)
 
-    * **YOU SHOULD CHANGE BOTH THE UNIT OF AMOUNT AND FEE TO LOOP, ENTERING INTEGER VALUES FOR AMOUNT NOT FLOATING NUMBERS.**
+    * **YOU SHOULD CHANGE BOTH THE UNIT OF AMOUNT AND FEE TO LOOP, ENTERING INTEGER VALUES FOR AMOUNT AND FEE NOT FLOATING NUMBERS.**
         - Unit: loop 
             * Ex) 1 icx = 10<sup>18</sup> loop
      
