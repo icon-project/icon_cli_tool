@@ -1,7 +1,3 @@
-This document is for ICON CLI Tool based on ICON JSON RPC API V2. We do not update this project any longer. After updating Mainnet, **t-bears**(https://github.com/icon-project/t-bears) is recommended strongly.
-==============================================================================================================================
-
-
 
 ICON CLI tool
 ========
