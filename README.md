@@ -106,7 +106,7 @@ If you have the aws-cli installed and want to upgrade to the latest version you 
 
 ## Run CLI
 
-Run command icli in the command line.  There are many subcommands like wallet create, wallet show, asset list, transfer for ICX service. You can get the help page by adding the command help.
+Run command icli in the command line.  There are many sub commands like wallet create, wallet show, asset list, transfer for ICX service. You can get the help page by adding the command help.
 
     $ icli  --help
     usage:
