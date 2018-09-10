@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright 2018 theloop Inc.
+# Copyright 2018 ICON Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import codecs
 
 from eth_keyfile import create_keyfile_json, extract_key_from_keyfile
 from icxcli.icx import FilePathIsWrong, PasswordIsNotAcceptable, NoPermissionToWriteFile, FileExists, \
-    PasswordIsWrong, FilePathWithoutFileName
+    PasswordIsWrong, FilePathWithoutFileName, NetworkIsInvalid
 from icxcli.icx import WalletInfo
 from icxcli.icx import utils
 from icxcli.icx import IcxSigner
@@ -44,7 +44,6 @@ def create_wallet(password, file_path):
 
     :return: Instance of WalletInfo class.
     """
-
     if not utils.validate_password(password):
         raise PasswordIsNotAcceptable
 
@@ -73,18 +72,17 @@ def show_wallet(password, file_path, url):
     :param url: api url. type(str)
     :return:
     """
-
     if not utils.validate_password(password):
         raise PasswordIsNotAcceptable
-
     try:
         validate_key_store_file(file_path)
         private_key_bytes = __key_from_key_store(file_path, bytes(password, 'utf-8'))
-
         wallet_info = __read_wallet(file_path)
         wallet_address = wallet_info['address']
         balance = __get_balance(wallet_address, url)
         return wallet_address, balance, wallet_info
+    except json.decoder.JSONDecodeError:
+        raise NetworkIsInvalid
     except FileNotFoundError:
         raise FilePathIsWrong
     except ValueError:
@@ -102,7 +100,6 @@ def show_asset_list(password, file_path, url):
     """
     if not utils.validate_password(password):
         raise PasswordIsNotAcceptable
-
     try:
         validate_key_store_file(file_path)
         private_key_bytes = __key_from_key_store(file_path, bytes(password, 'utf-8'))
@@ -110,6 +107,8 @@ def show_asset_list(password, file_path, url):
         wallet_address = wallet_info['address']
         balance = __get_balance(wallet_address, url)
         return wallet_address, balance
+    except json.decoder.JSONDecodeError:
+        raise NetworkIsInvalid
     except FileNotFoundError:
         raise FilePathIsWrong
     except ValueError:
@@ -129,20 +128,14 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
     :return:
     """
     try:
-
         validate_address(to)
-
-        url = f'{url}v2'
         validate_key_store_file(file_path)
         private_key_bytes = __key_from_key_store(file_path, bytes(password, 'utf-8'))
         user_address = get_address_by_privkey(private_key_bytes)
         validate_address(user_address)
         validate_address_is_not_same(user_address, to)
-
         method = 'icx_sendTransaction'
-
         amount, fee = check_amount_and_fee_is_valid(amount, fee)
-
         params = __make_params(user_address, to, amount, fee, method, private_key_bytes)
         payload = create_jsonrpc_request_content(0, method, params)
 
@@ -153,7 +146,8 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url):
         next(request_gen)
         response = request_gen.send(payload)
         return response
-
+    except json.decoder.JSONDecodeError:
+        raise NetworkIsInvalid
     except FileNotFoundError:
         print("File does not exists.")
         raise FilePathIsWrong
@@ -222,11 +216,6 @@ def __make_key_store_content(password):
 
 
 def __key_from_key_store(file_path, password):
-    """
-
-    :param file_path:
-    :return:
-    """
     with open(file_path, 'rb') as file:
         private_key = extract_key_from_keyfile(file, password)
     return private_key
@@ -239,8 +228,6 @@ def __get_balance(address, url):
     :param url:
     :return: icx
     """
-    url = f'{url}v2'
-
     method = 'icx_getBalance'
     params = {'address': address}
     payload = create_jsonrpc_request_content(0, method, params)
@@ -248,7 +235,6 @@ def __get_balance(address, url):
     content = response.json()
     hex_balance = content['result']['response']
     dec_loop_balance = int(hex_balance, 16)
-
     return dec_loop_balance
 
 
@@ -282,10 +268,8 @@ def __get_balance_after_trasfer(address, url, request_gen):
     :return: Balance of the user's wallet.
     """
     payload_for_balance = get_payload_of_json_rpc_get_balance(address, url)
-
     next(request_gen)
     balance_content = request_gen.send(payload_for_balance).json()
-
     balance = balance_content['result']['response']
     balance_loop = int(balance, 16)
     return balance_loop

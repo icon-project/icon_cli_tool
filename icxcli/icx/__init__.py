@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright 2018 theloop Inc.
+# Copyright 2018 ICON Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -175,4 +175,8 @@ class AddressIsSame(Error):
     """Exception raised for 'Wallet address to transfer is same as Wallet address to deposit.' """
     pass
 
+
+class NetworkIsInvalid(Error):
+    """Exception raised for invalid network"""
+    pass
 
