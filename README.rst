@@ -14,7 +14,7 @@ Prerequisite
 Version
 =======
 
--  0.0.3
+-  0.0.4
 
 
 Getting started
@@ -51,14 +51,12 @@ $ icli  --help
                 help
 
             Wallet Commands:
-                wallet create <file path> -p <password>  | -n <network id: mainnet | testnet>
-                wallet show <file path> -p <password>   | -n <network id: mainnet | testnet>
-                asset list <file path> -p <password>    | -n <network id: mainnet | testnet>
-                transfer  <to> <amount> <file path> -p <password> -f <fee>  | -n <network id: mainnet | testnet>
+                wallet create <file path> -p <password>
+                wallet show <file path> -p <password>  | -n <network : mainnet | testnet | IP or domain>
+                asset list <file path> -p <password>   | -n <network : mainnet | testnet | IP or domain>
+                transfer <to> <amount> <file path> -p <password> -f <fee=10000000000000000> | -n <network : mainnet | testnet | IP or domain>
 
-                IF YOU MISS --networkid, icli WILL USE TESTNET.
-
-
+                IF YOU MISS -n, icli WILL USE TESTNET.
 
     positional arguments:
       command           wallet create, wallet show, asset list, transfer
@@ -67,4 +65,5 @@ $ icli  --help
       -h, --help        show this help message and exit
       -p PASSWORD       password
       -f FEE            transaction fee
-      -n NETWORK_ID     which network
+      -n NETWORK        mainnet or testnet or other IP or domain
+
