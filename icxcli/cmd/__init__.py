@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright 2018 theloop Inc.
+# Copyright 2018 ICON Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,22 +14,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import json
 import sys
 import argparse
 import os
-
+import re
 from icxcli.cmd import wallet
-from icxcli.icx import NonExistKey, TransferFeeIsInvalid
+from icxcli.icx import NonExistKey, NetworkIsInvalid
 from icxcli.cmd.wallet import ExitCode
 from icxcli import __version__
 
 
 def main():
-    """
-    Main procedure
-    :return:
-    """
+    """Main procedure"""
     command, parser = parse_args()
     sys.exit(call_wallet_method(command, parser))
 
@@ -52,7 +50,6 @@ def parse_args():
 
     :return: command, parser
     """
-
     parser = argparse.ArgumentParser(prog='icli.py', usage='''
     
     ==============================
@@ -63,51 +60,46 @@ def parse_args():
             help
 
         Wallet Commands:
-
             wallet create <file path> -p <password>  
-            wallet show <file path> -p <password>    | -n <network id: mainnet | testnet>
-            asset list <file path> -p <password>     | -n <network id: mainnet | testnet>
-            transfer  <to> <amount> <file path> -p <password> -f <fee=10000000000000000>  | -n <network id: mainnet | testnet>
+            wallet show <file path> -p <password>  | -n <network : mainnet | testnet | IP or domain>
+            asset list <file path> -p <password>   | -n <network : mainnet | testnet | IP or domain>
+            transfer <to> <amount> <file path> -p <password> -f <fee=10000000000000000> | -n <network : mainnet | testnet | IP or domain>
             
         WARNING: 
-        
             Fee feature is the experimental feature; fee is fixed to 10000000000000000 Loop for now so if you 
             try to make a transaction with the modified fee, which is not 10000000000000000 Loop, then you would 
             not be able to make the transaction. you will be notified 
             when it is possible to make a transaction with the modified fee.
-
             
         IF YOU MISS -n, icli WILL USE TESTNET.
-        
-          ''')
+        ''')
 
     parser.add_argument('command', nargs='*', help='wallet create, wallet show, asset list, transfer')
     parser.add_argument('-p', dest='password'
                         , help='password')
     parser.add_argument('-f', dest='fee'
                         , help='transaction fee', default="10000000000000000")
-    parser.add_argument('-n', dest='network_id'
-                        , help='which network', default='testnet')
-
+    parser.add_argument('-n', dest='network'
+                        , help='mainnet or testnet or other IP or domain', default='testnet')
     args = parser.parse_args()
-
     command = ' '.join(args.command[:2])
-
     return command, parser
 
 
 def call_wallet_method(command, parser):
     """ Call the specific wallet method when having right number of arguments.
 
-   :param command: Command part of interface. type: str
-   :param parser: ArgumentParser
-   """
-
+    :param command: Command part of interface. type: str
+    :param parser: ArgumentParser
+    """
     args = parser.parse_args()
     try:
-        url = get_selected_url(args.network_id)
+        url = get_selected_url(args.network)
     except NonExistKey:
         return ExitCode.NETWORK_ID_IS_WRONG.value
+    except NetworkIsInvalid:
+        print(f"Fail: Network is invalid. It is impossible to connect {args.network}.")
+        return ExitCode.NETWORK_IS_INVALID.value
 
     password = args.password
     if command == 'wallet create' and len(args.command) == 3:
@@ -135,14 +127,31 @@ def call_wallet_method(command, parser):
         return 0
 
 
-def get_selected_url(network_id):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(f"{current_dir}/network_conf.json", 'r') as f:
-        network_config_json_str = f.read()
-    network_config_json = json.loads(network_config_json_str)
-
+def is_valid_url(network_id):
     try:
-        return network_config_json["networkid"][network_id]
-    except KeyError:
-        print(f"{network_id} is not valid network id")
-        raise NonExistKey
+        checked_url = re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', network_id)
+        if checked_url:
+            return True
+        else:
+            return False
+    except TypeError:
+        return False
+
+
+def get_selected_url(network_id):
+    if network_id not in ('testnet', 'mainnet'):
+        if is_valid_url(network_id):
+            return network_id
+        else:
+            raise NetworkIsInvalid
+    else:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        with open(f"{current_dir}/network_conf.json", 'r') as f:
+            network_config_json_str = f.read()
+        network_config_json = json.loads(network_config_json_str)
+
+        try:
+            return network_config_json["networkid"][network_id]
+        except KeyError:
+            print(f"{network_id} is not valid network id")
+            raise NonExistKey

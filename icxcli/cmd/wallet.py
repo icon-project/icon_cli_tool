@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright 2018 theloop Inc.
+# Copyright 2018 ICON Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ class ExitCode(Enum):
     PASSWORD_IS_WRONG = 123
     FILE_EXISTS = 124
     NETWORK_ID_IS_WRONG = 125
+    NETWORK_IS_INVALID = 126
     WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE = 127
     TRANSFER_FEE_IS_INVALID = 128
     TIMESTAMP_IS_NOT_CORRECT = 129
@@ -78,7 +79,7 @@ def show_wallet(password, file_path, url) -> int:
     """ Show the all information of wallet. Show the balance and the information in keystore file.
 
     :param password:  Password including alphabet character, number, and special character. type(str)
-    If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
+    If the user does not give password with -p, then CLI will show the prompt and user need to type the password.
     :param file_path: File path for the keystore file of the wallet. type(str)
     :param url: api url. type(str)
     :return: Predefined exit code
@@ -91,18 +92,21 @@ def show_wallet(password, file_path, url) -> int:
         wallet_info = json.dumps(wallet_info, indent=4, sort_keys=True)
         print(f"Wallet keystore_file_info : \n{wallet_info} ")
         return ExitCode.SUCCEED.value
+    except wallet.NetworkIsInvalid:
+        print(f"Fail: Network is invalid. It is impossible to connect {url}.")
+        return ExitCode.NETWORK_IS_INVALID.value
     except wallet.PasswordIsNotAcceptable:
-        print("Fail: Password is not acceptable. ")
-        print("Password including alphabet character, number, and special character.")
+        print(f"Fail: Password is not acceptable. ")
+        print(f"Password including alphabet character, number, and special character.")
         return ExitCode.PASSWORD_IS_WRONG.value
     except wallet.FilePathIsWrong:
         print(f"Fail: Fail to open {file_path}. Change file path.")
         return ExitCode.FILE_PATH_IS_WRONG.value
     except PasswordIsWrong:
-        print("Password is wrong.")
+        print(f"Fail: Password is wrong.")
         return ExitCode.PASSWORD_IS_WRONG.value
     except NotAKeyStoreFile:
-        print(f"{file_path} is not a Key store File.")
+        print(f"Fail: {file_path} is not a Key store File.")
         return ExitCode.NOT_A_KEY_STORE_FILE.value
 
 
@@ -121,6 +125,9 @@ def show_asset_list(password, file_path, url) -> int:
         print(f"Wallet address : {wallet_address} ")
         print(f"Wallet balance : {balance} loop")
         return ExitCode.SUCCEED.value
+    except wallet.NetworkIsInvalid:
+        print(f"Fail: Network is invalid. It is impossible to connect {url}.")
+        return ExitCode.NETWORK_IS_INVALID.value
     except wallet.PasswordIsNotAcceptable:
         print("Fail: Password is not acceptable. ")
         print("Password including alphabet character, number, and special character.")
@@ -129,10 +136,10 @@ def show_asset_list(password, file_path, url) -> int:
         print(f"Fail: Fail to open {file_path}. Change file path.")
         return ExitCode.FILE_PATH_IS_WRONG.value
     except PasswordIsWrong:
-        print("Password is wrong.")
+        print(f"Fail: Password is wrong.")
         return ExitCode.PASSWORD_IS_WRONG.value
     except NotAKeyStoreFile:
-        print(f"{file_path} is not a Key store File.")
+        print(f"Fail: {file_path} is not a Key store File.")
         return ExitCode.NOT_A_KEY_STORE_FILE.value
 
 
@@ -143,45 +150,46 @@ def transfer_value_with_the_fee(password, fee, to, amount, file_path, url) -> in
     If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
     type(str)
     :param fee: Transaction fee.
-    :param decimal_point: A user can change the decimal point to express all numbers including fee and amount.
     :param to: A user can change the decimal point to express all numbers including fee and amount.
     :param amount: A user can change the decimal point to express all numbers including fee and amount.
     :param file_path: File path for the keystore file of the wallet. type(str)
     :return: Predefined exit code
     """
     try:
-
         transfer_result = wallet.transfer_value_with_the_fee(password, fee, to, amount, file_path, url)
         print("Transaction has been completed successfully.")
         return ExitCode.SUCCEED.value
+    except wallet.NetworkIsInvalid:
+        print(f"Fail: Network is invalid. It is impossible to connect {url}.")
+        return ExitCode.NETWORK_IS_INVALID.value
     except FilePathIsWrong:
         return ExitCode.FILE_PATH_IS_WRONG.value
     except AddressIsWrong:
-        print("The transaction target address does not have the correct format. please check the address again.")
+        print(f"Fail: The transaction target address does not have the correct format. please check the address again.")
         return ExitCode.WALLET_ADDRESS_IS_WRONG.value
     except PasswordIsWrong:
-        print("Password is wrong.")
+        print(f"Fail: Password is wrong.")
         return ExitCode.PASSWORD_IS_WRONG.value
     except NoEnoughBalanceInWallet:
-        print("Wallet does not have enough balance.")
+        print(f"Fail: Wallet does not have enough balance.")
         return ExitCode.WALLET_DOES_NOT_HAVE_ENOUGH_BALANCE.value
     except AmountIsInvalid:
-        print("The amount you want to transfer is not valid.")
+        print(f"Fail: The amount you want to transfer is not valid.")
         return ExitCode.AMOUNT_IS_INVALID.value
     except TransferFeeIsInvalid:
-        print("Transaction Fee is invalid. The fee should be 10000000000000000.")
+        print(f"Fail: Transaction Fee is invalid. The fee should be 10000000000000000.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
     except FeeIsBiggerThanAmount:
-        print("Fee is bigger than transaction amount. Please check your fee again.")
+        print(f"Fail: Fee is bigger than transaction amount. Please check your fee again.")
         return ExitCode.TRANSFER_FEE_IS_INVALID.value
     except NotAKeyStoreFile:
-        print(f"{file_path} is not a Key store File.")
+        print(f"Fail: {file_path} is not a Key store File.")
         return ExitCode.NOT_A_KEY_STORE_FILE.value
     except AddressIsSame:
-        print("Wallet address to transfer must be different from Wallet address to deposit.")
+        print(f"Fail: Wallet address to transfer must be different from Wallet address to deposit.")
         return ExitCode.WALLET_ADDRESS_IS_SAME.value
     except AmountIsNotInteger:
-        print("Amount should be integer and loop unit, not icx")
+        print(f"Fail: Amount should be integer and loop unit, not icx")
         return ExitCode.AMOUNT_IS_NOT_INTEGER.value
 
 
