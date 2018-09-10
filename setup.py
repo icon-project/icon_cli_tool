@@ -22,7 +22,7 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-requires = ['requests==2.18.4', "eth-keyfile==0.5.0", "secp256k1==0.13.2"]
+requires = ['requests>=2.18.4', "eth-keyfile>=0.5.0", "secp256k1>=0.13.2"]
 
 setup_options = {
     'name': 'icxcli', 'version': find_version("icxcli", "__init__.py"),
