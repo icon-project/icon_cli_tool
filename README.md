@@ -1,28 +1,29 @@
+
 ICON CLI tool
+========
 
  ICON supports Command Line Interface(CLI interface) for 3rd party or user services development. With this single tool, you can control all ICON functions and automate them using scripts.
 
 <!-- TOC depthFrom:1 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- Prerequisite
-- Version
-- Glossary
-- Technical information
-- Getting started
-  - Installation
-  - Run CLI
-  - Console instructions
-  - Wallet operation
-    - Create wallet file
-    - Show wallet information
-    - List up all assets in current wallet
-    - Transfer the value to the specific address with the fee.
+- [Prerequisite](#prerequisite)
+- [Version](#version)
+- [Glossary](#glossary)
+- [Technical information](#technical-information)
+- [Getting started](#getting-started)
+	- [Installation](#installation)
+	- [Run CLI](#run-cli)
+	- [Console instructions](#console-instructions)
+	- [Wallet operation](#wallet-operation)
+		- [Create wallet file](#create-wallet-file)
+		- [Show wallet information](#show-wallet-information)
+		- [List up all assets in current wallet](#list-up-all-assets-in-current-wallet)
+		- [Transfer the value to the specific address with the fee.](#transfer-the-value-to-the-specific-address-with-the-fee)
 
 <!-- /TOC -->
 
 
-
-Prerequisite
+# Prerequisite
 
 You need Python 3.6 or later to run icxcli. You can have multiple Python versions (2.x and 3.x) installed on the same system without problems.
 
@@ -54,13 +55,13 @@ You can install autoconf, libtool and automake for python3.6.
 
 
 
-Version
+# Version
 
 - 0.0.4
 
 
 
-Glossary
+# Glossary
 
 - Address of wallet: Unique string to identify the address to transfer value. It prefixed with 'hx'.
 - Private key: A tiny bit of code that is paired with a public key to set off algorithms to encrypt and decrypt a text for the specific address.
@@ -68,9 +69,9 @@ Glossary
 
 
 
-Technical information
+# Technical information
 
-Private key, public key and wallet address
+## Private key, public key and wallet address
 
 There are five steps to get from  private->public -> address:
 
@@ -81,15 +82,15 @@ There are five steps to get from  private->public -> address:
 5. Address = hx || HexString(BitAddress)
 ex) hxaa688d74eb5f98b577883ca203535d2aa4f0838c
 
-Tested platform
+## Tested platform
 
 We tested on window and macOS. If you find some problems on window, please send the report of the problems.
 
 
 
-Getting started
+# Getting started
 
-Installation
+## Installation
 
 The easiest way to install icxcli* is to use pip:
 
@@ -103,7 +104,7 @@ If you have the aws-cli installed and want to upgrade to the latest version you 
 
     $ pip install --upgrade icxcli
 
-Run CLI
+## Run CLI
 
 Run command icli in the command line.  There are many subcommands like wallet create, wallet show, asset list, transfer for ICX service. You can get the help page by adding the command help.
 
@@ -140,7 +141,7 @@ Run command icli in the command line.  There are many subcommands like wallet cr
       -n NETWORK		mainnet or testnet or other IP or domain
 
 
-Console instructions
+## Console instructions
 
 <table>
   <tr>
@@ -159,7 +160,7 @@ Console instructions
 
 
 
-Wallet operation
+## Wallet operation
 
 <table>
   <tr>
@@ -186,32 +187,32 @@ Wallet operation
   </tr>
 </table>
 
-WARNING
+### WARNING
 
 Fee feature is the experimental feature; fee is fixed to 10000000000000000 loop for now so if you try to make a transaction with the modified fee, which is not 10000000000000000 loop, then you would not be able to make the transaction. you will be notified when it is possible to make a transaction with the modified fee.
 
 
 
-Create wallet file
+## Create wallet file
 
     $ icli wallet create <file path> -p <password>
 
 Create a wallet file with given wallet name, password and file path.
 
-Arguments
+### Arguments
 
 - file path : File path for the keystore file of the wallet.
 - password: Password including alphabet character, number, and  special character. If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
 
-Output
+### Output
 
-Successful case
+#### Successful case
 
 Return 0 : Succeed to generate the keystore file for the wallet.
 
-Error cases
+#### Error cases
 
-icli will return following error code and message.
+**icli** will return following error code and message.
 
 - Return 121: The file path is without a file name.
 - Return 122: The file path is wrong.
@@ -221,19 +222,19 @@ icli will return following error code and message.
 
 
 
-Show wallet information
+## Show wallet information
 
     $ icli wallet show <file path> -p <password> -n <network>
 
 Show wallet information.
 
-Arguments
+### Arguments
 
 - file path: File path for the keystore file of the wallet.
 - password: Password including alphabet character, number, and  special character. If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
 - network: 'testnet' or 'mainnet' or other IP or domain address.
 
-Output
+### Output
 
 Shows the all information of wallet.
 
@@ -241,11 +242,11 @@ Shows the all information of wallet.
 - Current balance
 - Keystore file contents
 
-Successful case
+#### Successful case
 
 Return 0 : Print out wallet information including asset list.
 
-Error cases
+#### Error cases
 
 - Return 122: The file path is wrong.
 - Return 123: The password is wrong.
@@ -254,27 +255,27 @@ Error cases
 
 
 
-List up all assets in current wallet
+## List up all assets in current wallet
 
     $ icli asset list <file path> -p <password> -n <network>
 
  Enumerate the list of all the assets of the wallet.
 
-Arguments
+### Arguments
 
 - file path : File path for the keystore file of the wallet.
 - password: Password including alphabet character, number, and  special character. If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
 - network: 'testnet' or 'mainnet' or other IP or domain address.
 
-Output
+### Output
 
 - List of all assets in current wallet.
 
-Successful case
+#### Successful case
 
 - Return 0 : Succeed to display.
 
-Error cases
+#### Error cases
 
 - Return 122: The file path is wrong.
 - Return 123: The password is wrong.
@@ -283,13 +284,13 @@ Error cases
 
 
 
-Transfer the value to the specific address with the fee.
+## Transfer the value to the specific address with the fee.
 
     $ icli transfer <to> <amount> <file path> -p <password> -f <fee> -n <network>
 
 Transfer the value from  A address to B address with the fee.
 
-Arguments
+### Arguments
 
 - to: Address of wallet to receive the asset.
 - file path : File path for the keystore file of the wallet.
@@ -301,15 +302,15 @@ Arguments
       - Ex) 1 icx = 1018 loop
 - network: 'testnet' or 'mainnet' or other IP or domain address.
 
-Output
+### Output
 
-Successful case
+#### Successful case
 
 Return 0 : Succeed to transfer
 
-Error cases
+#### Error cases
 
-icli will return following error code and message.
+**icli** will return following error code and message.
 
 - Return 122: The file path is wrong.
 - Return 123: The password is wrong.
