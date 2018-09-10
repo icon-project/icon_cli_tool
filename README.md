@@ -136,7 +136,7 @@ Run command icli in the command line.  There are many subcommands like wallet cr
     optional arguments:
       -h, --help		show this help message and exit
       -p PASSWORD		password
-      -f FEE			transaction fee
+      -f FEE		transaction fee
       -n NETWORK		mainnet or testnet or other IP or domain
 
 
