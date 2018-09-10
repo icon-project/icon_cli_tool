@@ -189,7 +189,7 @@ Run command icli in the command line.  There are many subcommands like wallet cr
 
 ### WARNING
 
-Fee feature is the experimental feature; fee is fixed to 10000000000000000 loop for now so if you try to make a transaction with the modified fee, which is not 10000000000000000 loop, then you would not be able to make the transaction. you will be notified when it is possible to make a transaction with the modified fee.
+Fee feature is the experimental feature; **fee is fixed to 10000000000000000 loop for now** so if you try to make a transaction with the modified fee, which is not 10000000000000000 loop, then you would not be able to make the transaction. you will be notified when it is possible to make a transaction with the modified fee.
 
 
 
@@ -297,9 +297,9 @@ Transfer the value from  A address to B address with the fee.
 - password:  Password including alphabet character, number, and  special character. If the user doesn’t give password with -p, then CLI will show the prompt and user need to type the password.
 - amount : Amount of money. (Unit:loop)
 - fee : Transfer fee (Unit:loop)
-  - YOU SHOULD CHANGE BOTH THE UNIT OF AMOUNT AND FEE TO LOOP, ENTERING INTEGER VALUES FOR AMOUNT AND FEE NOT FLOATING NUMBERS.
-    - Unit: loop
-      - Ex) 1 icx = 1018 loop
+    - **YOU SHOULD CHANGE BOTH THE UNIT OF AMOUNT AND FEE TO LOOP, ENTERING INTEGER VALUES FOR AMOUNT AND FEE NOT FLOATING NUMBERS.**
+        - Unit: loop
+            * Ex) 1 icx = 10<sup>18</sup> loop
 - network: 'testnet' or 'mainnet' or other IP or domain address.
 
 ### Output
