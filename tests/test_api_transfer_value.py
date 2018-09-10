@@ -1,11 +1,28 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Copyright 2018 ICON Foundation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import os
 import unittest
-
 from icxcli.icx.utils import get_tx_hash, sign, check_amount_and_fee_is_valid
 from icxcli.icx import wallet, FilePathIsWrong, PasswordIsWrong, NoEnoughBalanceInWallet, TransferFeeIsInvalid, \
     AddressIsWrong, FeeIsBiggerThanAmount, AmountIsInvalid, AddressIsSame, AmountIsNotInteger
+
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
-url = 'https://testwallet.icon.foundation/api/'
+url = 'https://testwallet.icon.foundation/api/v2'
 
 
 class TestAPI(unittest.TestCase):
