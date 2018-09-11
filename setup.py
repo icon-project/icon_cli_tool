@@ -22,12 +22,16 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
+with open("README.md", 'r') as f:
+    long_description = f.read()
+
 requires = ['requests>=2.18.4', "eth-keyfile>=0.5.0", "secp256k1>=0.13.2"]
 
 setup_options = {
     'name': 'icxcli', 'version': find_version("icxcli", "__init__.py"),
     'description': 'A Universal Command Line Environment for ICON.',
-    'long_description': open('README.rst').read(),
+    'long_description': long_description,
+    'long_description_content_type': 'text/markdown',
     'author': 'ICON foundation',
     'author_email': 'foo@icon.foundation',
     'url': 'https://github.com/icon-project/icon_cli_tool',
